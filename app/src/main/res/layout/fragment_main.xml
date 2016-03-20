@@ -6,14 +6,21 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.forfun.paolosimone.wikuote.MainActivityFragment"
+    tools:context=".MainQuoteFragment"
     tools:showIn="@layout/activity_main">
 
     <TextView
         android:id="@+id/quote_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:text="Initializing..."
         android:layout_centerInParent="true" />
+
+    <TextView
+        android:id="@+id/author_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quote_text"
+        android:layout_alignRight="@id/quote_text"/>
 
 </RelativeLayout>
