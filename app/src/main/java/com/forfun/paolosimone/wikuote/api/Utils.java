@@ -80,8 +80,8 @@ public abstract class Utils {
                     .getString("*");
 
             Document doc = Jsoup.parse(html);
-            Elements ul = doc.select("html > body > ul > li");
-            for(Element e : ul){
+            Elements li = doc.select("html > body > ul > li");
+            for(Element e : li){
                 Elements bolds = e.select(":root > b");
                 Elements italics = e.select(":root > i");
 
@@ -90,7 +90,14 @@ public abstract class Utils {
                 } else if (!italics.isEmpty()){
                     quotes.add(italics.get(0).text());
                 } else {
-                    quotes.add(e.text());
+                    String newQuote = e.text();
+
+                    Elements extras = e.getElementsByTag("ul");
+                    if(!extras.isEmpty()){
+                        newQuote = newQuote.replace(extras.get(0).text(),"");
+                    }
+
+                    quotes.add(newQuote);
                 }
             }
         } catch (JSONException e) {

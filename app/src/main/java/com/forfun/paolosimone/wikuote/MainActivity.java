@@ -11,6 +11,8 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MainQuoteFragment quoteFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,19 +20,26 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        quoteFragment = new MainQuoteFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_fragment, new MainQuoteFragment())
+                .replace(R.id.content_fragment, quoteFragment)
                 .commit();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Saved to favourites", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        quoteFragment.newQuoteFor("Albert Einstein");
     }
 
     @Override
@@ -48,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            quoteFragment.newQuoteFor("Albert Einstein");
             return true;
         }
 

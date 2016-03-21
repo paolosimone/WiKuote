@@ -77,6 +77,10 @@ public class WikiQuoteProvider implements QuoteProvider{
 
         List<String> quotes = Utils.extractQuoteList(response);
 
+        if (quotes.isEmpty()){
+            throw new IOException();
+        }
+
         Random rand = new Random();
         return quotes.get(rand.nextInt(quotes.size()));
     }

@@ -28,6 +28,7 @@ public class MainQuoteFragment extends Fragment {
 
     private Quote quote;
     private QuoteProvider quoteProvider;
+    private AsyncTask currentTask;
 
     private TextView quoteTextView;
     private TextView authorTextView;
@@ -51,8 +52,6 @@ public class MainQuoteFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState){
         quoteTextView = (TextView) view.findViewById(R.id.quote_text);
         authorTextView = (TextView) view.findViewById(R.id.author_text);
-
-        newQuoteFor("Albert Einstein");
     }
 
     @Override
@@ -62,16 +61,26 @@ public class MainQuoteFragment extends Fragment {
         super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy(){
+        if (currentTask!=null){
+            currentTask.cancel(true);
+        }
+        super.onDestroy();
+    }
+
     public void newQuoteFor(String author){
-        new FetchQuoteTask().execute(author);
+        currentTask = new FetchQuoteTask().execute(author);
     }
 
     private void updateQuote(){
         if (quoteTextView!=null){
             quoteTextView.setText(quote.getText());
         }
-        if (authorTextView!=null && quote.getAuthor()!=null){
-            authorTextView.setText(quote.getAuthor());
+        if (authorTextView!=null){
+            String authorText =  (quote.getAuthor()!=null) ?
+                    quote.getAuthor() : "";
+            authorTextView.setText(authorText);
         }
     }
 
@@ -98,6 +107,7 @@ public class MainQuoteFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Quote newQuote){
+            currentTask = null;
             quote = newQuote;
             updateQuote();
         }
