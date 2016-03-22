@@ -38,9 +38,19 @@ public class WikiQuoteProvider implements QuoteProvider{
 
     @Override
     public String getRandomQuoteFor(String author) throws IOException, MissingAuthorException {
-        int pageid = getPageIndex(author);
-        int sectionid = getRandomSection(pageid);
-        return getRandomQuoteFromSection(pageid,sectionid);
+        int maxTry = 10;
+        int maxWords = 150;
+
+        for (int i=0; i<maxTry; i++) {
+            int pageid = getPageIndex(author);
+            int sectionid = getRandomSection(pageid);
+            String newQuote = getRandomQuoteFromSection(pageid, sectionid);
+
+            int words = newQuote.split(" ").length;
+            if (words<maxWords) return newQuote;
+        }
+
+        return null;
     }
 
     private int getPageIndex(String author) throws IOException, MissingAuthorException {

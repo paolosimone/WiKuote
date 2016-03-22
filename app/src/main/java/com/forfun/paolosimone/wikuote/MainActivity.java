@@ -8,9 +8,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String QUOTE_FRAGMENT = "quote_fragment";
+
+    private boolean isFirstStart;
     private MainQuoteFragment quoteFragment;
 
     @Override
@@ -20,7 +26,12 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        quoteFragment = new MainQuoteFragment();
+        isFirstStart = savedInstanceState == null;
+
+        quoteFragment = isFirstStart ?
+                new MainQuoteFragment() :
+                (MainQuoteFragment) getSupportFragmentManager().getFragment(savedInstanceState,QUOTE_FRAGMENT);
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.content_fragment, quoteFragment)
@@ -39,7 +50,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        quoteFragment.newQuoteFor("Albert Einstein");
+        if(isFirstStart) {
+            Toast.makeText(getApplicationContext(),
+                    R.string.swipe_tip,Toast.LENGTH_SHORT).show();
+
+            ArrayList<String> authors = new ArrayList<>();
+            authors.add("Albert Einstein");
+
+            quoteFragment.setAuthors(authors);
+            quoteFragment.nextQuote();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state){
+        super.onSaveInstanceState(state);
+        getSupportFragmentManager().putFragment(state,QUOTE_FRAGMENT,quoteFragment);
     }
 
     @Override
@@ -58,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            quoteFragment.newQuoteFor("Albert Einstein");
+            quoteFragment.nextQuote();
             return true;
         }
 

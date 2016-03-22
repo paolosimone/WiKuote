@@ -83,12 +83,9 @@ public abstract class Utils {
             Elements li = doc.select("html > body > ul > li");
             for(Element e : li){
                 Elements bolds = e.select(":root > b");
-                Elements italics = e.select(":root > i");
 
                 if (!bolds.isEmpty()){
                     quotes.add(bolds.get(0).text());
-                } else if (!italics.isEmpty()){
-                    quotes.add(italics.get(0).text());
                 } else {
                     String newQuote = e.text();
 
