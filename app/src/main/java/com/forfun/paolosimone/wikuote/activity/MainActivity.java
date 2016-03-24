@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.forfun.paolosimone.wikuote.fragment.MainQuoteFragment;
+import com.forfun.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.forfun.paolosimone.wikuote.R;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String QUOTE_FRAGMENT = "quote_fragment";
 
     private boolean isFirstStart;
-    private MainQuoteFragment quoteFragment;
+    private DynamicQuoteFragment quoteFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +31,9 @@ public class MainActivity extends AppCompatActivity {
 
         isFirstStart = savedInstanceState == null;
 
-        ArrayList<String> authors = new ArrayList<>();
-        authors.add("Albert Einstein");
-
         quoteFragment = isFirstStart ?
-                MainQuoteFragment.newInstance(authors) :
-                (MainQuoteFragment) getSupportFragmentManager().getFragment(savedInstanceState,QUOTE_FRAGMENT);
+                new DynamicQuoteFragment() :
+                (DynamicQuoteFragment) getSupportFragmentManager().getFragment(savedInstanceState,QUOTE_FRAGMENT);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -60,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     R.string.swipe_tip,Toast.LENGTH_SHORT).show();
 
-            quoteFragment.refresh();
+            ArrayList<String> authors = new ArrayList<>();
+            authors.add("Albert Einstein");
+            quoteFragment.changeAuthors(authors);
         }
     }
 
@@ -72,19 +71,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
             quoteFragment.refresh();
             return true;

@@ -1,7 +1,6 @@
 package com.forfun.paolosimone.wikuote.fragment;
 
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -13,7 +12,7 @@ import com.forfun.paolosimone.wikuote.api.QuoteProvider;
 import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.forfun.paolosimone.wikuote.model.Quote;
-import com.forfun.paolosimone.wikuote.view.QuotePagerAdapter;
+import com.forfun.paolosimone.wikuote.view.DynamicQuotePagerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,11 +22,9 @@ import java.util.Random;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainQuoteFragment extends Fragment {
+public class DynamicQuoteFragment extends QuoteFragment {
 
-    private final static String AUTHORS_TAG = "authors";
-    private final static String QUOTES_TAG = "quotes";
-    private final static String INDEX_TAG = "index";
+    protected final static String AUTHORS_TAG = "authors";
 
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
@@ -37,24 +34,14 @@ public class MainQuoteFragment extends Fragment {
     private HashSet<AsyncTask> currentTasks;
 
     private ViewPager quotePager;
-    private QuotePagerAdapter quotePagerAdapter;
-    private Integer restoredIndex;
+    private DynamicQuotePagerAdapter quotePagerAdapter;
 
-    public MainQuoteFragment() {}
-
-    public static MainQuoteFragment newInstance(ArrayList<String> authors){
-        Bundle args = new Bundle();
-        args.putStringArrayList(AUTHORS_TAG, authors);
-        MainQuoteFragment mqf = new MainQuoteFragment();
-        mqf.setArguments(args);
-        return mqf;
-    }
+    public DynamicQuoteFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
-        authors = getArguments().getStringArrayList(AUTHORS_TAG);
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
     }
@@ -62,14 +49,13 @@ public class MainQuoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        View view = super.onCreateView(inflater, container, savedInstanceState);
 
         quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
-        quotePagerAdapter = new QuotePagerAdapter(getActivity());
+        quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
 
         if(savedInstanceState!=null){
             authors = savedInstanceState.getStringArrayList(AUTHORS_TAG);
-            restoredIndex = savedInstanceState.getInt(INDEX_TAG);
             ArrayList<Quote> quotes = savedInstanceState.getParcelableArrayList(QUOTES_TAG);
             quotePagerAdapter.setQuotes(quotes);
         }
@@ -93,18 +79,9 @@ public class MainQuoteFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
-        super.onStart();
-        if (restoredIndex!=null){
-            quotePager.setCurrentItem(restoredIndex);
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
         state.putStringArrayList(AUTHORS_TAG, authors);
-        saveQuotes(state);
     }
 
     @Override
@@ -114,7 +91,7 @@ public class MainQuoteFragment extends Fragment {
     }
 
     public void refresh(){
-        quotePagerAdapter = new QuotePagerAdapter(getActivity());
+        quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
         quotePager.setAdapter(quotePagerAdapter);
         onQuoteChange(0);
     }
@@ -152,7 +129,8 @@ public class MainQuoteFragment extends Fragment {
         currentTasks.add(new FetchQuoteTask().execute(author));
     }
 
-    private void saveQuotes(Bundle state){
+    @Override
+    protected void saveQuotes(Bundle state){
         ArrayList<Quote> quotes = quotePagerAdapter.getQuotes();
         int index = quotePager.getCurrentItem();
 

@@ -17,20 +17,21 @@ import java.util.ArrayList;
  */
 public class QuotePagerAdapter extends PagerAdapter {
 
-    private ArrayList<Quote> quotes = new ArrayList<>();
-    private Quote loadingQuote;
+    protected ArrayList<Quote> quotes = new ArrayList<>();
 
-    private LayoutInflater layoutInflater;
-    private View loadingPage;
-
+    private Context context;
 
     public QuotePagerAdapter(Context context){
-        this.layoutInflater = LayoutInflater.from(context);
-        this.loadingQuote = Quote.loading(context);
+        this.context = context;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void setQuotes(ArrayList<Quote> quotes){
         this.quotes = quotes;
+        notifyDataSetChanged();
     }
 
     public ArrayList<Quote> getQuotes(){
@@ -41,20 +42,9 @@ public class QuotePagerAdapter extends PagerAdapter {
         return quotes.size();
     }
 
-    public void addQuote(Quote quote){
-        synchronized (quotes){
-            if (loadingPage!=null){
-                setupPage(loadingPage,quote);
-                loadingPage = null;
-            }
-            quotes.add(quote);
-            notifyDataSetChanged();
-        }
-    }
-
     @Override
     public int getCount() {
-        return quotes.size() + 1;
+        return quotes.size();
     }
 
     @Override
@@ -64,25 +54,20 @@ public class QuotePagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        View page =layoutInflater.inflate(R.layout.quote_page,container,false);
-
-        Quote quote = (position==quotes.size()) ? loadingQuote : quotes.get(position);
-        setupPage(page,quote);
-
-        if (position==quotes.size()){
-            loadingPage = page;
+        if (getCount()==0){
+            // TODO placeholder in case of error
         }
+
+        View page = LayoutInflater.from(context).inflate(R.layout.quote_page, container, false);
+
+        Quote quote = quotes.get(position);
+        setupPage(page,quote);
 
         container.addView(page);
         return page;
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-    }
-
-    private void setupPage(View view, Quote quote){
+    protected void setupPage(View view, Quote quote){
         TextView quoteTextView = (TextView) view.findViewById(R.id.quote_text);
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text);
 
