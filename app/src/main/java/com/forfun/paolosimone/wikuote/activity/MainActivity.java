@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote;
+package com.forfun.paolosimone.wikuote.activity;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -9,6 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import com.forfun.paolosimone.wikuote.fragment.MainQuoteFragment;
+import com.forfun.paolosimone.wikuote.R;
 
 import java.util.ArrayList;
 
@@ -28,8 +31,11 @@ public class MainActivity extends AppCompatActivity {
 
         isFirstStart = savedInstanceState == null;
 
+        ArrayList<String> authors = new ArrayList<>();
+        authors.add("Albert Einstein");
+
         quoteFragment = isFirstStart ?
-                new MainQuoteFragment() :
+                MainQuoteFragment.newInstance(authors) :
                 (MainQuoteFragment) getSupportFragmentManager().getFragment(savedInstanceState,QUOTE_FRAGMENT);
 
         getSupportFragmentManager()
@@ -54,11 +60,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),
                     R.string.swipe_tip,Toast.LENGTH_SHORT).show();
 
-            ArrayList<String> authors = new ArrayList<>();
-            authors.add("Albert Einstein");
-
-            quoteFragment.setAuthors(authors);
-            quoteFragment.nextQuote();
+            quoteFragment.refresh();
         }
     }
 
@@ -84,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            quoteFragment.nextQuote();
+            quoteFragment.refresh();
             return true;
         }
 

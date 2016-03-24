@@ -1,8 +1,11 @@
 package com.forfun.paolosimone.wikuote.model;
 
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import com.forfun.paolosimone.wikuote.R;
 
 /**
  * Created by Paolo Simone on 21/03/2016.
@@ -12,7 +15,11 @@ public class Quote implements Parcelable{
     String text;
     String author;
 
-    public Quote() {}
+    public static Quote loading(Context context){
+        return new Quote(context.getString(R.string.loading),"");
+    }
+
+    public Quote () {}
 
     public Quote(String quote, String author) {
         if(quote==null || author==null){
