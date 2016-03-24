@@ -11,6 +11,9 @@ import retrofit2.http.Query;
  */
 public interface WikiQuoteService {
 
+    @GET("api.php?action=opensearch&format=json&suggest")
+    Call<JsonElement> getSuggestionsFromSearch(@Query("search") String search);
+
     @GET("api.php?action=query&format=json")
     Call<JsonElement> getPageFromTitle(@Query("titles") String titles);
 

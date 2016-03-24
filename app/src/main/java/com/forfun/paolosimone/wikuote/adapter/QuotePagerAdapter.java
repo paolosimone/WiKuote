@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.view;
+package com.forfun.paolosimone.wikuote.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;

@@ -2,6 +2,7 @@ package com.forfun.paolosimone.wikuote.api;
 
 import android.util.Log;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
@@ -22,8 +23,36 @@ import java.util.regex.Pattern;
  */
 public abstract class Utils {
 
+    public static final int INVALID_INDEX = -1;
+
+    public static String capitalizeInitials(String author){
+        String[] words = author.toLowerCase().split(" ");
+
+        if (words.length==0) return "";
+
+        String result = "";
+        for (String word : words){
+            result =+ word.toUpperCase().charAt(0) +
+                    ((word.length()>0) ? word.substring(1) : "") + " ";
+        }
+        return result.substring(0,result.length()-1);
+    }
+
+    public static ArrayList<String> extractSuggestions(JsonArray response){
+        ArrayList<String> result = new ArrayList<>();
+        try {
+            JSONArray suggestions = new JSONArray(response.toString()).getJSONArray(1);
+            for (int i=0; i<suggestions.length(); i++){
+                result.add(suggestions.getString(i));
+            }
+        } catch (JSONException e) {
+            // do nothing
+        }
+        return result;
+    }
+
     public static int extractPageIndex(JsonObject response){
-        int index = -1;
+        int index = INVALID_INDEX;
         try {
             JSONObject pages = new JSONObject(response.toString())
                     .getJSONObject("query")

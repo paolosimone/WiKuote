@@ -3,16 +3,18 @@ package com.forfun.paolosimone.wikuote.fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.api.QuoteProvider;
 import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.forfun.paolosimone.wikuote.model.Quote;
-import com.forfun.paolosimone.wikuote.view.DynamicQuotePagerAdapter;
+import com.forfun.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,7 +26,7 @@ import java.util.Random;
  */
 public class DynamicQuoteFragment extends QuoteFragment {
 
-    protected final static String AUTHORS_TAG = "authors";
+    protected final static String AUTHORS = "authors";
 
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
@@ -35,13 +37,23 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
     private ViewPager quotePager;
     private DynamicQuotePagerAdapter quotePagerAdapter;
+    private boolean isFirstStart;
 
     public DynamicQuoteFragment() {}
+
+    public static DynamicQuoteFragment newInstanceWithAuthors(ArrayList<String> authors){
+        Bundle args = new Bundle();
+        args.putStringArrayList(AUTHORS, authors);
+        DynamicQuoteFragment dqf = new DynamicQuoteFragment();
+        dqf.setArguments(args);
+        return dqf;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
+        //TODO add refresh action item
+        authors = getArguments().getStringArrayList(AUTHORS);
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
     }
@@ -50,17 +62,17 @@ public class DynamicQuoteFragment extends QuoteFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-
         quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
-        quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
 
-        if(savedInstanceState!=null){
-            authors = savedInstanceState.getStringArrayList(AUTHORS_TAG);
-            ArrayList<Quote> quotes = savedInstanceState.getParcelableArrayList(QUOTES_TAG);
+        isFirstStart = savedInstanceState == null;
+
+        if(!isFirstStart){
+            authors = savedInstanceState.getStringArrayList(AUTHORS);
+            ArrayList<Quote> quotes = savedInstanceState.getParcelableArrayList(QUOTES);
             quotePagerAdapter.setQuotes(quotes);
+            quotePager.setAdapter(quotePagerAdapter);
         }
 
-        quotePager.setAdapter(quotePagerAdapter);
         quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -79,9 +91,15 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     @Override
+    public void onStart(){
+        super.onStart();
+        if (isFirstStart) refresh();
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
-        state.putStringArrayList(AUTHORS_TAG, authors);
+        state.putStringArrayList(AUTHORS, authors);
     }
 
     @Override
@@ -101,7 +119,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
             throw new IllegalArgumentException("Authors can't be null or empty");
         }
         this.authors = authors;
-        refresh();
+
+        boolean isAttached = getActivity()!= null;
+        if (isAttached) refresh();
     }
 
     private void onQuoteChange(int index){
@@ -137,8 +157,8 @@ public class DynamicQuoteFragment extends QuoteFragment {
         int start = Math.max(0, index - MAX_QUOTES/2);
         int end = Math.min(quotes.size(), index + MAX_QUOTES/2);
 
-        state.putParcelableArrayList(QUOTES_TAG, new ArrayList<>(quotes.subList(start,end)));
-        state.putInt(INDEX_TAG, index - start);
+        state.putParcelableArrayList(QUOTES, new ArrayList<>(quotes.subList(start,end)));
+        state.putInt(INDEX, index - start);
     }
 
     private class FetchQuoteTask extends AsyncTask<String, Void, Quote> {
@@ -163,6 +183,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
             if (result!=null){
                 quotePagerAdapter.addQuote(result);
+            }
+            else {
+                Toast.makeText(getActivity(),R.string.generic_error,Toast.LENGTH_SHORT).show();
             }
         }
     }

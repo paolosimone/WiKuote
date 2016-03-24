@@ -1,10 +1,14 @@
 package com.forfun.paolosimone.wikuote.api;
 
+import android.util.Log;
+
 import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -37,31 +41,32 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public String getRandomQuoteFor(String author) throws IOException, MissingAuthorException {
-        int maxTry = 10;
-        int maxWords = 150;
-
-        for (int i=0; i<maxTry; i++) {
-            int pageid = getPageIndex(author);
-            int sectionid = getRandomSection(pageid);
-            String newQuote = getRandomQuoteFromSection(pageid, sectionid);
-
-            int words = newQuote.split(" ").length;
-            if (words<maxWords) return newQuote;
-        }
-
-        return null;
+    public boolean isAvailableAuthor(String author) throws IOException {
+        return getPageIndex(author) != Utils.INVALID_INDEX;
     }
 
-    private int getPageIndex(String author) throws IOException, MissingAuthorException {
+    @Override
+    public ArrayList<String> getSuggestedAuthors(String search) throws IOException {
+        Call<JsonElement> call = wikiQuoteService.getSuggestionsFromSearch(search);
+        JsonArray response = (JsonArray) call.execute().body();
+
+        return Utils.extractSuggestions(response);
+    }
+
+    @Override
+    public String getRandomQuoteFor(String author) throws IOException, MissingAuthorException {
+        int pageid = getPageIndex(author);
+        if (pageid == Utils.INVALID_INDEX) throw new MissingAuthorException();
+
+        int sectionid = getRandomSection(pageid);
+        return getRandomQuoteFromSection(pageid, sectionid);
+    }
+
+    private int getPageIndex(String author) throws IOException{
         Call<JsonElement> call = wikiQuoteService.getPageFromTitle(author);
         JsonObject response = (JsonObject) call.execute().body();
 
         int index = Utils.extractPageIndex(response);
-
-        if (index == -1){
-            throw new MissingAuthorException();
-        }
 
         return index;
     }

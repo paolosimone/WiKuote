@@ -1,16 +1,12 @@
-package com.forfun.paolosimone.wikuote.view;
+package com.forfun.paolosimone.wikuote.adapter;
 
 import android.content.Context;
-import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.model.Quote;
-
-import java.util.ArrayList;
 
 /**
  * Created by Paolo Simone on 24/03/2016.

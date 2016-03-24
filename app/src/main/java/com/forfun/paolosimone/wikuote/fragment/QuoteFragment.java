@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.model.Quote;
-import com.forfun.paolosimone.wikuote.view.QuotePagerAdapter;
+import com.forfun.paolosimone.wikuote.adapter.QuotePagerAdapter;
 
 import java.util.ArrayList;
 
@@ -19,12 +19,20 @@ import java.util.ArrayList;
  */
 public class QuoteFragment extends Fragment {
 
-    protected final static String QUOTES_TAG = "quotes";
-    protected final static String INDEX_TAG = "index";
+    protected final static String QUOTES = "quotes";
+    protected final static String INDEX = "index";
 
     protected ViewPager quotePager;
     protected QuotePagerAdapter quotePagerAdapter;
     private Integer restoredIndex;
+
+    public static QuoteFragment newInstanceWithQuotes(ArrayList<Quote> quotes){
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(QUOTES, quotes);
+        QuoteFragment qf = new QuoteFragment();
+        qf.setArguments(args);
+        return qf;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,9 +42,12 @@ public class QuoteFragment extends Fragment {
         quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
         quotePagerAdapter = new QuotePagerAdapter(getActivity());
 
+        ArrayList<Quote> quotes = getArguments().getParcelableArrayList(QUOTES);
+        if (quotes!=null) quotePagerAdapter.setQuotes(quotes);
+
         if(savedInstanceState!=null){
-            restoredIndex = savedInstanceState.getInt(INDEX_TAG);
-            ArrayList<Quote> quotes = savedInstanceState.getParcelableArrayList(QUOTES_TAG);
+            restoredIndex = savedInstanceState.getInt(INDEX);
+            quotes = savedInstanceState.getParcelableArrayList(QUOTES);
             quotePagerAdapter.setQuotes(quotes);
         }
 
@@ -66,8 +77,7 @@ public class QuoteFragment extends Fragment {
         ArrayList<Quote> quotes = quotePagerAdapter.getQuotes();
         int index = quotePager.getCurrentItem();
 
-        state.putParcelableArrayList(QUOTES_TAG, new ArrayList<>(quotes));
-        state.putInt(INDEX_TAG, index);
+        state.putParcelableArrayList(QUOTES, new ArrayList<>(quotes));
+        state.putInt(INDEX, index);
     }
-
 }
