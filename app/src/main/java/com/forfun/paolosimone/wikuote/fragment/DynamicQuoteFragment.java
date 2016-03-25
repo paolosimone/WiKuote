@@ -3,14 +3,12 @@ package com.forfun.paolosimone.wikuote.fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.api.QuoteProvider;
@@ -189,7 +187,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
-                Quote error = new Quote(getActivity().getString(R.string.generic_error),"");
+                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),"");
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }

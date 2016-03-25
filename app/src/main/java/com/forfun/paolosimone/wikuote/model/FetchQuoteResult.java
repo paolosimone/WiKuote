@@ -19,22 +19,22 @@ public class FetchQuoteResult {
     private final Quote quote;
 
     public static FetchQuoteResult success(Quote quote, Context context){
-        String message = context.getString(R.string.fetch_success);
+        String message = context.getString(R.string.msg_fetch_success);
         return new FetchQuoteResult(SUCCESS,message,quote);
     }
 
     public static FetchQuoteResult error(Context context){
-        String message = context.getString(R.string.generic_error);
+        String message = context.getString(R.string.msg_generic_error);
         return new FetchQuoteResult(GENERIC_ERROR,message,null);
     }
 
     public static FetchQuoteResult missingAuthor(Context context){
-        String message = context.getString(R.string.missing_author);
+        String message = context.getString(R.string.msg_missing_author);
         return new FetchQuoteResult(MISSING_AUTHOR,message,null);
     }
 
     public static FetchQuoteResult networkError(Context context){
-        String message = context.getString(R.string.network_error);
+        String message = context.getString(R.string.msg_network_error);
         return new FetchQuoteResult(NETWORK_ERROR,message,null);
     }
 

@@ -36,6 +36,7 @@ public class SearchFragment extends Fragment implements Titled{
     private boolean isFirstStart;
     private boolean isAttached = false;
 
+
     public static SearchFragment newInstance(String title, String query){
         Bundle args = new Bundle();
         args.putString(TITLE, title);
@@ -146,7 +147,7 @@ public class SearchFragment extends Fragment implements Titled{
                 // TODO empty result
             }
             else {
-                Toast.makeText(getActivity(),R.string.generic_error,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),R.string.msg_generic_error,Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -17,7 +17,7 @@
             android:id="@+id/quote_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/initializing"
+            android:text="@string/msg_initializing"
             android:layout_centerInParent="true"/>
 
         <TextView

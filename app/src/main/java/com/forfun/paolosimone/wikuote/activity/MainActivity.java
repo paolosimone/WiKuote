@@ -1,10 +1,15 @@
 package com.forfun.paolosimone.wikuote.activity;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
@@ -12,13 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.forfun.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.fragment.SearchFragment;
 import com.forfun.paolosimone.wikuote.fragment.Titled;
-import com.forfun.paolosimone.wikuote.model.Subscription;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchItemCallback{
 
@@ -27,15 +28,24 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     private boolean isFirstStart;
     private Fragment contentFragment;
 
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle drawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        isFirstStart = savedInstanceState == null;
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) findViewById((R.id.navView));
+        setupDrawerContent(navigationView);
+        drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer.addDrawerListener(drawerToggle);
 
+        isFirstStart = savedInstanceState == null;
         if(!isFirstStart){
             contentFragment = getSupportFragmentManager().getFragment(savedInstanceState,CONTENT);
             replaceContent(contentFragment);
@@ -54,8 +64,15 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public void onStart(){
         super.onStart();
+
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState){
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
         if(isFirstStart) {
-            setupQuoteFragment("Albert Einstein");
+            WiKuoteNavUtils.openQuoteFragment(this, "Albert Einstein");
         }
     }
 
@@ -73,18 +90,33 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig){
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
+        if (drawerToggle.onOptionsItemSelected(item)){
+            return true;
+        }
+
+        switch (item.getItemId()){
+            case android.R.id.home:
+                drawer.openDrawer(GravityCompat.START);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
     public void onItemClicked(String author) {
-        // TODO distinguish between search and addSubscripion (using fragment Title)
-        setupQuoteFragment(author);
+        // TODO distinguish between search and addSubscripion (using fragment Title + WiKuoteNavUtils)
+        WiKuoteNavUtils.openQuoteFragment(this, author);
     }
 
-    private void replaceContent(Fragment contentFragment){
+    protected void replaceContent(Fragment contentFragment){
         this.contentFragment = contentFragment;
         getSupportFragmentManager()
                 .beginTransaction()
@@ -95,21 +127,42 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 ((Titled) contentFragment).getTitle(this) :
                 getString(R.string.app_name);
         setTitle(title);
+    }
 
+    private void setupDrawerContent(NavigationView navigationView){
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.nav_quote_fragment:
+                        WiKuoteNavUtils.openQuoteFragment(MainActivity.this, "Albert Einstein");
+                        break;
+                    case R.id.nav_add_sub_fragment:
+                        String title = getString(R.string.tab_search_author);
+                        WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, title, ""); //TODO open popup with search query
+                        break;
+                    default:
+                        WiKuoteNavUtils.openQuoteFragment(MainActivity.this, "Albert Einstein");
+                }
+                item.setChecked(true);
+                drawer.closeDrawers();
+                return true;
+            }
+        });
     }
 
     private void setupSearchView(Menu menu){
         final MenuItem searchItem = menu.findItem(R.id.action_search);
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (contentFragment instanceof SearchFragment) {
                     ((SearchFragment) contentFragment).setQuery(query);
                 } else {
-                    String title = getString(R.string.search_author);
-                    SearchFragment searchFragment = SearchFragment.newInstance(title,query);
-                    replaceContent(searchFragment);
+                    String title = getString(R.string.tab_search_author);
+                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, title, query);
                 }
                 searchView.clearFocus();
                 searchItem.collapseActionView();
@@ -121,13 +174,5 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 return false;
             }
         });
-    }
-
-    private void setupQuoteFragment(String author){
-        Subscription subscription = new Subscription(author,new ArrayList<String>());
-        subscription.addAuthor(author);
-
-        DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstance(subscription);
-        replaceContent(quoteFragment);
     }
 }

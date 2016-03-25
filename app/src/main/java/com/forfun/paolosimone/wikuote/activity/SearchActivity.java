@@ -23,7 +23,7 @@ public class SearchActivity extends AppCompatActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.search_fragment, searchFragment)
+                .replace(R.id.nav_add_sub_fragment, searchFragment)
                 .commit();
 
         currentSearch = getIntent().getStringExtra("search_author");
