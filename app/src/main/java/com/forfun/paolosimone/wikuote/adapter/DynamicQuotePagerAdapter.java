@@ -14,21 +14,27 @@ import com.forfun.paolosimone.wikuote.model.Quote;
 public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
 
     private Quote loadingQuote;
-    private View loadingPage;
+    private View placeholderPage;
 
     public DynamicQuotePagerAdapter(Context context){
         super(context);
-        this.loadingQuote = Quote.loading(context);
+        this.loadingQuote = new Quote(context.getString(R.string.loading),"");
     }
 
     public void addQuote(Quote quote){
         synchronized (quotes){
-            if (loadingPage!=null){
-                setupPage(loadingPage,quote);
-                loadingPage = null;
+            if (placeholderPage !=null){
+                setupPage(placeholderPage,quote);
+                placeholderPage = null;
             }
             quotes.add(quote);
             notifyDataSetChanged();
+        }
+    }
+
+    public void notifyErrorIfWaiting(Quote error){
+        if (placeholderPage !=null){
+            setupPage(placeholderPage,error);
         }
     }
 
@@ -46,7 +52,7 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         View page = LayoutInflater.from(getContext()).inflate(R.layout.quote_page,container,false);
 
         setupPage(page, loadingQuote);
-        loadingPage = page;
+        placeholderPage = page;
 
         container.addView(page);
         return page;

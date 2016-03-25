@@ -8,7 +8,6 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +15,16 @@ import android.view.View;
 import com.forfun.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.forfun.paolosimone.wikuote.R;
 import com.forfun.paolosimone.wikuote.fragment.SearchFragment;
+import com.forfun.paolosimone.wikuote.fragment.Titled;
+import com.forfun.paolosimone.wikuote.model.Subscription;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchItemCallback{
 
-    public static final String SEARCH_AUTHOR = "search_author";
-
     private static final String CONTENT = "content";
 
     private boolean isFirstStart;
-    private String currentContent;
     private Fragment contentFragment;
 
     @Override
@@ -39,8 +37,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         isFirstStart = savedInstanceState == null;
 
         if(!isFirstStart){
-            currentContent = savedInstanceState.getString(CONTENT);
-            contentFragment = getSupportFragmentManager().getFragment(savedInstanceState,currentContent);
+            contentFragment = getSupportFragmentManager().getFragment(savedInstanceState,CONTENT);
             replaceContent(contentFragment);
         }
 
@@ -78,20 +75,12 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-            //TODO move it in the quote fragment
-            if (contentFragment instanceof DynamicQuoteFragment){
-                ((DynamicQuoteFragment) contentFragment).refresh();
-            }
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onItemClicked(String author) {
-        // TODO distinguish between search and addSubscripion
+        // TODO distinguish between search and addSubscripion (using fragment Title)
         setupQuoteFragment(author);
     }
 
@@ -101,6 +90,12 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 .beginTransaction()
                 .replace(R.id.content_fragment, contentFragment)
                 .commit();
+
+        String title = (contentFragment instanceof Titled) ?
+                ((Titled) contentFragment).getTitle(this) :
+                getString(R.string.app_name);
+        setTitle(title);
+
     }
 
     private void setupSearchView(Menu menu){
@@ -112,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 if (contentFragment instanceof SearchFragment) {
                     ((SearchFragment) contentFragment).setQuery(query);
                 } else {
-                    SearchFragment searchFragment = SearchFragment.newInstance(query);
+                    String title = getString(R.string.search_author);
+                    SearchFragment searchFragment = SearchFragment.newInstance(title,query);
                     replaceContent(searchFragment);
                 }
                 searchView.clearFocus();
@@ -128,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     }
 
     private void setupQuoteFragment(String author){
-        ArrayList<String> authors = new ArrayList<>();
-        authors.add(author);
+        Subscription subscription = new Subscription(author,new ArrayList<String>());
+        subscription.addAuthor(author);
 
-        DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstanceWithAuthors(authors);
+        DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstance(subscription);
         replaceContent(quoteFragment);
     }
 }

@@ -26,7 +26,7 @@ public class SearchActivity extends AppCompatActivity {
                 .replace(R.id.search_fragment, searchFragment)
                 .commit();
 
-        currentSearch = getIntent().getStringExtra(MainActivity.SEARCH_AUTHOR);
+        currentSearch = getIntent().getStringExtra("search_author");
     }
 
     @Override

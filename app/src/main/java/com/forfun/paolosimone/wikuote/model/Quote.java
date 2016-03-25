@@ -15,12 +15,6 @@ public class Quote implements Parcelable{
     String text;
     String author;
 
-    public static Quote loading(Context context){
-        return new Quote(context.getString(R.string.loading),"");
-    }
-
-    public Quote () {}
-
     public Quote(String quote, String author) {
         if(quote==null || author==null){
             throw new IllegalArgumentException("The quote and author can't be null");

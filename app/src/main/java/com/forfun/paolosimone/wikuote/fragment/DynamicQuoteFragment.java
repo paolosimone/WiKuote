@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -15,6 +18,7 @@ import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.forfun.paolosimone.wikuote.model.Quote;
 import com.forfun.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
+import com.forfun.paolosimone.wikuote.model.Subscription;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,12 +30,9 @@ import java.util.Random;
  */
 public class DynamicQuoteFragment extends QuoteFragment {
 
-    protected final static String AUTHORS = "authors";
-
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
 
-    private ArrayList<String> authors;
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
 
@@ -41,9 +42,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
     public DynamicQuoteFragment() {}
 
-    public static DynamicQuoteFragment newInstanceWithAuthors(ArrayList<String> authors){
+    public static DynamicQuoteFragment newInstance(Subscription subscription){
         Bundle args = new Bundle();
-        args.putStringArrayList(AUTHORS, authors);
+        args.putParcelable(SUBSCRIPTION, subscription);
         DynamicQuoteFragment dqf = new DynamicQuoteFragment();
         dqf.setArguments(args);
         return dqf;
@@ -52,10 +53,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //TODO add refresh action item
-        authors = getArguments().getStringArrayList(AUTHORS);
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -63,20 +63,13 @@ public class DynamicQuoteFragment extends QuoteFragment {
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
         quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
+        quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
+        quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
 
-        isFirstStart = savedInstanceState == null;
-
-        if(!isFirstStart){
-            authors = savedInstanceState.getStringArrayList(AUTHORS);
-            ArrayList<Quote> quotes = savedInstanceState.getParcelableArrayList(QUOTES);
-            quotePagerAdapter.setQuotes(quotes);
-            quotePager.setAdapter(quotePagerAdapter);
-        }
-
+        quotePager.setAdapter(quotePagerAdapter);
         quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
             @Override
             public void onPageSelected(int position) {
@@ -84,10 +77,17 @@ public class DynamicQuoteFragment extends QuoteFragment {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {
-            }
+            public void onPageScrollStateChanged(int state) {}
         });
+
+        isFirstStart = savedInstanceState == null;
+
         return  view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.menu_dynamic_quote, menu);
     }
 
     @Override
@@ -97,15 +97,20 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state){
-        super.onSaveInstanceState(state);
-        state.putStringArrayList(AUTHORS, authors);
-    }
-
-    @Override
     public void onDestroy(){
         stopFetching();
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch (item.getItemId()){
+            case R.id.action_refresh:
+                refresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     public void refresh(){
@@ -114,21 +119,17 @@ public class DynamicQuoteFragment extends QuoteFragment {
         onQuoteChange(0);
     }
 
-    public void changeAuthors(ArrayList<String> authors){
-        if (authors==null || authors.isEmpty()){
-            throw new IllegalArgumentException("Authors can't be null or empty");
-        }
-        this.authors = authors;
-
-        boolean isAttached = getActivity()!= null;
-        if (isAttached) refresh();
+    @Override
+    public void setSubscription(Subscription subscription) {
+        super.setSubscription(subscription);
+        if (getActivity()!= null) refresh();
     }
 
     private void onQuoteChange(int index){
         int remaining = quotePagerAdapter.getQuotesNumber()+currentTasks.size()-index;
-        int nedeed = 1+PREFETCH_QUOTES;
-        if (remaining<nedeed){
-            for (int i=0; i<nedeed-remaining; i++){
+        int needed = 1+PREFETCH_QUOTES;
+        if (remaining<needed){
+            for (int i=0; i<needed-remaining; i++){
                 newQuote();
             }
         }
@@ -141,9 +142,12 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     private void newQuote(){
+        ArrayList<String> authors = getSubscription().getAuthors();
+
         if(authors==null || authors.isEmpty()){
             return;
         }
+
         Random rand = new Random();
         String author = authors.get(rand.nextInt(authors.size()));
         currentTasks.add(new FetchQuoteTask().execute(author));
@@ -185,7 +189,8 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
-                Toast.makeText(getActivity(),R.string.generic_error,Toast.LENGTH_SHORT).show();
+                Quote error = new Quote(getActivity().getString(R.string.generic_error),"");
+                quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }
     }

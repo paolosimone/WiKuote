@@ -1,12 +1,15 @@
 <resources>
     <string name="app_name">WiKuote</string>
+    <string name="search_author">Search Author</string>
+    <string name="add_subscription">New Subscription</string>
+    
     <string name="action_settings">Settings</string>
     <string name="action_refresh">New Quote</string>
     <string name="action_search">Search</string>
 
     <string name="swipe_tip">Swipe to explore!</string>
-    <string name="quotelist_end">End reached</string>
     <string name="loading">Loading...</string>
+    <string name="initializing">Initializing...</string>
 
     <string name="fetch_success">The quote has been retrieved successfully!</string>
     <string name="generic_error">Oops... Something went wrong!</string>

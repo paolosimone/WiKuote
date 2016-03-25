@@ -1,6 +1,7 @@
 package com.forfun.paolosimone.wikuote.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.adapter.SuggestionsAdapter;
+import com.forfun.paolosimone.wikuote.adapter.SearchAuthorAdapter;
 import com.forfun.paolosimone.wikuote.api.QuoteProvider;
 import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
 
@@ -22,19 +23,22 @@ import java.util.ArrayList;
 /**
  * Created by Paolo Simone on 24/03/2016.
  */
-public class SearchFragment extends Fragment{
+public class SearchFragment extends Fragment implements Titled{
 
     private static final String QUERY = "query";
+    private static final String TITLE = "title";
 
     private QuoteProvider quoteProvider;
-    private SuggestionsAdapter suggestionsAdapter;
+    private SearchAuthorAdapter searchAuthorAdapter;
     private String query;
 
+    private String title;
     private boolean isFirstStart;
     private boolean isAttached = false;
 
-    public static SearchFragment newInstance(String query){
+    public static SearchFragment newInstance(String title, String query){
         Bundle args = new Bundle();
+        args.putString(TITLE, title);
         args.putString(QUERY, query);
         SearchFragment sf = new SearchFragment();
         sf.setArguments(args);
@@ -45,7 +49,16 @@ public class SearchFragment extends Fragment{
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         quoteProvider = WikiQuoteProvider.getInstance();
-        query = getArguments().getString(QUERY);
+
+        isFirstStart = savedInstanceState == null;
+        if (isFirstStart){
+            title = getArguments().getString(TITLE);
+            query = getArguments().getString(QUERY);
+        }
+        else {
+            title = savedInstanceState.getString(TITLE);
+            query = savedInstanceState.getString(QUERY);
+        }
     }
 
     @Override
@@ -53,11 +66,9 @@ public class SearchFragment extends Fragment{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        isFirstStart = savedInstanceState == null;
-
         ListView listView = (ListView) view.findViewById(R.id.search_list);
-        suggestionsAdapter = new SuggestionsAdapter(getActivity());
-        listView.setAdapter(suggestionsAdapter);
+        searchAuthorAdapter = new SearchAuthorAdapter(getActivity());
+        listView.setAdapter(searchAuthorAdapter);
 
         return view;
     }
@@ -72,7 +83,7 @@ public class SearchFragment extends Fragment{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((SearchItemCallback) activity).onItemClicked(suggestionsAdapter.getItem(position));
+                ((SearchItemCallback) activity).onItemClicked(searchAuthorAdapter.getItem(position));
             }
         });
     }
@@ -80,7 +91,22 @@ public class SearchFragment extends Fragment{
     @Override
     public void onStart(){
         super.onStart();
-        if (isFirstStart) submitQuery();
+        submitQuery();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putString(QUERY,query);
+        state.putString(TITLE,title);
+    }
+
+    @Override
+    public String getTitle(Context context){
+        if (title==null){
+            title = getArguments().getString(TITLE);
+        }
+        return title;
     }
 
     public void setQuery(String query){
@@ -116,7 +142,8 @@ public class SearchFragment extends Fragment{
         @Override
         protected void onPostExecute(ArrayList<String> result){
             if (result!=null){
-                suggestionsAdapter.replaceSuggestions(result);
+                searchAuthorAdapter.replaceSuggestions(result);
+                // TODO empty result
             }
             else {
                 Toast.makeText(getActivity(),R.string.generic_error,Toast.LENGTH_SHORT).show();

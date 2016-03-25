@@ -2,6 +2,7 @@ package com.forfun.paolosimone.wikuote.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class QuotePagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         if (getCount()==0){
-            // TODO placeholder in case of error
+            // TODO add placeholder here in case of error
         }
 
         View page = LayoutInflater.from(context).inflate(R.layout.quote_page, container, false);

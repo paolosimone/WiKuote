@@ -11,9 +11,9 @@ import java.util.ArrayList;
 /**
  * Created by Paolo Simone on 24/03/2016.
  */
-public class SuggestionsAdapter extends ArrayAdapter<String> {
+public class SearchAuthorAdapter extends ArrayAdapter<String> {
 
-    public SuggestionsAdapter(Context context){
+    public SearchAuthorAdapter(Context context){
         super(context,0, new ArrayList<String>());
     }
 
