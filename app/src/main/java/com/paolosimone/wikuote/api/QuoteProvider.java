@@ -1,6 +1,6 @@
-package com.forfun.paolosimone.wikuote.api;
+package com.paolosimone.wikuote.api;
 
-import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 
 import java.io.IOException;
 import java.util.ArrayList;

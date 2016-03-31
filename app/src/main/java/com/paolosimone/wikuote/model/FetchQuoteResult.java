@@ -1,8 +1,8 @@
-package com.forfun.paolosimone.wikuote.model;
+package com.paolosimone.wikuote.model;
 
 import android.content.Context;
 
-import com.forfun.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.R;
 
 /**
  * Created by Paolo Simone on 22/03/2016.

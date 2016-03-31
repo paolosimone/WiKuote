@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,13 +10,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.api.QuoteProvider;
-import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
-import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
-import com.forfun.paolosimone.wikuote.model.Quote;
-import com.forfun.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
-import com.forfun.paolosimone.wikuote.model.Subscription;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.api.QuoteProvider;
+import com.paolosimone.wikuote.api.WikiQuoteProvider;
+import com.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Quote;
+import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,9 +40,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
     public DynamicQuoteFragment() {}
 
-    public static DynamicQuoteFragment newInstance(Subscription subscription){
+    public static DynamicQuoteFragment newInstance(Category category){
         Bundle args = new Bundle();
-        args.putParcelable(SUBSCRIPTION, subscription);
+        args.putParcelable(SUBSCRIPTION, category);
         DynamicQuoteFragment dqf = new DynamicQuoteFragment();
         dqf.setArguments(args);
         return dqf;
@@ -118,8 +118,8 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     @Override
-    public void setSubscription(Subscription subscription) {
-        super.setSubscription(subscription);
+    public void setCategory(Category category) {
+        super.setCategory(category);
         if (getActivity()!= null) refresh();
     }
 
@@ -140,7 +140,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     private void newQuote(){
-        ArrayList<String> authors = getSubscription().getAuthors();
+        ArrayList<String> authors = getCategory().getAuthors();
 
         if(authors==null || authors.isEmpty()){
             return;

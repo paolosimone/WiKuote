@@ -1,10 +1,10 @@
-package com.forfun.paolosimone.wikuote.activity;
+package com.paolosimone.wikuote.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.fragment.SearchFragment;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.fragment.SearchFragment;
 
 /**
  * Created by Paolo Simone on 24/03/2016.

@@ -1,12 +1,12 @@
-package com.forfun.paolosimone.wikuote.adapter;
+package com.paolosimone.wikuote.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.model.Quote;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.model.Quote;
 
 /**
  * Created by Paolo Simone on 24/03/2016.

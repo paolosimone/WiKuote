@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.activity;
+package com.paolosimone.wikuote.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -17,9 +17,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.fragment.SearchFragment;
-import com.forfun.paolosimone.wikuote.fragment.Titled;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.fragment.SearchFragment;
+import com.paolosimone.wikuote.fragment.Titled;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchItemCallback{
 

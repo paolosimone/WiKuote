@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.model;
+package com.paolosimone.wikuote.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -8,12 +8,12 @@ import java.util.ArrayList;
 /**
  * Created by Paolo Simone on 25/03/2016.
  */
-public class Subscription implements Parcelable {
+public class Category implements Parcelable {
 
     String title;
     ArrayList<String> authors;
 
-    public Subscription(String title, ArrayList<String> authors) {
+    public Category(String title, ArrayList<String> authors) {
         if(title==null || authors==null){
             throw new IllegalArgumentException("The title and author can't be null");
         }
@@ -21,7 +21,7 @@ public class Subscription implements Parcelable {
         this.authors = authors;
     }
 
-    protected Subscription(Parcel in) {
+    protected Category(Parcel in) {
         title = in.readString();
         authors = new ArrayList<>();
         in.readStringList(authors);
@@ -50,15 +50,15 @@ public class Subscription implements Parcelable {
         dest.writeStringList(authors);
     }
 
-    public static final Creator<Subscription> CREATOR = new Creator<Subscription>() {
+    public static final Creator<Category> CREATOR = new Creator<Category>() {
         @Override
-        public Subscription createFromParcel(Parcel in) {
-            return new Subscription(in);
+        public Category createFromParcel(Parcel in) {
+            return new Category(in);
         }
 
         @Override
-        public Subscription[] newArray(int size) {
-            return new Subscription[size];
+        public Category[] newArray(int size) {
+            return new Category[size];
         }
     };
 }

@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,10 +12,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.adapter.SearchAuthorAdapter;
-import com.forfun.paolosimone.wikuote.api.QuoteProvider;
-import com.forfun.paolosimone.wikuote.api.WikiQuoteProvider;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.adapter.SearchAuthorAdapter;
+import com.paolosimone.wikuote.api.QuoteProvider;
+import com.paolosimone.wikuote.api.WikiQuoteProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;

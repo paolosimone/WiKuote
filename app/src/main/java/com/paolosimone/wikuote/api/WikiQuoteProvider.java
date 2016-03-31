@@ -1,8 +1,6 @@
-package com.forfun.paolosimone.wikuote.api;
+package com.paolosimone.wikuote.api;
 
-import android.util.Log;
-
-import com.forfun.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

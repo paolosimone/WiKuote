@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment;
 
 
 import android.content.Context;
@@ -9,10 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.forfun.paolosimone.wikuote.R;
-import com.forfun.paolosimone.wikuote.model.Quote;
-import com.forfun.paolosimone.wikuote.adapter.QuotePagerAdapter;
-import com.forfun.paolosimone.wikuote.model.Subscription;
+import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Quote;
+import com.paolosimone.wikuote.adapter.QuotePagerAdapter;
 
 import java.util.ArrayList;
 
@@ -21,19 +21,19 @@ import java.util.ArrayList;
  */
 public class QuoteFragment extends Fragment implements Titled{
 
-    protected final static String SUBSCRIPTION = "subscription";
+    protected final static String SUBSCRIPTION = "category";
     protected final static String QUOTES = "quotes";
     protected final static String INDEX = "index";
 
     protected ViewPager quotePager;
     private QuotePagerAdapter quotePagerAdapter;
-    private Subscription subscription;
+    private Category category;
     private Integer restoredIndex;
 
-    public static QuoteFragment newInstance(Subscription subscription, ArrayList<Quote> quotes){
+    public static QuoteFragment newInstance(Category category, ArrayList<Quote> quotes){
         Bundle args = new Bundle();
         args.putParcelableArrayList(QUOTES, quotes);
-        args.putParcelable(SUBSCRIPTION,subscription);
+        args.putParcelable(SUBSCRIPTION, category);
         QuoteFragment qf = new QuoteFragment();
         qf.setArguments(args);
         return qf;
@@ -48,9 +48,9 @@ public class QuoteFragment extends Fragment implements Titled{
         quotePagerAdapter = new QuotePagerAdapter(getActivity());
         quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
 
-        subscription = getArguments().getParcelable(SUBSCRIPTION);
+        category = getArguments().getParcelable(SUBSCRIPTION);
         if(savedInstanceState!=null){
-            subscription = savedInstanceState.getParcelable(SUBSCRIPTION);
+            category = savedInstanceState.getParcelable(SUBSCRIPTION);
             restoredIndex = savedInstanceState.getInt(INDEX);
         }
 
@@ -69,24 +69,24 @@ public class QuoteFragment extends Fragment implements Titled{
     @Override
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
-        state.putParcelable(SUBSCRIPTION,subscription);
+        state.putParcelable(SUBSCRIPTION, category);
         saveQuotes(state);
     }
 
-    public Subscription getSubscription() {
-        return subscription;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setSubscription(Subscription subscription) {
-        this.subscription = subscription;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     @Override
     public String getTitle(Context context){
-        if (subscription==null) {
-            subscription = getArguments().getParcelable(SUBSCRIPTION);
+        if (category ==null) {
+            category = getArguments().getParcelable(SUBSCRIPTION);
         }
-        return subscription.getTitle();
+        return category.getTitle();
     }
 
     protected ArrayList<Quote> retrieveQuotes(Bundle savedInstanceState){

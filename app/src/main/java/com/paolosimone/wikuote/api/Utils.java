@@ -1,6 +1,4 @@
-package com.forfun.paolosimone.wikuote.api;
-
-import android.util.Log;
+package com.paolosimone.wikuote.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;

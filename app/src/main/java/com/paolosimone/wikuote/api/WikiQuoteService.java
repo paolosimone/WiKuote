@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.api;
+package com.paolosimone.wikuote.api;
 
 import com.google.gson.JsonElement;
 

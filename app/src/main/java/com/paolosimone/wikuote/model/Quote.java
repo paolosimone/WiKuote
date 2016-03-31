@@ -1,11 +1,8 @@
-package com.forfun.paolosimone.wikuote.model;
+package com.paolosimone.wikuote.model;
 
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.forfun.paolosimone.wikuote.R;
 
 /**
  * Created by Paolo Simone on 21/03/2016.

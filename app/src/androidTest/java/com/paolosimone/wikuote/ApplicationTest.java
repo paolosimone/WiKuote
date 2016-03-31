@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote;
+package com.paolosimone.wikuote;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

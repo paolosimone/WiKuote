@@ -1,4 +1,4 @@
-package com.forfun.paolosimone.wikuote.adapter;
+package com.paolosimone.wikuote.adapter;
 
 import android.content.Context;
 import android.view.GestureDetector;
