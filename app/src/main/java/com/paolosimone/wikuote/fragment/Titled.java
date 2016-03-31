@@ -7,5 +7,5 @@ import android.content.Context;
  */
 public interface Titled {
 
-    public String getTitle(Context context);
+    String getTitle(Context context);
 }

@@ -3,40 +3,44 @@ package com.paolosimone.wikuote.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.activeandroid.Model;
+import com.activeandroid.annotation.Column;
+import com.activeandroid.annotation.Table;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paolo Simone on 25/03/2016.
  */
-public class Category implements Parcelable {
+@Table(name = "Categories")
+public class Category extends Model implements Parcelable {
 
+    @Column (name = "title", index = true, unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String title;
-    ArrayList<String> authors;
 
-    public Category(String title, ArrayList<String> authors) {
-        if(title==null || authors==null){
-            throw new IllegalArgumentException("The title and author can't be null");
-        }
+    private List<Author> authors;
+
+    public Category(){
+        super();
+    }
+
+    public Category(String title) {
+        super();
         this.title = title;
-        this.authors = authors;
     }
 
     protected Category(Parcel in) {
+        super();
         title = in.readString();
-        authors = new ArrayList<>();
-        in.readStringList(authors);
-    }
-
-    public ArrayList<String> getAuthors() {
-        return authors;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public void addAuthor(String author){
-        authors.add(author);
+    public List<Author> getAuthors(){
+        return getMany(Author.class, "category");
     }
 
     @Override
@@ -47,7 +51,6 @@ public class Category implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
-        dest.writeStringList(authors);
     }
 
     public static final Creator<Category> CREATOR = new Creator<Category>() {

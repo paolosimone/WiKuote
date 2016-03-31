@@ -21,19 +21,19 @@ import java.util.ArrayList;
  */
 public class QuoteFragment extends Fragment implements Titled{
 
-    protected final static String SUBSCRIPTION = "category";
+    protected final static String TITLE = "title";
     protected final static String QUOTES = "quotes";
     protected final static String INDEX = "index";
 
     protected ViewPager quotePager;
     private QuotePagerAdapter quotePagerAdapter;
-    private Category category;
+    private String title;
     private Integer restoredIndex;
 
-    public static QuoteFragment newInstance(Category category, ArrayList<Quote> quotes){
+    public static QuoteFragment newInstance(String title, ArrayList<Quote> quotes){
         Bundle args = new Bundle();
+        args.putString(TITLE,title);
         args.putParcelableArrayList(QUOTES, quotes);
-        args.putParcelable(SUBSCRIPTION, category);
         QuoteFragment qf = new QuoteFragment();
         qf.setArguments(args);
         return qf;
@@ -48,9 +48,8 @@ public class QuoteFragment extends Fragment implements Titled{
         quotePagerAdapter = new QuotePagerAdapter(getActivity());
         quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
 
-        category = getArguments().getParcelable(SUBSCRIPTION);
+        title = getArguments().getString(TITLE);
         if(savedInstanceState!=null){
-            category = savedInstanceState.getParcelable(SUBSCRIPTION);
             restoredIndex = savedInstanceState.getInt(INDEX);
         }
 
@@ -69,24 +68,12 @@ public class QuoteFragment extends Fragment implements Titled{
     @Override
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
-        state.putParcelable(SUBSCRIPTION, category);
         saveQuotes(state);
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
     }
 
     @Override
     public String getTitle(Context context){
-        if (category ==null) {
-            category = getArguments().getParcelable(SUBSCRIPTION);
-        }
-        return category.getTitle();
+        return title;
     }
 
     protected ArrayList<Quote> retrieveQuotes(Bundle savedInstanceState){

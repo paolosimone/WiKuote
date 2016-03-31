@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.model.Author;
 import com.paolosimone.wikuote.model.Quote;
 
 /**
@@ -18,7 +19,7 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
 
     public DynamicQuotePagerAdapter(Context context){
         super(context);
-        this.loadingQuote = new Quote(context.getString(R.string.msg_loading),"");
+        this.loadingQuote = new Quote(context.getString(R.string.msg_loading),new Author(""));
     }
 
     public void addQuote(Quote quote){

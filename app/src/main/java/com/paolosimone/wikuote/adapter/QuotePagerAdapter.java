@@ -72,6 +72,6 @@ public class QuotePagerAdapter extends PagerAdapter {
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text);
 
         quoteTextView.setText(quote.getText());
-        authorTextView.setText(quote.getAuthor());
+        authorTextView.setText(quote.getAuthor().getName());
     }
 }

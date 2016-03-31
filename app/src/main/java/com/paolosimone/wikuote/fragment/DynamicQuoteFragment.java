@@ -1,5 +1,6 @@
 package com.paolosimone.wikuote.fragment;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
@@ -14,6 +15,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.model.Author;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
@@ -21,6 +23,7 @@ import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -28,21 +31,34 @@ import java.util.Random;
  */
 public class DynamicQuoteFragment extends QuoteFragment {
 
+    protected final static String CATEGORY = "category";
+    protected final static String AUTHOR = "author";
+
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
+
+    private Category category;
+    private Author author;
 
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
 
     private ViewPager quotePager;
     private DynamicQuotePagerAdapter quotePagerAdapter;
-    private boolean isFirstStart;
 
     public DynamicQuoteFragment() {}
 
     public static DynamicQuoteFragment newInstance(Category category){
         Bundle args = new Bundle();
-        args.putParcelable(SUBSCRIPTION, category);
+        args.putParcelable(CATEGORY, category);
+        DynamicQuoteFragment dqf = new DynamicQuoteFragment();
+        dqf.setArguments(args);
+        return dqf;
+    }
+
+    public static DynamicQuoteFragment newInstance(Author author){
+        Bundle args = new Bundle();
+        args.putParcelable(AUTHOR, author);
         DynamicQuoteFragment dqf = new DynamicQuoteFragment();
         dqf.setArguments(args);
         return dqf;
@@ -53,6 +69,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
         super.onCreate(savedInstanceState);
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
+        retrieveInput(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
@@ -67,7 +84,8 @@ public class DynamicQuoteFragment extends QuoteFragment {
         quotePager.setAdapter(quotePagerAdapter);
         quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
@@ -75,10 +93,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
-
-        isFirstStart = savedInstanceState == null;
 
         return  view;
     }
@@ -91,7 +108,16 @@ public class DynamicQuoteFragment extends QuoteFragment {
     @Override
     public void onStart(){
         super.onStart();
-        if (isFirstStart) refresh();
+        if (quotePagerAdapter.getQuotes().isEmpty()) {
+            refresh();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state){
+        super.onSaveInstanceState(state);
+        state.putParcelable(CATEGORY, category);
+        state.putParcelable(AUTHOR, author);
     }
 
     @Override
@@ -111,16 +137,31 @@ public class DynamicQuoteFragment extends QuoteFragment {
         }
     }
 
+    public void setCategory(Category category) {
+        this.category = category;
+        this.author = null;
+        if (getActivity()!= null) refresh();
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+        this.category = null;
+        if (getActivity()!= null) refresh();
+    }
+
+    @Override
+    public String getTitle(Context context){
+        if (category==null && author==null) retrieveInput(null);
+
+        if (category!=null) return category.getTitle();
+        if (author!=null) return author.getName();
+        return context.getString(R.string.app_name);
+    }
+
     public void refresh(){
         quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
         quotePager.setAdapter(quotePagerAdapter);
         onQuoteChange(0);
-    }
-
-    @Override
-    public void setCategory(Category category) {
-        super.setCategory(category);
-        if (getActivity()!= null) refresh();
     }
 
     private void onQuoteChange(int index){
@@ -140,15 +181,20 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     private void newQuote(){
-        ArrayList<String> authors = getCategory().getAuthors();
+        Author newQuoteAuthor;
+        if (category!=null) {
+            List<Author> authors = category.getAuthors();
+            if (authors == null || authors.isEmpty()) {
+                return;
+            }
 
-        if(authors==null || authors.isEmpty()){
-            return;
+            Random rand = new Random();
+            newQuoteAuthor = authors.get(rand.nextInt(authors.size()));
         }
-
-        Random rand = new Random();
-        String author = authors.get(rand.nextInt(authors.size()));
-        currentTasks.add(new FetchQuoteTask().execute(author));
+        else {
+            newQuoteAuthor = author;
+        }
+        currentTasks.add(new FetchQuoteTask().execute(newQuoteAuthor.getName()));
     }
 
     @Override
@@ -161,6 +207,17 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
         state.putParcelableArrayList(QUOTES, new ArrayList<>(quotes.subList(start,end)));
         state.putInt(INDEX, index - start);
+    }
+
+    private void retrieveInput(Bundle savedInstanceState){
+        if (savedInstanceState==null){
+            category = getArguments().getParcelable(CATEGORY);
+            author = getArguments().getParcelable(AUTHOR);
+        }
+        else {
+            category = savedInstanceState.getParcelable(CATEGORY);
+            author = savedInstanceState.getParcelable(AUTHOR);
+        }
     }
 
     private class FetchQuoteTask extends AsyncTask<String, Void, Quote> {
@@ -176,7 +233,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 // do nothing
             }
 
-            return (newText!=null) ? new Quote(newText,authors[0]) : null;
+            return (newText!=null) ? new Quote(newText,new Author(authors[0])) : null;
         }
 
         @Override
@@ -187,7 +244,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
-                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),"");
+                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),new Author(""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }

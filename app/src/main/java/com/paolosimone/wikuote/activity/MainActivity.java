@@ -20,6 +20,7 @@ import android.view.View;
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.Titled;
+import com.paolosimone.wikuote.model.Author;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchItemCallback{
 
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
         if(isFirstStart) {
-            WiKuoteNavUtils.openQuoteFragment(this, "Albert Einstein");
+            WiKuoteNavUtils.openQuoteFragmentSingleAuthor(this, new Author("Albert Einstein"));
         }
     }
 
@@ -113,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public void onItemClicked(String author) {
         // TODO distinguish between search and addSubscripion (using fragment Title + WiKuoteNavUtils)
-        WiKuoteNavUtils.openQuoteFragment(this, author);
+        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(this, new Author(author));
     }
 
     protected void replaceContent(Fragment contentFragment){
@@ -135,14 +136,14 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             public boolean onNavigationItemSelected(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_quote_fragment:
-                        WiKuoteNavUtils.openQuoteFragment(MainActivity.this, "Albert Einstein");
+                        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(MainActivity.this, new Author("Albert Einstein"));
                         break;
                     case R.id.nav_add_sub_fragment:
                         String title = getString(R.string.tab_search_author);
                         WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, title, ""); //TODO open popup with search query
                         break;
                     default:
-                        WiKuoteNavUtils.openQuoteFragment(MainActivity.this, "Albert Einstein");
+                        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(MainActivity.this, new Author("Albert Einstein"));
                 }
                 item.setChecked(true);
                 drawer.closeDrawers();
