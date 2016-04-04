@@ -11,18 +11,29 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ExpandableListView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.Titled;
-import com.paolosimone.wikuote.model.Author;
+import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
-public class MainActivity extends AppCompatActivity implements SearchFragment.SearchItemCallback{
+import java.util.HashMap;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener {
 
     private static final String CONTENT = "content";
 
@@ -40,11 +51,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById((R.id.navView));
-        setupDrawerContent(navigationView);
-        drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawer.addDrawerListener(drawerToggle);
+        setupDrawer(toolbar);
 
         isFirstStart = savedInstanceState == null;
         if(!isFirstStart){
@@ -65,16 +72,16 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public void onStart(){
         super.onStart();
-
+        if(isFirstStart) {
+            //TODO random
+            WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page("Albert Einstein"));
+        }
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState){
         super.onPostCreate(savedInstanceState);
         drawerToggle.syncState();
-        if(isFirstStart) {
-            WiKuoteNavUtils.openQuoteFragmentSingleAuthor(this, new Author("Albert Einstein"));
-        }
     }
 
     @Override
@@ -112,9 +119,18 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     }
 
     @Override
-    public void onItemClicked(String author) {
-        // TODO distinguish between search and addSubscripion (using fragment Title + WiKuoteNavUtils)
-        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(this, new Author(author));
+    public void onPageClicked(String name) {
+        Integer task = ((SearchFragment) contentFragment).getTask();
+        switch (task){
+            case SearchFragment.SIMPLE_SEARCH_TASK:
+                WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page(name));
+                break;
+            case SearchFragment.ADD_PAGE_TASK:
+                //TODO if already present in the db -> msg + open quote fragment
+                WiKuoteNavUtils.openSelectCategoryDialog(this,new Page(name));
+                break;
+            default:
+        }
     }
 
     protected void replaceContent(Fragment contentFragment){
@@ -128,28 +144,53 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 ((Titled) contentFragment).getTitle(this) :
                 getString(R.string.app_name);
         setTitle(title);
+        drawer.closeDrawers();
     }
 
-    private void setupDrawerContent(NavigationView navigationView){
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+    private void setupDrawer(Toolbar toolbar){
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        updateCategoryList();
+
+        findViewById(R.id.nav_explore_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.nav_quote_fragment:
-                        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(MainActivity.this, new Author("Albert Einstein"));
-                        break;
-                    case R.id.nav_add_sub_fragment:
-                        String title = getString(R.string.tab_search_author);
-                        WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, title, ""); //TODO open popup with search query
-                        break;
-                    default:
-                        WiKuoteNavUtils.openQuoteFragmentSingleAuthor(MainActivity.this, new Author("Albert Einstein"));
-                }
-                item.setChecked(true);
-                drawer.closeDrawers();
-                return true;
+            public void onClick(View v) {
+                WiKuoteNavUtils.openQuoteFragmentSinglePage(MainActivity.this, new Page("Albert Einstein")); //TODO random quote fragment
             }
         });
+        findViewById(R.id.nav_add_source_fragment).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WiKuoteNavUtils.openAddPageDialog(MainActivity.this);
+            }
+        });
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
+        drawer.addDrawerListener(drawerToggle);
+    }
+
+    protected void updateCategoryList(){
+        ExpandableListView listView = (ExpandableListView) findViewById(R.id.nav_category);
+
+        List<Category> categories = WiKuoteDatabaseHelper.getInstance().getAllCategories();
+        if (categories.isEmpty()){
+            TextView msgEmpty = new TextView(this);
+            msgEmpty.setText(getString(R.string.msg_empty_categories));
+
+            ViewGroup parent = (ViewGroup) listView.getParent();
+            int index = parent.indexOfChild(listView);
+            parent.removeView(listView);
+            parent.addView(msgEmpty,index);
+            return;
+        }
+
+        //TODO async task
+        HashMap<Category, List<Page>> pagesByCategory = new HashMap<>();
+        for(Category c : categories){
+            pagesByCategory.put(c,c.getPages());
+        }
+
+        CategoriesDrawerAdapter adapter = new CategoriesDrawerAdapter(this,categories,pagesByCategory);
+        listView.setAdapter(adapter);
     }
 
     private void setupSearchView(Menu menu){
@@ -162,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 if (contentFragment instanceof SearchFragment) {
                     ((SearchFragment) contentFragment).setQuery(query);
                 } else {
-                    String title = getString(R.string.tab_search_author);
-                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, title, query);
+                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, SearchFragment.SIMPLE_SEARCH_TASK, query);
                 }
                 searchView.clearFocus();
                 searchItem.collapseActionView();

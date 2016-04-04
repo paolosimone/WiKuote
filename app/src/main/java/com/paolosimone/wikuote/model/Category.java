@@ -1,13 +1,15 @@
 package com.paolosimone.wikuote.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
+import com.activeandroid.query.Select;
+import com.paolosimone.wikuote.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +21,18 @@ public class Category extends Model implements Parcelable {
     @Column (name = "title", index = true, unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String title;
 
-    private List<Author> authors;
+    public static Category getDefault(Context context){
+        String defTitle = context.getString(R.string.category_default);
+        Category def = WiKuoteDatabaseHelper.getInstance().getCategoryFromTitle(defTitle);
+
+        if (def==null) {
+            def = new Category();
+            def.title = defTitle;
+            def.save();
+        }
+
+        return def;
+    }
 
     public Category(){
         super();
@@ -39,8 +52,8 @@ public class Category extends Model implements Parcelable {
         return title;
     }
 
-    public List<Author> getAuthors(){
-        return getMany(Author.class, "category");
+    public List<Page> getPages(){
+        return getMany(Page.class, "category");
     }
 
     @Override

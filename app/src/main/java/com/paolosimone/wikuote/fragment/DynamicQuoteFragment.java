@@ -15,7 +15,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
-import com.paolosimone.wikuote.model.Author;
+import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
@@ -32,13 +32,13 @@ import java.util.Random;
 public class DynamicQuoteFragment extends QuoteFragment {
 
     protected final static String CATEGORY = "category";
-    protected final static String AUTHOR = "author";
+    protected final static String PAGE = "page";
 
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
 
     private Category category;
-    private Author author;
+    private Page page;
 
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
@@ -56,9 +56,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
         return dqf;
     }
 
-    public static DynamicQuoteFragment newInstance(Author author){
+    public static DynamicQuoteFragment newInstance(Page page){
         Bundle args = new Bundle();
-        args.putParcelable(AUTHOR, author);
+        args.putParcelable(PAGE, page);
         DynamicQuoteFragment dqf = new DynamicQuoteFragment();
         dqf.setArguments(args);
         return dqf;
@@ -117,7 +117,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
         state.putParcelable(CATEGORY, category);
-        state.putParcelable(AUTHOR, author);
+        state.putParcelable(PAGE, page);
     }
 
     @Override
@@ -139,22 +139,22 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
     public void setCategory(Category category) {
         this.category = category;
-        this.author = null;
+        this.page = null;
         if (getActivity()!= null) refresh();
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setPage(Page page) {
+        this.page = page;
         this.category = null;
         if (getActivity()!= null) refresh();
     }
 
     @Override
     public String getTitle(Context context){
-        if (category==null && author==null) retrieveInput(null);
+        if (category==null && page ==null) retrieveInput(null);
 
         if (category!=null) return category.getTitle();
-        if (author!=null) return author.getName();
+        if (page !=null) return page.getName();
         return context.getString(R.string.app_name);
     }
 
@@ -181,20 +181,20 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     private void newQuote(){
-        Author newQuoteAuthor;
+        Page newQuotePage;
         if (category!=null) {
-            List<Author> authors = category.getAuthors();
-            if (authors == null || authors.isEmpty()) {
+            List<Page> pages = category.getPages();
+            if (pages == null || pages.isEmpty()) {
                 return;
             }
 
             Random rand = new Random();
-            newQuoteAuthor = authors.get(rand.nextInt(authors.size()));
+            newQuotePage = pages.get(rand.nextInt(pages.size()));
         }
         else {
-            newQuoteAuthor = author;
+            newQuotePage = page;
         }
-        currentTasks.add(new FetchQuoteTask().execute(newQuoteAuthor.getName()));
+        currentTasks.add(new FetchQuoteTask().execute(newQuotePage.getName()));
     }
 
     @Override
@@ -212,11 +212,11 @@ public class DynamicQuoteFragment extends QuoteFragment {
     private void retrieveInput(Bundle savedInstanceState){
         if (savedInstanceState==null){
             category = getArguments().getParcelable(CATEGORY);
-            author = getArguments().getParcelable(AUTHOR);
+            page = getArguments().getParcelable(PAGE);
         }
         else {
             category = savedInstanceState.getParcelable(CATEGORY);
-            author = savedInstanceState.getParcelable(AUTHOR);
+            page = savedInstanceState.getParcelable(PAGE);
         }
     }
 
@@ -233,7 +233,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 // do nothing
             }
 
-            return (newText!=null) ? new Quote(newText,new Author(authors[0])) : null;
+            return (newText!=null) ? new Quote(newText,new Page(authors[0])) : null;
         }
 
         @Override
@@ -244,7 +244,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
-                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),new Author(""));
+                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),new Page(""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }

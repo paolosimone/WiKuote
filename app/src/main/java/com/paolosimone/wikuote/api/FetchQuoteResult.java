@@ -1,8 +1,9 @@
-package com.paolosimone.wikuote.model;
+package com.paolosimone.wikuote.api;
 
 import android.content.Context;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.model.Quote;
 
 /**
  * Created by Paolo Simone on 22/03/2016.

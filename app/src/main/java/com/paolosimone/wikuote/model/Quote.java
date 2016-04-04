@@ -17,8 +17,8 @@ public class Quote extends Model implements Parcelable{
     @Column(name="text", unique=true, onUniqueConflict=Column.ConflictAction.IGNORE)
     String text;
 
-    @Column(name="author", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
-    Author author;
+    @Column(name="page", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    Page page;
 
     @Column(name="category", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.SET_NULL)
     Category category;
@@ -27,26 +27,26 @@ public class Quote extends Model implements Parcelable{
         super();
     }
 
-    public Quote(String quote, Author author, Category category) {
+    public Quote(String quote, Page page, Category category) {
         super();
         this.text = quote;
-        this.author = author;
+        this.page = page;
         this.category = category;
     }
 
-    public Quote(String quote, Author author){
-        this(quote, author, null);
+    public Quote(String quote, Page page){
+        this(quote, page, null);
     }
 
     protected Quote(Parcel in) {
         super();
         text = in.readString();
-        author = in.readParcelable(Author.class.getClassLoader());
+        page = in.readParcelable(Page.class.getClassLoader());
         category = in.readParcelable(Category.class.getClassLoader());
     }
 
-    public Author getAuthor() {
-        return author;
+    public Page getPage() {
+        return page;
     }
 
     public String getText() {
@@ -65,7 +65,7 @@ public class Quote extends Model implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(text);
-        dest.writeParcelable(author, flags);
+        dest.writeParcelable(page, flags);
         dest.writeParcelable(category,flags);
     }
 

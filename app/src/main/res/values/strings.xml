@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">WiKuote</string>
 
-    <!-- Fragment titles -->
+    <!-- Drawer -->
     <string name="tab_explore">Explore</string>
-    <string name="tab_search_author">Search Author</string>
-    <string name="tab_add_subscription">New Subscription</string>
+    <string name="tab_search_page">Search Page</string>
+    <string name="tab_add_page">New Source</string>
+    <string name="drawer_categories">Categories</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 
     <!-- Menu actions -->
     <string name="action_settings">Settings</string>
@@ -14,6 +17,15 @@
     <!-- Tips -->
     <string name="tip_swipe">Swipe to explore!</string>
 
+    <!-- Messages -->
+    <string name="msg_empty_categories">Nothing here... Yet!</string>
+
+    <!-- Dialog messages -->
+    <string name="msg_search_request">Insert page title</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_search">Search</string>
+    <string name="btn_ok">Ok</string>
+
     <!-- Configuration messages -->
     <string name="msg_loading">Loading...</string>
     <string name="msg_initializing">Initializing...</string>
@@ -21,9 +33,10 @@
     <!-- Fetch quote messages -->
     <string name="msg_fetch_success">The quote has been retrieved successfully!</string>
     <string name="msg_generic_error">Oops... Something went wrong!</string>
-    <string name="msg_missing_author">The requested author doesn\'t exists</string>
+    <string name="msg_missing_author">The requested page doesn\'t exists</string>
     <string name="msg_network_error">Unable to reach the service!\nCheck your connection and retry</string>
 
-    <string name="drawer_open">Open navigation drawer</string>
-    <string name="drawer_close">Close navigation drawer</string>
+    <!-- Model -->
+    <string name="category_default">Uncategorized</string>
+
 </resources>

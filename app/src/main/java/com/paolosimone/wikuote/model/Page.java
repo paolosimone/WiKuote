@@ -10,34 +10,38 @@ import com.activeandroid.annotation.Table;
 /**
  * Created by psimo on 29/03/2016.
  */
-@Table(name="Authors")
-public class Author extends Model implements Parcelable{
+@Table(name="Pages")
+public class Page extends Model implements Parcelable{
+
+    //TODO remoteId
 
     @Column(name = "name", index = true, unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     String name;
 
-    @Column(name = "category", index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.SET_NULL)
+    @Column(name = "category", notNull = true, index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     Category category;
 
-    @Column(name = "url", unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
+    //TODO description
+
+    @Column(name = "url", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     String url;
 
-    public Author(){
+    public Page(){
         super();
     }
 
-    public Author(String name, Category category, String url) {
+    public Page(String name, Category category, String url) {
         super();
         this.name = name;
         this.category = category;
         this.url = url;
     }
 
-    public Author(String name){
+    public Page(String name){
         this(name, null, null);
     }
 
-    protected Author(Parcel in) {
+    protected Page(Parcel in) {
         super();
         name = in.readString();
         category = in.readParcelable(Category.class.getClassLoader());
@@ -68,15 +72,15 @@ public class Author extends Model implements Parcelable{
         dest.writeString(url);
     }
 
-    public static final Creator<Author> CREATOR = new Creator<Author>() {
+    public static final Creator<Page> CREATOR = new Creator<Page>() {
         @Override
-        public Author createFromParcel(Parcel in) {
-            return new Author(in);
+        public Page createFromParcel(Parcel in) {
+            return new Page(in);
         }
 
         @Override
-        public Author[] newArray(int size) {
-            return new Author[size];
+        public Page[] newArray(int size) {
+            return new Page[size];
         }
     };
 }

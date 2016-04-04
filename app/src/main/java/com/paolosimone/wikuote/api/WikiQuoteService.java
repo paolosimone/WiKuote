@@ -14,7 +14,7 @@ public interface WikiQuoteService {
     @GET("api.php?action=opensearch&format=json&suggest")
     Call<JsonElement> getSuggestionsFromSearch(@Query("search") String search);
 
-    @GET("api.php?action=query&format=json")
+    @GET("api.php?action=query&format=json&redirects")
     Call<JsonElement> getPageFromTitle(@Query("titles") String titles);
 
     @GET("api.php?action=parse&format=json&prop=sections")

@@ -25,21 +25,24 @@ import java.util.ArrayList;
  */
 public class SearchFragment extends Fragment implements Titled{
 
+    public static final int SIMPLE_SEARCH_TASK = 0;
+    public static final int ADD_PAGE_TASK = 1;
+
     private static final String QUERY = "query";
-    private static final String TITLE = "title";
+    private static final String TASK = "task";
 
     private QuoteProvider quoteProvider;
     private SearchAuthorAdapter searchAuthorAdapter;
     private String query;
 
-    private String title;
+    private Integer task;
     private boolean isFirstStart;
     private boolean isAttached = false;
 
 
-    public static SearchFragment newInstance(String title, String query){
+    public static SearchFragment newInstance(int task, String query){
         Bundle args = new Bundle();
-        args.putString(TITLE, title);
+        args.putInt(TASK, task);
         args.putString(QUERY, query);
         SearchFragment sf = new SearchFragment();
         sf.setArguments(args);
@@ -53,11 +56,11 @@ public class SearchFragment extends Fragment implements Titled{
 
         isFirstStart = savedInstanceState == null;
         if (isFirstStart){
-            title = getArguments().getString(TITLE);
+            task = getArguments().getInt(TASK);
             query = getArguments().getString(QUERY);
         }
         else {
-            title = savedInstanceState.getString(TITLE);
+            task = savedInstanceState.getInt(TASK);
             query = savedInstanceState.getString(QUERY);
         }
     }
@@ -84,7 +87,8 @@ public class SearchFragment extends Fragment implements Titled{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((SearchItemCallback) activity).onItemClicked(searchAuthorAdapter.getItem(position));
+                //TODO handle redirect and page id
+                ((SearchPageListener) activity).onPageClicked(searchAuthorAdapter.getItem(position));
             }
         });
     }
@@ -98,16 +102,28 @@ public class SearchFragment extends Fragment implements Titled{
     @Override
     public void onSaveInstanceState(Bundle state) {
         super.onSaveInstanceState(state);
+        state.putInt(TASK, task);
         state.putString(QUERY,query);
-        state.putString(TITLE,title);
     }
 
     @Override
     public String getTitle(Context context){
-        if (title==null){
-            title = getArguments().getString(TITLE);
+        if (task == null){
+            task = getArguments().getInt(TASK);
         }
-        return title;
+
+        switch (task){
+            case SIMPLE_SEARCH_TASK:
+                return context.getString(R.string.tab_search_page);
+            case ADD_PAGE_TASK:
+                return context.getString(R.string.tab_add_page);
+            default:
+                return context.getString(R.string.tab_search_page);
+        }
+    }
+
+    public Integer getTask() {
+        return task;
     }
 
     public void setQuery(String query){
@@ -121,8 +137,9 @@ public class SearchFragment extends Fragment implements Titled{
         }
     }
 
-    public interface SearchItemCallback {
-        void onItemClicked(String author);
+    public interface SearchPageListener {
+        //TODO return page
+        void onPageClicked(String name);
     }
 
     private class FetchSearchTask extends AsyncTask<String, Void, ArrayList<String>> {
