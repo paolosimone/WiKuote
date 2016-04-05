@@ -26,6 +26,13 @@
         android:layout_height="wrap_content"
         android:text="@string/drawer_categories"/>
 
+    <TextView
+        android:id="@+id/nav_empty_categories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/msg_empty_categories"
+        android:visibility="invisible"/>
+
     <ExpandableListView
         android:id="@+id/nav_category"
         android:layout_width="match_parent"

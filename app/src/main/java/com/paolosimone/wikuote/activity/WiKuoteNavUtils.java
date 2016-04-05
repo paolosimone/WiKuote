@@ -3,6 +3,7 @@ package com.paolosimone.wikuote.activity;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.EditText;
 
@@ -75,8 +76,9 @@ public abstract class WiKuoteNavUtils {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Category def = Category.getDefault(activity);
-                WiKuoteDatabaseHelper.getInstance().movePageToCategory(page,def);
-                activity.updateCategoryList();
+                Log.d("UTILS", "Category before: " + page.getCategory());
+                WiKuoteDatabaseHelper.getInstance().movePageToCategory(page, def);
+                Log.d("UTILS", "Category after: " + page.getCategory());
                 dialog.dismiss();
                 openQuoteFragmentSinglePage(activity, page);
             }

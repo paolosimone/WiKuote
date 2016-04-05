@@ -18,7 +18,7 @@ public class Page extends Model implements Parcelable{
     @Column(name = "name", index = true, unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
     String name;
 
-    @Column(name = "category", notNull = true, index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    @Column(name = "category", notNull = true, onNullConflict = Column.ConflictAction.FAIL, index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     Category category;
 
     //TODO description

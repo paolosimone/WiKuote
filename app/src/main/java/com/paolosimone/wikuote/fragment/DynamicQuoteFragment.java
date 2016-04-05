@@ -4,14 +4,18 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.activity.MainActivity;
+import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
@@ -19,6 +23,7 @@ import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
+import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,6 +44,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
     private Category category;
     private Page page;
+    private boolean isUnsavedPage;
 
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
@@ -70,6 +76,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
         retrieveInput(savedInstanceState);
+        isUnsavedPage = page!=null && !WiKuoteDatabaseHelper.getInstance().existsPage(page);
         setHasOptionsMenu(true);
     }
 
@@ -103,6 +110,10 @@ public class DynamicQuoteFragment extends QuoteFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
         inflater.inflate(R.menu.menu_dynamic_quote, menu);
+        if(isUnsavedPage){
+            MenuItem saveDeleteItem = menu.findItem(R.id.action_save_delete_page);
+            saveDeleteItem.setTitle(getString(R.string.action_save_page));
+        }
     }
 
     @Override
@@ -132,9 +143,16 @@ public class DynamicQuoteFragment extends QuoteFragment {
             case R.id.action_refresh:
                 refresh();
                 return true;
+            case R.id.action_save_delete_page:
+                handleSaveDeletePage();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public Category getCategory() {
+        return category;
     }
 
     public void setCategory(Category category) {
@@ -156,6 +174,15 @@ public class DynamicQuoteFragment extends QuoteFragment {
         if (category!=null) return category.getTitle();
         if (page !=null) return page.getName();
         return context.getString(R.string.app_name);
+    }
+
+    @Override
+    public Quote getCurrentQuote(){
+        List<Quote> quotes = quotePagerAdapter.getQuotes();
+        if (quotes.isEmpty()){
+            return null;
+        }
+        return quotes.get(quotePager.getCurrentItem());
     }
 
     public void refresh(){
@@ -194,7 +221,30 @@ public class DynamicQuoteFragment extends QuoteFragment {
         else {
             newQuotePage = page;
         }
-        currentTasks.add(new FetchQuoteTask().execute(newQuotePage.getName()));
+        currentTasks.add(new FetchQuoteTask().execute(newQuotePage));
+    }
+
+    private void handleSaveDeletePage(){
+        Page currentPage = getCurrentQuote().getPage();
+        if (currentPage==null){
+            return;
+        }
+
+        if (isUnsavedPage) {
+            WiKuoteNavUtils.openSelectCategoryDialog((MainActivity) getActivity(),currentPage);
+        }
+        else {
+            WiKuoteDatabaseHelper db = WiKuoteDatabaseHelper.getInstance();
+            db.deletePage(currentPage);
+            Toast.makeText(getActivity(),R.string.msg_page_deleted,Toast.LENGTH_SHORT).show();
+
+            if (category==null || !db.existsCategory(category)){
+                WiKuoteNavUtils.openQuoteFragmentSinglePage((MainActivity) getActivity(), new Page("Albert Einstein")); //TODO random quote fragment
+            }
+            else {
+                refresh();
+            }
+        }
     }
 
     @Override
@@ -220,20 +270,21 @@ public class DynamicQuoteFragment extends QuoteFragment {
         }
     }
 
-    private class FetchQuoteTask extends AsyncTask<String, Void, Quote> {
+    private class FetchQuoteTask extends AsyncTask<Page, Void, Quote> {
 
         @Override
-        protected Quote doInBackground(String... authors) {
+        protected Quote doInBackground(Page... params) {
+            Page currentPage = params[0];
             String newText = null;
             try {
-                newText = quoteProvider.getRandomQuoteFor(authors[0]);
+                newText = quoteProvider.getRandomQuoteFor(currentPage.getName());
             } catch (MissingAuthorException e) {
                 stopFetching();
             } catch (IOException e) {
                 // do nothing
             }
 
-            return (newText!=null) ? new Quote(newText,new Page(authors[0])) : null;
+            return (newText!=null) ? new Quote(newText,currentPage) : null;
         }
 
         @Override
@@ -244,6 +295,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
+                //TODO better message mechanism or funny quotes db
                 Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),new Page(""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }

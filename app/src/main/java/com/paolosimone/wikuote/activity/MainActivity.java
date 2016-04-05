@@ -24,16 +24,19 @@ import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
+import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
+import com.paolosimone.wikuote.fragment.QuoteFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener {
+public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener, WiKuoteDatabaseHelper.DatabaseObserver {
 
     private static final String CONTENT = "content";
 
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             contentFragment = getSupportFragmentManager().getFragment(savedInstanceState,CONTENT);
             replaceContent(contentFragment);
         }
+
+        WiKuoteDatabaseHelper.getInstance().attach(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -88,6 +93,12 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     public void onSaveInstanceState(Bundle state){
         super.onSaveInstanceState(state);
         getSupportFragmentManager().putFragment(state, CONTENT, contentFragment);
+    }
+
+    @Override
+    public void onDestroy(){
+        WiKuoteDatabaseHelper.getInstance().detach(this);
+        super.onDestroy();
     }
 
     @Override
@@ -133,6 +144,11 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         }
     }
 
+    @Override
+    public void onDataChanged(){
+        updateCategoryList();
+    }
+
     protected void replaceContent(Fragment contentFragment){
         this.contentFragment = contentFragment;
         getSupportFragmentManager()
@@ -168,28 +184,30 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         drawer.addDrawerListener(drawerToggle);
     }
 
-    protected void updateCategoryList(){
+    private void updateCategoryList(){
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.nav_category);
 
         List<Category> categories = WiKuoteDatabaseHelper.getInstance().getAllCategories();
         if (categories.isEmpty()){
-            TextView msgEmpty = new TextView(this);
-            msgEmpty.setText(getString(R.string.msg_empty_categories));
-
-            ViewGroup parent = (ViewGroup) listView.getParent();
-            int index = parent.indexOfChild(listView);
-            parent.removeView(listView);
-            parent.addView(msgEmpty,index);
+            TextView msgEmpty = (TextView) findViewById(R.id.nav_empty_categories);
+            msgEmpty.setVisibility(View.VISIBLE);
+            listView.setVisibility(View.INVISIBLE);
             return;
         }
 
-        //TODO async task
+        if (listView.getVisibility()==View.INVISIBLE){
+            TextView msgEmpty = (TextView) findViewById(R.id.nav_empty_categories);
+            msgEmpty.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.VISIBLE);
+        }
+
+        //TODO async task?
         HashMap<Category, List<Page>> pagesByCategory = new HashMap<>();
         for(Category c : categories){
             pagesByCategory.put(c,c.getPages());
         }
 
-        CategoriesDrawerAdapter adapter = new CategoriesDrawerAdapter(this,categories,pagesByCategory);
+        CategoriesDrawerAdapter adapter = new CategoriesDrawerAdapter(this, categories, pagesByCategory);
         listView.setAdapter(adapter);
     }
 

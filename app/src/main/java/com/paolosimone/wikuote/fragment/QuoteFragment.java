@@ -6,20 +6,25 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.QuotePagerAdapter;
+import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.ArrayList;
 
 /**
  * Created by Paolo Simone on 24/03/2016.
  */
-public class QuoteFragment extends Fragment implements Titled{
+public abstract class QuoteFragment extends Fragment implements Titled{
 
     protected final static String TITLE = "title";
     protected final static String QUOTES = "quotes";
@@ -29,15 +34,6 @@ public class QuoteFragment extends Fragment implements Titled{
     private QuotePagerAdapter quotePagerAdapter;
     private String title;
     private Integer restoredIndex;
-
-    public static QuoteFragment newInstance(String title, ArrayList<Quote> quotes){
-        Bundle args = new Bundle();
-        args.putString(TITLE,title);
-        args.putParcelableArrayList(QUOTES, quotes);
-        QuoteFragment qf = new QuoteFragment();
-        qf.setArguments(args);
-        return qf;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +51,11 @@ public class QuoteFragment extends Fragment implements Titled{
 
         quotePager.setAdapter(quotePagerAdapter);
         return  view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.menu_dynamic_quote, menu);
     }
 
     @Override
@@ -76,13 +77,14 @@ public class QuoteFragment extends Fragment implements Titled{
         return title;
     }
 
+    public Quote getCurrentQuote(){
+        return quotePagerAdapter.getQuotes().get(quotePager.getCurrentItem());
+    }
+
     protected ArrayList<Quote> retrieveQuotes(Bundle savedInstanceState){
         if(savedInstanceState!=null){
             return savedInstanceState.getParcelableArrayList(QUOTES);
         }
-
-        ArrayList<Quote> quotes = getArguments().getParcelableArrayList(QUOTES);
-        if (quotes!=null) return quotes;
 
         return new ArrayList<>();
     }
