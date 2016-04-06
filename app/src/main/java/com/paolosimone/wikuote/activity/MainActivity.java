@@ -35,6 +35,8 @@ import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener, WiKuoteDatabaseHelper.DatabaseObserver {
 
@@ -201,8 +203,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             listView.setVisibility(View.VISIBLE);
         }
 
-        //TODO async task?
-        HashMap<Category, List<Page>> pagesByCategory = new HashMap<>();
+        SortedMap<Category, List<Page>> pagesByCategory = new TreeMap<>();
         for(Category c : categories){
             pagesByCategory.put(c,c.getPages());
         }

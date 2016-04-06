@@ -164,7 +164,7 @@ public class SearchFragment extends Fragment implements Titled{
                 // TODO empty result
             }
             else {
-                Toast.makeText(getActivity(),R.string.msg_generic_error,Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),R.string.err_generic,Toast.LENGTH_SHORT).show();
             }
         }
     }

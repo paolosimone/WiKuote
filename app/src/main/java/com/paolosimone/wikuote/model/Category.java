@@ -16,23 +16,10 @@ import java.util.List;
  * Created by Paolo Simone on 25/03/2016.
  */
 @Table(name = "Categories")
-public class Category extends Model implements Parcelable {
+public class Category extends Model implements Parcelable, Comparable<Category> {
 
     @Column (name = "title", index = true, unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String title;
-
-    public static Category getDefault(Context context){
-        String defTitle = context.getString(R.string.category_default);
-        Category def = WiKuoteDatabaseHelper.getInstance().getCategoryFromTitle(defTitle);
-
-        if (def==null) {
-            def = new Category();
-            def.title = defTitle;
-            def.save();
-        }
-
-        return def;
-    }
 
     public Category(){
         super();
@@ -77,4 +64,14 @@ public class Category extends Model implements Parcelable {
             return new Category[size];
         }
     };
+
+    @Override
+    public boolean equals(Object other){
+        return (other instanceof Category) && title.equals(((Category) other).title);
+    }
+
+    @Override
+    public int compareTo(Category another) {
+        return title.compareTo(another.title);
+    }
 }

@@ -25,17 +25,17 @@ public class FetchQuoteResult {
     }
 
     public static FetchQuoteResult error(Context context){
-        String message = context.getString(R.string.msg_generic_error);
+        String message = context.getString(R.string.err_generic);
         return new FetchQuoteResult(GENERIC_ERROR,message,null);
     }
 
     public static FetchQuoteResult missingAuthor(Context context){
-        String message = context.getString(R.string.msg_missing_author);
+        String message = context.getString(R.string.err_missing_author);
         return new FetchQuoteResult(MISSING_AUTHOR,message,null);
     }
 
     public static FetchQuoteResult networkError(Context context){
-        String message = context.getString(R.string.msg_network_error);
+        String message = context.getString(R.string.err_network);
         return new FetchQuoteResult(NETWORK_ERROR,message,null);
     }
 

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -231,9 +230,11 @@ public class DynamicQuoteFragment extends QuoteFragment {
         }
 
         if (isUnsavedPage) {
+            // Save page
             WiKuoteNavUtils.openSelectCategoryDialog((MainActivity) getActivity(),currentPage);
         }
         else {
+            // Delete page
             WiKuoteDatabaseHelper db = WiKuoteDatabaseHelper.getInstance();
             db.deletePage(currentPage);
             Toast.makeText(getActivity(),R.string.msg_page_deleted,Toast.LENGTH_SHORT).show();
@@ -296,7 +297,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
             }
             else {
                 //TODO better message mechanism or funny quotes db
-                Quote error = new Quote(getActivity().getString(R.string.msg_generic_error),new Page(""));
+                Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page(""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }

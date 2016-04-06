@@ -1,15 +1,19 @@
 package com.paolosimone.wikuote.activity;
 
 import android.content.DialogInterface;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
 import android.util.Log;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
+import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
@@ -64,32 +68,9 @@ public abstract class WiKuoteNavUtils {
         dialog.show();
     }
 
-    public static void openSelectCategoryDialog(final MainActivity activity, final Page page){
-        //TODO dialog fragment
-        String positive = activity.getString(R.string.btn_ok);
-        String negative = activity.getString(R.string.btn_cancel);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle("Select category for " + page.getName());
-        builder.setMessage("=> Uncategorized");
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Category def = Category.getDefault(activity);
-                Log.d("UTILS", "Category before: " + page.getCategory());
-                WiKuoteDatabaseHelper.getInstance().movePageToCategory(page, def);
-                Log.d("UTILS", "Category after: " + page.getCategory());
-                dialog.dismiss();
-                openQuoteFragmentSinglePage(activity, page);
-            }
-        });
-        builder.setNegativeButton(negative, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        builder.show();
+    public static void openSelectCategoryDialog(MainActivity activity, Page page) {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        SelectCategoryDialogFragment fragment = SelectCategoryDialogFragment.newInstance(page);
+        fragment.show(fm, SelectCategoryDialogFragment.TAG);
     }
 }

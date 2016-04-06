@@ -32,9 +32,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.SearchActivity"
-            android:parentActivityName=".activity.MainActivity"/>
-
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
