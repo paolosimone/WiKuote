@@ -1,5 +1,7 @@
 package com.paolosimone.wikuote.api;
 
+import android.util.Log;
+
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -8,8 +10,12 @@ import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -21,7 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class WikiQuoteProvider implements QuoteProvider{
 
-    public static final String BASE_URL = "http://en.wikiquote.org/w/";
+    public static final String BASE_URL = "https://en.m.wikiquote.org/";
+    public static final String RANDOM_URL = BASE_URL + "wiki/Special:Random";
 
     private static WikiQuoteProvider ourInstance = new WikiQuoteProvider();
     private Retrofit retrofit;
@@ -42,7 +49,7 @@ public class WikiQuoteProvider implements QuoteProvider{
 
     @Override
     public boolean isAvailableAuthor(String author) throws IOException {
-        return getPageIndex(author) != Utils.INVALID_INDEX;
+        return getPageIndex(author) != WikiQuoteUtils.INVALID_INDEX;
     }
 
     @Override
@@ -50,24 +57,44 @@ public class WikiQuoteProvider implements QuoteProvider{
         Call<JsonElement> call = wikiQuoteService.getSuggestionsFromSearch(query);
         JsonArray response = (JsonArray) call.execute().body();
 
-        return Utils.extractSuggestions(response);
+        return WikiQuoteUtils.extractSuggestions(response);
     }
 
     @Override
     public Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException {
         long pageId = getPageIndex(page.getName());
-        if (pageId == Utils.INVALID_INDEX) throw new MissingAuthorException();
+        if (pageId == WikiQuoteUtils.INVALID_INDEX) throw new MissingAuthorException();
 
         int sectionId = getRandomSection(pageId);
         String quoteText = getRandomQuoteFromSection(pageId, sectionId);
         return new Quote(quoteText,page);
     }
 
+    @Override
+    public Page getRandomPage() throws IOException {
+        URL randomUrl = new URL(RANDOM_URL);
+        HttpURLConnection conn = (HttpURLConnection) randomUrl.openConnection();
+        conn.setInstanceFollowRedirects(false);
+        URL redirectUrl = new URL(conn.getHeaderField("Location"));
+
+        String pageUrl = redirectUrl.toString();
+        int start = pageUrl.lastIndexOf("/wiki/") + "/wiki".length() + 1;
+        String pageName = pageUrl.substring(start);
+        Log.d("UTILS","PAGE_NAME "+pageName);
+        List<Page> matches = getSuggestedAuthors(pageName);
+
+        if (matches.isEmpty()) {
+            throw new IOException();
+        }
+
+        return matches.get(0);
+    }
+
     private long getPageIndex(String author) throws IOException{
         Call<JsonElement> call = wikiQuoteService.getPageFromTitle(author);
         JsonObject response = (JsonObject) call.execute().body();
 
-        long index = Utils.extractPageIndex(response);
+        long index = WikiQuoteUtils.extractPageIndex(response);
 
         return index;
     }
@@ -76,7 +103,7 @@ public class WikiQuoteProvider implements QuoteProvider{
         Call<JsonElement> call = wikiQuoteService.getTocFromPage(pageid);
         JsonObject response = (JsonObject) call.execute().body();
 
-        List<Integer> indexes = Utils.extractSectionIndexList(response);
+        List<Integer> indexes = WikiQuoteUtils.extractSectionIndexList(response);
 
 
         if (indexes.isEmpty()){
@@ -91,7 +118,7 @@ public class WikiQuoteProvider implements QuoteProvider{
         Call<JsonElement> call = wikiQuoteService.getSectionFrom(pageid, sectionid);
         JsonObject response = (JsonObject) call.execute().body();
 
-        List<String> quotes = Utils.extractQuoteList(response);
+        List<String> quotes = WikiQuoteUtils.extractQuoteList(response);
 
         if (quotes.isEmpty()){
             throw new IOException();

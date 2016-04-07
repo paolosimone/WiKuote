@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Paolo Simone on 20/03/2016.
  */
-public abstract class Utils {
+public abstract class WikiQuoteUtils {
 
     public static final int INVALID_INDEX = -1;
 

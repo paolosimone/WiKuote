@@ -37,6 +37,8 @@
 
     <!-- Configuration messages -->
     <string name="msg_loading">Loading...</string>
+    <string name="msg_loading_quote">Loading quotes...</string>
+    <string name="msg_loading_page">Exploring...</string>
     <string name="msg_initializing">Initializing...</string>
 
     <!-- Fetch quote messages -->

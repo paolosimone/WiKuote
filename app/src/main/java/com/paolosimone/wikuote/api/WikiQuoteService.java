@@ -2,6 +2,7 @@ package com.paolosimone.wikuote.api;
 
 import com.google.gson.JsonElement;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -11,15 +12,15 @@ import retrofit2.http.Query;
  */
 public interface WikiQuoteService {
 
-    @GET("api.php?action=opensearch&format=json&suggest&redirects=resolve")
+    @GET("w/api.php?action=opensearch&format=json&suggest&redirects=resolve")
     Call<JsonElement> getSuggestionsFromSearch(@Query("search") String search);
 
-    @GET("api.php?action=query&format=json&redirects")
+    @GET("w/api.php?action=query&format=json&redirects")
     Call<JsonElement> getPageFromTitle(@Query("titles") String titles);
 
-    @GET("api.php?action=parse&format=json&prop=sections")
+    @GET("w/api.php?action=parse&format=json&prop=sections")
     Call<JsonElement> getTocFromPage(@Query("pageid") long pageid);
 
-    @GET("api.php?action=parse&format=json&noimage")
+    @GET("w/api.php?action=parse&format=json&noimage")
     Call<JsonElement> getSectionFrom(@Query("pageid") long pageid,@Query("section") long section);
 }

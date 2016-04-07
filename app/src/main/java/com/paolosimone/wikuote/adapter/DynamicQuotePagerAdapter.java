@@ -19,7 +19,7 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
 
     public DynamicQuotePagerAdapter(Context context){
         super(context);
-        this.loadingQuote = new Quote(context.getString(R.string.msg_loading),new Page("","",""));
+        this.loadingQuote = new Quote(context.getString(R.string.msg_loading_quote),new Page("","",""));
     }
 
     public void addQuote(Quote quote){

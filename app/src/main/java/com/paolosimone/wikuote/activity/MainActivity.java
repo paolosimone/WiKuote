@@ -3,7 +3,6 @@ package com.paolosimone.wikuote.activity;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -11,35 +10,27 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
-import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
-import com.paolosimone.wikuote.fragment.QuoteFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
-import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener, WiKuoteDatabaseHelper.DatabaseObserver {
 
@@ -50,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle drawerToggle;
+    protected MenuItem refreshAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +75,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     public void onStart(){
         super.onStart();
         if(isFirstStart) {
-            //TODO random
-            WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page("Albert Einstein","",""));
+            WiKuoteNavUtils.openExploreFragment(this);
         }
     }
 
@@ -109,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        refreshAction = menu.findItem(R.id.action_refresh);
         setupSearchView(menu);
         return true;
     }
@@ -128,6 +120,9 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         switch (item.getItemId()){
             case android.R.id.home:
                 drawer.openDrawer(GravityCompat.START);
+                return true;
+            case R.id.action_refresh:
+                WiKuoteNavUtils.openExploreFragment(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -158,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         updateCategoryList();
     }
 
+    public Fragment getContentFragment() {
+        return contentFragment;
+    }
+
     protected void replaceContent(Fragment contentFragment){
         this.contentFragment = contentFragment;
         getSupportFragmentManager()
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         findViewById(R.id.nav_explore_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteFragmentSinglePage(MainActivity.this, new Page("Albert Einstein","","")); //TODO random quote fragment
+                WiKuoteNavUtils.openExploreFragment(MainActivity.this);
             }
         });
         findViewById(R.id.nav_add_source_fragment).setOnClickListener(new View.OnClickListener() {

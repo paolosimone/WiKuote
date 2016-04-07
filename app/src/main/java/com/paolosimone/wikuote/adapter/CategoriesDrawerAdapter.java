@@ -4,10 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
@@ -16,11 +13,8 @@ import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 
 /**
  * Created by Paolo Simone on 04/04/2016.
@@ -69,7 +63,7 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
         titleText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteFragment(activity, category);
+                WiKuoteNavUtils.openQuoteFragmentCategory(activity, category);
             }
         });
 

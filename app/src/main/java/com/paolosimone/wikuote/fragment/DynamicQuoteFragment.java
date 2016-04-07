@@ -139,9 +139,6 @@ public class DynamicQuoteFragment extends QuoteFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
         switch (item.getItemId()){
-            case R.id.action_refresh:
-                refresh();
-                return true;
             case R.id.action_save_delete_page:
                 handleSaveDeletePage();
                 return true;
@@ -240,7 +237,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
             Toast.makeText(getActivity(),R.string.msg_page_deleted,Toast.LENGTH_SHORT).show();
 
             if (category==null || !db.existsCategory(category)){
-                WiKuoteNavUtils.openQuoteFragmentSinglePage((MainActivity) getActivity(), new Page("Albert Einstein","","")); //TODO random quote fragment
+                WiKuoteNavUtils.openExploreFragment((MainActivity) getActivity());
             }
             else {
                 refresh();

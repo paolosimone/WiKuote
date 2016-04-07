@@ -16,6 +16,8 @@ public interface QuoteProvider {
 
     ArrayList<Page> getSuggestedAuthors(String query) throws IOException;
 
+    Page getRandomPage() throws  IOException;
+
     Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException;
 
 }
