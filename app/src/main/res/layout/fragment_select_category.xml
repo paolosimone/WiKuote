@@ -45,6 +45,7 @@
             android:layout_height="wrap_content"
             android:hint="@string/msg_new_category"
             android:inputType="text"
+            android:maxLength="@integer/max_category_title_lenght"
             android:imeOptions="actionDone"/>
 
     </LinearLayout>

@@ -19,6 +19,7 @@ import com.paolosimone.wikuote.model.Page;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 
 /**
@@ -30,10 +31,10 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
 
     private MainActivity activity;
     private List<Category> categories;
-    private SortedMap<Category, List<Page>> pagesByCategory;
+    private Map<Category, List<Page>> pagesByCategory;
 
     public CategoriesDrawerAdapter(MainActivity activity, List<Category> categories,
-                                   SortedMap<Category, List<Page>> pagesByCategory) {
+                                   Map<Category, List<Page>> pagesByCategory) {
         this.activity = activity;
         this.categories = categories;
         this.pagesByCategory = pagesByCategory;

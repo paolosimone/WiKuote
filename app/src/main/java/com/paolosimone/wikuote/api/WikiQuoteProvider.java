@@ -4,6 +4,8 @@ import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.model.Quote;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,32 +46,33 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public ArrayList<String> getSuggestedAuthors(String search) throws IOException {
-        Call<JsonElement> call = wikiQuoteService.getSuggestionsFromSearch(search);
+    public ArrayList<Page> getSuggestedAuthors(String query) throws IOException {
+        Call<JsonElement> call = wikiQuoteService.getSuggestionsFromSearch(query);
         JsonArray response = (JsonArray) call.execute().body();
 
         return Utils.extractSuggestions(response);
     }
 
     @Override
-    public String getRandomQuoteFor(String author) throws IOException, MissingAuthorException {
-        int pageid = getPageIndex(author);
-        if (pageid == Utils.INVALID_INDEX) throw new MissingAuthorException();
+    public Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException {
+        long pageId = getPageIndex(page.getName());
+        if (pageId == Utils.INVALID_INDEX) throw new MissingAuthorException();
 
-        int sectionid = getRandomSection(pageid);
-        return getRandomQuoteFromSection(pageid, sectionid);
+        int sectionId = getRandomSection(pageId);
+        String quoteText = getRandomQuoteFromSection(pageId, sectionId);
+        return new Quote(quoteText,page);
     }
 
-    private int getPageIndex(String author) throws IOException{
+    private long getPageIndex(String author) throws IOException{
         Call<JsonElement> call = wikiQuoteService.getPageFromTitle(author);
         JsonObject response = (JsonObject) call.execute().body();
 
-        int index = Utils.extractPageIndex(response);
+        long index = Utils.extractPageIndex(response);
 
         return index;
     }
 
-    private int getRandomSection(int pageid) throws IOException {
+    private int getRandomSection(long pageid) throws IOException {
         Call<JsonElement> call = wikiQuoteService.getTocFromPage(pageid);
         JsonObject response = (JsonObject) call.execute().body();
 
@@ -84,7 +87,7 @@ public class WikiQuoteProvider implements QuoteProvider{
         return indexes.get(rand.nextInt(indexes.size()));
     }
 
-    private String getRandomQuoteFromSection(int pageid, int sectionid) throws IOException {
+    private String getRandomQuoteFromSection(long pageid, int sectionid) throws IOException {
         Call<JsonElement> call = wikiQuoteService.getSectionFrom(pageid, sectionid);
         JsonObject response = (JsonObject) call.execute().body();
 

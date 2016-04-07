@@ -71,7 +71,7 @@ public class Category extends Model implements Parcelable, Comparable<Category> 
     }
 
     @Override
-    public int compareTo(Category another) {
-        return title.compareTo(another.title);
+    public int compareTo(Category other) {
+        return this.title.compareTo(other.title);
     }
 }

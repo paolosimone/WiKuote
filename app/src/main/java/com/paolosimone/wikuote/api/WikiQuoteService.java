@@ -11,15 +11,15 @@ import retrofit2.http.Query;
  */
 public interface WikiQuoteService {
 
-    @GET("api.php?action=opensearch&format=json&suggest")
+    @GET("api.php?action=opensearch&format=json&suggest&redirects=resolve")
     Call<JsonElement> getSuggestionsFromSearch(@Query("search") String search);
 
     @GET("api.php?action=query&format=json&redirects")
     Call<JsonElement> getPageFromTitle(@Query("titles") String titles);
 
     @GET("api.php?action=parse&format=json&prop=sections")
-    Call<JsonElement> getTocFromPage(@Query("pageid") int pageid);
+    Call<JsonElement> getTocFromPage(@Query("pageid") long pageid);
 
     @GET("api.php?action=parse&format=json&noimage")
-    Call<JsonElement> getSectionFrom(@Query("pageid") int pageid,@Query("section") int section);
+    Call<JsonElement> getSectionFrom(@Query("pageid") long pageid,@Query("section") long section);
 }

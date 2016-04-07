@@ -2,6 +2,7 @@ package com.paolosimone.wikuote.api;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.paolosimone.wikuote.model.Page;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +37,17 @@ public abstract class Utils {
         return result.substring(0,result.length()-1);
     }
 
-    public static ArrayList<String> extractSuggestions(JsonArray response){
-        ArrayList<String> result = new ArrayList<>();
+    public static ArrayList<Page> extractSuggestions(JsonArray response){
+        ArrayList<Page> result = new ArrayList<>();
         try {
-            JSONArray suggestions = new JSONArray(response.toString()).getJSONArray(1);
-            for (int i=0; i<suggestions.length(); i++){
-                result.add(suggestions.getString(i));
+            JSONArray names = new JSONArray(response.toString()).getJSONArray(1);
+            JSONArray descriptions = new JSONArray(response.toString()).getJSONArray(2);
+            JSONArray urls = new JSONArray(response.toString()).getJSONArray(3);
+            for (int i=0; i<names.length(); i++){
+                String name = names.getString(i);
+                String description = descriptions.getString(i);
+                String url = urls.getString(i);
+                result.add(new Page(name, description, url));
             }
         } catch (JSONException e) {
             // do nothing
@@ -49,8 +55,8 @@ public abstract class Utils {
         return result;
     }
 
-    public static int extractPageIndex(JsonObject response){
-        int index = INVALID_INDEX;
+    public static long extractPageIndex(JsonObject response){
+        long index = INVALID_INDEX;
         try {
             JSONObject pages = new JSONObject(response.toString())
                     .getJSONObject("query")
@@ -61,7 +67,7 @@ public abstract class Utils {
                 JSONObject page = pages.getJSONObject(ids.next());
 
                 if (!page.has("missing")){
-                    index = page.getInt("pageid");
+                    index = page.getLong("pageid");
                     break;
                 }
             }

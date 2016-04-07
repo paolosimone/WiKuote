@@ -30,6 +30,7 @@
     <string name="msg_add">Add</string>
     <string name="msg_new_category">New category</string>
     <string name="err_invalid_input">Invalid input</string>
+    <string name="err_existing_page">The page already exists!</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_search">Search</string>
     <string name="btn_ok">Ok</string>

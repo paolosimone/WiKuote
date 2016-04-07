@@ -13,38 +13,39 @@ import com.activeandroid.annotation.Table;
 @Table(name="Pages")
 public class Page extends Model implements Parcelable{
 
-    //TODO remoteId
-
-    @Column(name = "name", index = true, unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
+    @Column(name = "name", unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String name;
 
     @Column(name = "category", notNull = true, onNullConflict = Column.ConflictAction.FAIL, index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     Category category;
 
-    //TODO description
+    @Column(name = "description")
+    String description;
 
-    @Column(name = "url", unique = true, onUniqueConflict = Column.ConflictAction.IGNORE)
+    @Column(name = "url", unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String url;
 
     public Page(){
         super();
     }
 
-    public Page(String name, Category category, String url) {
+    public Page(String name, Category category, String description ,String url) {
         super();
         this.name = name;
         this.category = category;
+        this.description = description;
         this.url = url;
     }
 
-    public Page(String name){
-        this(name, null, null);
+    public Page(String name, String description ,String url) {
+        this(name, null, description, url);
     }
 
     protected Page(Parcel in) {
         super();
         name = in.readString();
         category = in.readParcelable(Category.class.getClassLoader());
+        description = in.readString();
         url = in.readString();
     }
 
@@ -54,6 +55,10 @@ public class Page extends Model implements Parcelable{
 
     public Category getCategory() {
         return category;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public String getUrl() {
@@ -69,6 +74,7 @@ public class Page extends Model implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeParcelable(category,flags);
+        dest.writeString(description);
         dest.writeString(url);
     }
 

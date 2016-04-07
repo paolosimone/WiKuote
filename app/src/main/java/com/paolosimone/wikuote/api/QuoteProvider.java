@@ -1,6 +1,8 @@
 package com.paolosimone.wikuote.api;
 
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.model.Quote;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,8 +14,8 @@ public interface QuoteProvider {
 
     boolean isAvailableAuthor(String author) throws IOException;
 
-    ArrayList<String> getSuggestedAuthors(String search) throws IOException;
+    ArrayList<Page> getSuggestedAuthors(String query) throws IOException;
 
-    String getRandomQuoteFor(String author) throws IOException, MissingAuthorException;
+    Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException;
 
 }

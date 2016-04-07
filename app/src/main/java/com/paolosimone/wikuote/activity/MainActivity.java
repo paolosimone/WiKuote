@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
@@ -33,8 +34,10 @@ import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         super.onStart();
         if(isFirstStart) {
             //TODO random
-            WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page("Albert Einstein"));
+            WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page("Albert Einstein","",""));
         }
     }
 
@@ -132,15 +135,19 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     }
 
     @Override
-    public void onPageClicked(String name) {
+    public void onPageClicked(Page page) {
         Integer task = ((SearchFragment) contentFragment).getTask();
         switch (task){
             case SearchFragment.SIMPLE_SEARCH_TASK:
-                WiKuoteNavUtils.openQuoteFragmentSinglePage(this, new Page(name));
+                WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
                 break;
             case SearchFragment.ADD_PAGE_TASK:
-                //TODO if already present in the db -> msg + open quote fragment
-                WiKuoteNavUtils.openSelectCategoryDialog(this,new Page(name));
+                if (WiKuoteDatabaseHelper.getInstance().existsPage(page)) {
+                    Toast.makeText(this, R.string.err_existing_page, Toast.LENGTH_SHORT).show();
+                    WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
+                    return;
+                }
+                WiKuoteNavUtils.openSelectCategoryDialog(this, page);
                 break;
             default:
         }
@@ -172,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         findViewById(R.id.nav_explore_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteFragmentSinglePage(MainActivity.this, new Page("Albert Einstein")); //TODO random quote fragment
+                WiKuoteNavUtils.openQuoteFragmentSinglePage(MainActivity.this, new Page("Albert Einstein","","")); //TODO random quote fragment
             }
         });
         findViewById(R.id.nav_add_source_fragment).setOnClickListener(new View.OnClickListener() {
@@ -203,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             listView.setVisibility(View.VISIBLE);
         }
 
-        SortedMap<Category, List<Page>> pagesByCategory = new TreeMap<>();
+        Collections.sort(categories);
+        Map<Category, List<Page>> pagesByCategory = new HashMap<>();
         for(Category c : categories){
             pagesByCategory.put(c,c.getPages());
         }
@@ -231,6 +239,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if (contentFragment instanceof SearchFragment){
+                    ((SearchFragment) contentFragment).setQuery(newText);
+                    return true;
+                }
                 return false;
             }
         });

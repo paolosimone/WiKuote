@@ -31,7 +31,6 @@ public class SelectCategoryDialogFragment extends DialogFragment {
 
     public static final String TAG = "SelectCategoryDialogFragment";
     private static final String PAGE = "page";
-    private static final int MAX_TITLE_LENGHT = 20;
 
     private Page page;
 
@@ -168,7 +167,7 @@ public class SelectCategoryDialogFragment extends DialogFragment {
     }
 
     private boolean isValidTitle(String title){
-        return !title.equals("") && !(title.length()>MAX_TITLE_LENGHT);
+        return !title.equals("");
     }
 
 }

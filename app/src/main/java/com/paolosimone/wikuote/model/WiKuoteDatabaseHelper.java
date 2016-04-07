@@ -41,8 +41,6 @@ public class WiKuoteDatabaseHelper {
                 .executeSingle();
     }
 
-    //TODO getPageFromId
-
     public List<Category> getAllCategories(){
         return new Select()
                 .all()

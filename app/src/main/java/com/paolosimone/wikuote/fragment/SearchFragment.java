@@ -16,6 +16,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.SearchAuthorAdapter;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
+import com.paolosimone.wikuote.model.Page;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,7 +88,6 @@ public class SearchFragment extends Fragment implements Titled{
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO handle redirect and page id
                 ((SearchPageListener) activity).onPageClicked(searchAuthorAdapter.getItem(position));
             }
         });
@@ -138,18 +138,17 @@ public class SearchFragment extends Fragment implements Titled{
     }
 
     public interface SearchPageListener {
-        //TODO return page
-        void onPageClicked(String name);
+        void onPageClicked(Page page);
     }
 
-    private class FetchSearchTask extends AsyncTask<String, Void, ArrayList<String>> {
+    private class FetchSearchTask extends AsyncTask<String, Void, ArrayList<Page>> {
         @Override
         protected void onPreExecute(){
 
         }
 
         @Override
-        protected ArrayList<String> doInBackground(String... search) {
+        protected ArrayList<Page> doInBackground(String... search) {
             try {
                 return quoteProvider.getSuggestedAuthors(search[0]);
             } catch (IOException e) {
@@ -158,10 +157,12 @@ public class SearchFragment extends Fragment implements Titled{
         }
 
         @Override
-        protected void onPostExecute(ArrayList<String> result){
-            if (result!=null){
+        protected void onPostExecute(ArrayList<Page> result){
+            if (result!=null) {
                 searchAuthorAdapter.replaceSuggestions(result);
-                // TODO empty result
+                if (result.isEmpty()) {
+                    Toast.makeText(getActivity(), R.string.err_missing_author, Toast.LENGTH_LONG).show();
+                }
             }
             else {
                 Toast.makeText(getActivity(),R.string.err_generic,Toast.LENGTH_SHORT).show();
