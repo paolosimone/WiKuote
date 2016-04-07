@@ -240,7 +240,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
             Toast.makeText(getActivity(),R.string.msg_page_deleted,Toast.LENGTH_SHORT).show();
 
             if (category==null || !db.existsCategory(category)){
-                WiKuoteNavUtils.openQuoteFragmentSinglePage((MainActivity) getActivity(), new Page("Albert Einstein")); //TODO random quote fragment
+                WiKuoteNavUtils.openQuoteFragmentSinglePage((MainActivity) getActivity(), new Page("Albert Einstein","","")); //TODO random quote fragment
             }
             else {
                 refresh();
@@ -276,16 +276,16 @@ public class DynamicQuoteFragment extends QuoteFragment {
         @Override
         protected Quote doInBackground(Page... params) {
             Page currentPage = params[0];
-            String newText = null;
+            Quote newQuote = null;
             try {
-                newText = quoteProvider.getRandomQuoteFor(currentPage.getName());
+                newQuote = quoteProvider.getRandomQuoteFor(currentPage);
             } catch (MissingAuthorException e) {
                 stopFetching();
             } catch (IOException e) {
                 // do nothing
             }
 
-            return (newText!=null) ? new Quote(newText,currentPage) : null;
+            return newQuote;
         }
 
         @Override
@@ -297,7 +297,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
             }
             else {
                 //TODO better message mechanism or funny quotes db
-                Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page(""));
+                Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page("","",""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);
             }
         }
