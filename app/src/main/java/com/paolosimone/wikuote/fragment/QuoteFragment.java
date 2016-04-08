@@ -26,7 +26,6 @@ import java.util.ArrayList;
  */
 public abstract class QuoteFragment extends Fragment implements Titled{
 
-    protected final static String TITLE = "title";
     protected final static String QUOTES = "quotes";
     protected final static String INDEX = "index";
 
@@ -44,7 +43,6 @@ public abstract class QuoteFragment extends Fragment implements Titled{
         quotePagerAdapter = new QuotePagerAdapter(getActivity());
         quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
 
-        title = getArguments().getString(TITLE);
         if(savedInstanceState!=null){
             restoredIndex = savedInstanceState.getInt(INDEX);
         }

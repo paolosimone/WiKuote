@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
 
     private DrawerLayout drawer;
     private ActionBarDrawerToggle drawerToggle;
-    protected MenuItem refreshAction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        refreshAction = menu.findItem(R.id.action_refresh);
         setupSearchView(menu);
         return true;
     }
@@ -120,9 +118,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         switch (item.getItemId()){
             case android.R.id.home:
                 drawer.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_refresh:
-                WiKuoteNavUtils.openExploreFragment(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

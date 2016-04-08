@@ -11,11 +11,4 @@
         app:showAsAction="always"
         app:actionViewClass="android.support.v7.widget.SearchView"/>
 
-    <item
-        android:id="@+id/action_refresh"
-        android:orderInCategory="50"
-        android:title="@string/action_refresh"
-        android:icon="@drawable/ic_autorenew_white_24dp"
-        app:showAsAction="ifRoom" />
-
 </menu>

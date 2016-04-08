@@ -35,15 +35,15 @@ import java.util.Random;
  */
 public class DynamicQuoteFragment extends QuoteFragment {
 
-    protected final static String CATEGORY = "category";
-    protected final static String PAGE = "page";
+    private final static String CATEGORY = "category";
+    private final static String PAGE = "page";
 
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
 
     private Category category;
     private Page page;
-    private boolean isUnsavedPage;
+    protected boolean isUnsavedPage;
 
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
@@ -142,6 +142,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
             case R.id.action_save_delete_page:
                 handleSaveDeletePage();
                 return true;
+            case R.id.action_refresh:
+                refresh();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -192,7 +195,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
         int needed = 1+PREFETCH_QUOTES;
         if (remaining<needed){
             for (int i=0; i<needed-remaining; i++){
-                newQuote();
+                fetchQuoteForPage(selectNextPage());
             }
         }
     }
@@ -203,12 +206,12 @@ public class DynamicQuoteFragment extends QuoteFragment {
         }
     }
 
-    private void newQuote(){
+    protected Page selectNextPage(){
         Page newQuotePage;
         if (category!=null) {
             List<Page> pages = category.getPages();
             if (pages == null || pages.isEmpty()) {
-                return;
+                return null;
             }
 
             Random rand = new Random();
@@ -217,11 +220,23 @@ public class DynamicQuoteFragment extends QuoteFragment {
         else {
             newQuotePage = page;
         }
-        currentTasks.add(new FetchQuoteTask().execute(newQuotePage));
+        return newQuotePage;
+    }
+
+    protected void fetchQuoteForPage(Page page){
+        if(page == null){
+            return;
+        }
+        currentTasks.add(new FetchQuoteTask().execute(page));
     }
 
     private void handleSaveDeletePage(){
-        Page currentPage = getCurrentQuote().getPage();
+        Quote currentQuote = getCurrentQuote();
+        if (currentQuote==null){
+            return;
+        }
+
+        Page currentPage = currentQuote.getPage();
         if (currentPage==null){
             return;
         }
@@ -258,11 +273,11 @@ public class DynamicQuoteFragment extends QuoteFragment {
     }
 
     private void retrieveInput(Bundle savedInstanceState){
-        if (savedInstanceState==null){
+        if (savedInstanceState==null && getArguments()!=null){
             category = getArguments().getParcelable(CATEGORY);
             page = getArguments().getParcelable(PAGE);
         }
-        else {
+        else if (savedInstanceState!=null) {
             category = savedInstanceState.getParcelable(CATEGORY);
             page = savedInstanceState.getParcelable(PAGE);
         }
@@ -293,6 +308,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 quotePagerAdapter.addQuote(result);
             }
             else {
+                fetchQuoteForPage(selectNextPage());
                 //TODO better message mechanism or funny quotes db
                 Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page("","",""));
                 quotePagerAdapter.notifyErrorIfWaiting(error);

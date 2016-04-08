@@ -80,7 +80,6 @@ public class WikiQuoteProvider implements QuoteProvider{
         String pageUrl = redirectUrl.toString();
         int start = pageUrl.lastIndexOf("/wiki/") + "/wiki".length() + 1;
         String pageName = pageUrl.substring(start);
-        Log.d("UTILS","PAGE_NAME "+pageName);
         List<Page> matches = getSuggestedAuthors(pageName);
 
         if (matches.isEmpty()) {
