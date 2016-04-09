@@ -7,6 +7,8 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import java.util.List;
+
 /**
  * Created by psimo on 29/03/2016.
  */
@@ -16,7 +18,7 @@ public class Page extends Model implements Parcelable{
     @Column(name = "name", unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String name;
 
-    @Column(name = "category", notNull = true, onNullConflict = Column.ConflictAction.FAIL, index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    @Column(name = "category", index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     Category category;
 
     @Column(name = "description")
@@ -63,6 +65,10 @@ public class Page extends Model implements Parcelable{
 
     public String getUrl() {
         return url;
+    }
+
+    public List<Quote> getQuotes() {
+        return getMany(Quote.class, "page");
     }
 
     @Override

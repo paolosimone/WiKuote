@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.adapter.SearchAuthorAdapter;
+import com.paolosimone.wikuote.adapter.SearchPageAdapter;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.model.Page;
@@ -33,7 +33,7 @@ public class SearchFragment extends Fragment implements Titled{
     private static final String TASK = "task";
 
     private QuoteProvider quoteProvider;
-    private SearchAuthorAdapter searchAuthorAdapter;
+    private SearchPageAdapter searchPageAdapter;
     private String query;
 
     private Integer task;
@@ -71,9 +71,9 @@ public class SearchFragment extends Fragment implements Titled{
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        ListView listView = (ListView) view.findViewById(R.id.search_list);
-        searchAuthorAdapter = new SearchAuthorAdapter(getActivity());
-        listView.setAdapter(searchAuthorAdapter);
+        ListView listView = (ListView) view.findViewById(R.id.list_search);
+        searchPageAdapter = new SearchPageAdapter(getActivity());
+        listView.setAdapter(searchPageAdapter);
 
         return view;
     }
@@ -84,11 +84,11 @@ public class SearchFragment extends Fragment implements Titled{
         isAttached = true;
 
         final Activity activity = getActivity();
-        ListView listView = (ListView) activity.findViewById(R.id.search_list);
+        ListView listView = (ListView) activity.findViewById(R.id.list_search);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((SearchPageListener) activity).onPageClicked(searchAuthorAdapter.getItem(position));
+                ((SearchPageListener) activity).onPageClicked(searchPageAdapter.getItem(position));
             }
         });
     }
@@ -159,7 +159,7 @@ public class SearchFragment extends Fragment implements Titled{
         @Override
         protected void onPostExecute(ArrayList<Page> result){
             if (result!=null) {
-                searchAuthorAdapter.replaceSuggestions(result);
+                searchPageAdapter.replaceSuggestions(result);
                 if (result.isEmpty()) {
                     Toast.makeText(getActivity(), R.string.err_missing_author, Toast.LENGTH_LONG).show();
                 }

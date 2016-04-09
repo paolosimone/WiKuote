@@ -15,9 +15,9 @@ import java.util.ArrayList;
 /**
  * Created by Paolo Simone on 24/03/2016.
  */
-public class SearchAuthorAdapter extends ArrayAdapter<Page> {
+public class SearchPageAdapter extends ArrayAdapter<Page> {
 
-    public SearchAuthorAdapter(Context context){
+    public SearchPageAdapter(Context context){
         super(context,0, new ArrayList<Page>());
     }
 
@@ -32,7 +32,7 @@ public class SearchAuthorAdapter extends ArrayAdapter<Page> {
         Page suggestion = getItem(position);
 
         if (convertView==null){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.search_page_item, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_search_page, parent, false);
         }
 
         TextView tvName = (TextView) convertView.findViewById(R.id.search_result_name);

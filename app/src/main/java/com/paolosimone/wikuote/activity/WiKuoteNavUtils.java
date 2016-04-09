@@ -2,6 +2,7 @@ package com.paolosimone.wikuote.activity;
 
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
@@ -26,6 +27,11 @@ import java.io.IOException;
  * Created by Paolo Simone on 25/03/2016.
  */
 public abstract class WiKuoteNavUtils {
+
+    public static void launchFavoritesActivity(MainActivity activity){
+        Intent i = new Intent(activity, FavoritesActivity.class);
+        activity.startActivity(i);
+    }
 
     public static void openQuoteFragmentCategory(MainActivity activity, Category category) {
         DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstance(category);

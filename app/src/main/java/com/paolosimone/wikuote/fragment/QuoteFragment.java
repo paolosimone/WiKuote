@@ -3,6 +3,8 @@ package com.paolosimone.wikuote.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -33,7 +35,17 @@ public abstract class QuoteFragment extends Fragment implements Titled{
 
     private ViewPager quotePager;
     private QuotePagerAdapter quotePagerAdapter;
+    private FloatingActionButton fab;
+
     private Integer restoredIndex;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        if(savedInstanceState!=null){
+            restoredIndex = savedInstanceState.getInt(INDEX);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,9 +57,29 @@ public abstract class QuoteFragment extends Fragment implements Titled{
         adapter.setQuotes(retrieveQuotes(savedInstanceState));
         setPagerAdapter(adapter);
 
-        if(savedInstanceState!=null){
-            restoredIndex = savedInstanceState.getInt(INDEX);
-        }
+        quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                onQuoteChange(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onFavoriteButtonClick(view);
+            }
+        });
+
         return  view;
     }
 
@@ -57,6 +89,7 @@ public abstract class QuoteFragment extends Fragment implements Titled{
         if (restoredIndex!=null){
             quotePager.setCurrentItem(restoredIndex);
         }
+        updateFavoriteButton();
     }
 
     @Override
@@ -97,5 +130,44 @@ public abstract class QuoteFragment extends Fragment implements Titled{
 
         state.putParcelableArrayList(QUOTES, new ArrayList<>(quotes));
         state.putInt(INDEX, index);
+    }
+
+    protected void onQuoteChange(int position){
+        updateFavoriteButton();
+    }
+
+    private void onFavoriteButtonClick(View view){
+        Quote current = getCurrentQuote();
+        if (current==null) return;
+
+        boolean alreadySaved = WiKuoteDatabaseHelper.getInstance().existsQuote(current);
+        if (!alreadySaved){
+            WiKuoteDatabaseHelper.getInstance().saveFavorite(current);
+            Snackbar.make(view, R.string.action_saved_favorite, Snackbar.LENGTH_SHORT).show();
+        }
+        else {
+            WiKuoteDatabaseHelper.getInstance().deleteFavorite(current);
+            Snackbar.make(view, R.string.action_deleted_favorite, Snackbar.LENGTH_SHORT).show();
+        }
+
+        updateFavoriteButton();
+    }
+
+    private void updateFavoriteButton(){
+        Quote current = getCurrentQuote();
+        if (current==null) {
+            fab.hide();
+            return;
+        }
+
+        boolean alreadySaved = WiKuoteDatabaseHelper.getInstance().existsQuote(current);
+        int imageId = alreadySaved
+                ? R.drawable.ic_favorite_white_48dp
+                : R.drawable.ic_favorite_border_white_48dp;
+        fab.setImageResource(imageId);
+
+        if (!fab.isShown()) {
+            fab.show();
+        }
     }
 }

@@ -34,6 +34,45 @@ public class WiKuoteDatabaseHelper {
         subscribers.remove(observer);
     }
 
+    public Quote getQuoteFromText(String text){
+        return new Select()
+                .from(Quote.class)
+                .where("text=?", text)
+                .executeSingle();
+    }
+
+    public boolean existsQuote(Quote quote){
+        return getQuoteFromText(quote.text) != null;
+    }
+
+    public List<Quote> getAllQuotes(){
+        return new Select()
+                .all()
+                .from(Quote.class)
+                .execute();
+    }
+
+    public void saveFavorite(Quote quote){
+        Page page = quote.getPage();
+        if (!existsPage(page)){
+            page.save();
+        }
+
+        quote.save();
+    }
+
+    public void deleteFavorite(Quote toDelete){
+        Quote quote = getQuoteFromText(toDelete.getText());
+        if (quote==null) return;
+
+        Page page = quote.getPage();
+        quote.delete();
+
+        if (page.getCategory()==null && page.getQuotes().isEmpty()){
+            page.delete();
+        }
+    }
+
     public Page getPageFromName(String name){
         return new Select()
                 .from(Page.class)
@@ -41,19 +80,7 @@ public class WiKuoteDatabaseHelper {
                 .executeSingle();
     }
 
-    public List<Category> getAllCategories(){
-        return new Select()
-                .all()
-                .from(Category.class)
-                .execute();
-    }
-
-    public Category getCategoryFromTitle(String title){
-        return new Select()
-                .from(Category.class)
-                .where("title=?", title)
-                .executeSingle();
-    }
+    //TODO get uncategorized pages
 
     public boolean existsPage(Page page){
         return getPageFromName(page.name) != null;
@@ -70,10 +97,6 @@ public class WiKuoteDatabaseHelper {
         notifySubscribers();
     }
 
-    public boolean existsCategory(Category category){
-        return getCategoryFromTitle(category.title) != null;
-    }
-
     public void movePageToCategory(Page page, Category category){
         if (!existsCategory(category)) {
             category.save();
@@ -81,6 +104,24 @@ public class WiKuoteDatabaseHelper {
         page.category = category;
         page.save();
         notifySubscribers();
+    }
+
+    public boolean existsCategory(Category category){
+        return getCategoryFromTitle(category.title) != null;
+    }
+
+    public List<Category> getAllCategories(){
+        return new Select()
+                .all()
+                .from(Category.class)
+                .execute();
+    }
+
+    public Category getCategoryFromTitle(String title){
+        return new Select()
+                .from(Category.class)
+                .where("title=?", title)
+                .executeSingle();
     }
 
     public void deleteCategory(Category category){

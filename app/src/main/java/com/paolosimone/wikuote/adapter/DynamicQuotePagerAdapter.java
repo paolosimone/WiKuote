@@ -33,8 +33,12 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         }
     }
 
-    public void notifyErrorIfWaiting(Quote error){
-        if (placeholderPage !=null){
+    public boolean userIsWaiting(){
+        return placeholderPage != null;
+    }
+
+    public void notifySilentError(Quote error){
+        if (userIsWaiting()){
             setupPage(placeholderPage,error);
         }
     }
@@ -50,7 +54,7 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
             return super.instantiateItem(container,position);
         }
 
-        View page = LayoutInflater.from(getContext()).inflate(R.layout.quote_page,container,false);
+        View page = LayoutInflater.from(getContext()).inflate(R.layout.page_quote,container,false);
 
         setupPage(page, loadingQuote);
         placeholderPage = page;

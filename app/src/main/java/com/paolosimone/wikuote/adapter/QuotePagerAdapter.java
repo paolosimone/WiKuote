@@ -58,7 +58,7 @@ public class QuotePagerAdapter extends PagerAdapter {
             // TODO add placeholder here in case of error
         }
 
-        View page = LayoutInflater.from(context).inflate(R.layout.quote_page, container, false);
+        View page = LayoutInflater.from(context).inflate(R.layout.page_quote, container, false);
 
         Quote quote = quotes.get(position);
         setupPage(page,quote);

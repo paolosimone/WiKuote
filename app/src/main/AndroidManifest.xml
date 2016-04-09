@@ -32,6 +32,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".activity.FavoritesActivity"
+            android:label="@string/tab_favorites"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.MainActivity">
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

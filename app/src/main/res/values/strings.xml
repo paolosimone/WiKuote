@@ -4,10 +4,15 @@
     <!-- Drawer -->
     <string name="tab_explore">Explore</string>
     <string name="tab_search_page">Search page</string>
+    <string name="tab_favorites">Favorites</string>
     <string name="tab_add_page">Add page</string>
     <string name="drawer_categories">Categories</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <!--Actions -->
+    <string name="action_saved_favorite">Add to favorites</string>
+    <string name="action_deleted_favorite">Removed from favorites</string>
 
     <!-- Menu actions -->
     <string name="action_settings">Settings</string>
@@ -15,8 +20,6 @@
     <string name="action_search">Search</string>
     <string name="action_delete_page">Delete page</string>
     <string name="action_save_page">Save page</string>
-    <string name="action_save_favorite">Add to favorites</string>
-    <string name="action_remove_favorite">Remove from favorites</string>
 
     <!-- Tips -->
     <string name="tip_swipe">Swipe to explore!</string>

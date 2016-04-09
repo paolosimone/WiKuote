@@ -17,6 +17,12 @@
         android:text="@string/tab_add_page"/>
 
     <TextView
+        android:id="@+id/nav_favorites_activity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tab_favorites"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="-----"/>
@@ -34,7 +40,7 @@
         android:visibility="invisible"/>
 
     <ExpandableListView
-        android:id="@+id/nav_category"
+        android:id="@+id/list_drawer_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

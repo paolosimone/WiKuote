@@ -25,7 +25,6 @@ import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +47,7 @@ public class DynamicQuoteFragment extends QuoteFragment {
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
 
+    private ViewPager quotePager;
     private DynamicQuotePagerAdapter quotePagerAdapter;
 
     public DynamicQuoteFragment() {}
@@ -82,26 +82,11 @@ public class DynamicQuoteFragment extends QuoteFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        ViewPager quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
+        quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
 
         quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
         quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
         setPagerAdapter(quotePagerAdapter);
-
-        quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                onQuoteChange(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-            }
-        });
 
         return  view;
     }
@@ -181,7 +166,20 @@ public class DynamicQuoteFragment extends QuoteFragment {
         onQuoteChange(0);
     }
 
-    private void onQuoteChange(int index){
+    @Override
+    public Quote getCurrentQuote(){
+        List<Quote> quotes = quotePagerAdapter.getQuotes();
+        if (quotes.isEmpty()) return null;
+
+        int index = quotePager.getCurrentItem();
+        boolean isValidIndex = index < quotes.size();
+
+        return isValidIndex ? quotes.get(index) : null;
+    }
+
+    @Override
+    protected void onQuoteChange(int index){
+        super.onQuoteChange(index);
         int remaining = quotePagerAdapter.getQuotesNumber()+currentTasks.size()-index;
         int needed = 1+PREFETCH_QUOTES;
         if (remaining<needed){
@@ -285,12 +283,15 @@ public class DynamicQuoteFragment extends QuoteFragment {
 
             if (result!=null){
                 quotePagerAdapter.addQuote(result);
+                if (quotePagerAdapter.userIsWaiting()){
+                    onQuoteChange(quotePager.getCurrentItem());
+                }
             }
             else {
                 fetchQuoteForPage(selectNextPage());
                 //TODO better message mechanism or funny quotes db
                 Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page("","",""));
-                quotePagerAdapter.notifyErrorIfWaiting(error);
+                quotePagerAdapter.notifySilentError(error);
             }
         }
     }

@@ -2,8 +2,6 @@ package com.paolosimone.wikuote.activity;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
@@ -59,15 +57,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         }
 
         WiKuoteDatabaseHelper.getInstance().attach(this);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Saved to favourites", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -182,13 +171,19 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 WiKuoteNavUtils.openAddPageDialog(MainActivity.this);
             }
         });
+        findViewById(R.id.nav_favorites_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WiKuoteNavUtils.launchFavoritesActivity(MainActivity.this);
+            }
+        });
 
         drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(drawerToggle);
     }
 
     private void updateCategoryList(){
-        ExpandableListView listView = (ExpandableListView) findViewById(R.id.nav_category);
+        ExpandableListView listView = (ExpandableListView) findViewById(R.id.list_drawer_category);
 
         List<Category> categories = WiKuoteDatabaseHelper.getInstance().getAllCategories();
         if (categories.isEmpty()){

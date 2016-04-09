@@ -55,7 +55,7 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
 
         if (convertView==null){
             LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.drawer_category_item, parent, false);
+            convertView = layoutInflater.inflate(R.layout.item_drawer_category, parent, false);
         }
 
         TextView titleText = (TextView) convertView.findViewById(R.id.item_category_name);
@@ -97,7 +97,7 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
 
         if (convertView==null){
             LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = layoutInflater.inflate(R.layout.drawer_page_item, parent, false);
+            convertView = layoutInflater.inflate(R.layout.item_drawer_page, parent, false);
         }
 
         TextView titleText = (TextView) convertView.findViewById(R.id.item_page_name);
