@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,6 +21,7 @@ import com.paolosimone.wikuote.adapter.QuotePagerAdapter;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Paolo Simone on 24/03/2016.
@@ -29,31 +31,24 @@ public abstract class QuoteFragment extends Fragment implements Titled{
     protected final static String QUOTES = "quotes";
     protected final static String INDEX = "index";
 
-    protected ViewPager quotePager;
+    private ViewPager quotePager;
     private QuotePagerAdapter quotePagerAdapter;
-    private String title;
     private Integer restoredIndex;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-
         quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
-        quotePagerAdapter = new QuotePagerAdapter(getActivity());
-        quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
+
+        QuotePagerAdapter adapter = new QuotePagerAdapter(getActivity());
+        adapter.setQuotes(retrieveQuotes(savedInstanceState));
+        setPagerAdapter(adapter);
 
         if(savedInstanceState!=null){
             restoredIndex = savedInstanceState.getInt(INDEX);
         }
-
-        quotePager.setAdapter(quotePagerAdapter);
         return  view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.menu_dynamic_quote, menu);
     }
 
     @Override
@@ -71,12 +66,17 @@ public abstract class QuoteFragment extends Fragment implements Titled{
     }
 
     @Override
-    public String getTitle(Context context){
-        return title;
+    public abstract String getTitle(Context context);
+
+    protected void setPagerAdapter(QuotePagerAdapter adapter){
+        quotePagerAdapter = adapter;
+        quotePager.setAdapter(quotePagerAdapter);
     }
 
     public Quote getCurrentQuote(){
-        return quotePagerAdapter.getQuotes().get(quotePager.getCurrentItem());
+        List<Quote> quotes = quotePagerAdapter.getQuotes();
+        if (quotes.isEmpty()) return null;
+        else return quotes.get(quotePager.getCurrentItem());
     }
 
     protected ArrayList<Quote> retrieveQuotes(Bundle savedInstanceState){

@@ -48,7 +48,6 @@ public class DynamicQuoteFragment extends QuoteFragment {
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
 
-    private ViewPager quotePager;
     private DynamicQuotePagerAdapter quotePagerAdapter;
 
     public DynamicQuoteFragment() {}
@@ -83,11 +82,12 @@ public class DynamicQuoteFragment extends QuoteFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
+        ViewPager quotePager = (ViewPager) view.findViewById(R.id.quote_pager);
+
         quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
         quotePagerAdapter.setQuotes(retrieveQuotes(savedInstanceState));
+        setPagerAdapter(quotePagerAdapter);
 
-        quotePager.setAdapter(quotePagerAdapter);
         quotePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -175,18 +175,9 @@ public class DynamicQuoteFragment extends QuoteFragment {
         return context.getString(R.string.app_name);
     }
 
-    @Override
-    public Quote getCurrentQuote(){
-        List<Quote> quotes = quotePagerAdapter.getQuotes();
-        if (quotes.isEmpty()){
-            return null;
-        }
-        return quotes.get(quotePager.getCurrentItem());
-    }
-
     public void refresh(){
         quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
-        quotePager.setAdapter(quotePagerAdapter);
+        setPagerAdapter(quotePagerAdapter);
         onQuoteChange(0);
     }
 
@@ -258,18 +249,6 @@ public class DynamicQuoteFragment extends QuoteFragment {
                 refresh();
             }
         }
-    }
-
-    @Override
-    protected void saveQuotes(Bundle state){
-        ArrayList<Quote> quotes = quotePagerAdapter.getQuotes();
-        int index = quotePager.getCurrentItem();
-
-        int start = Math.max(0, index - MAX_QUOTES/2);
-        int end = Math.min(quotes.size(), index + MAX_QUOTES/2);
-
-        state.putParcelableArrayList(QUOTES, new ArrayList<>(quotes.subList(start,end)));
-        state.putInt(INDEX, index - start);
     }
 
     private void retrieveInput(Bundle savedInstanceState){
