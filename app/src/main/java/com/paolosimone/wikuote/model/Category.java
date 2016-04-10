@@ -40,7 +40,11 @@ public class Category extends Model implements Parcelable, Comparable<Category> 
     }
 
     public List<Page> getPages(){
-        return getMany(Page.class, "category");
+        return new Select()
+                .from(Page.class)
+                .where("category=?",this.getId())
+                .orderBy("name")
+                .execute();
     }
 
     @Override

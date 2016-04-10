@@ -33,10 +33,8 @@ public class FavoritesActivity extends AppCompatActivity {
 
         WiKuoteDatabaseHelper db = WiKuoteDatabaseHelper.getInstance();
         List<Quote> favorites = db.getAllQuotes();
-        Log.d("FAVORITES"," "+ favorites.toString());
         favoritesListAdapter = new FavoritesListAdapter(this);
         favoritesListAdapter.addAll(favorites);
-        Log.d("FAVORITES","COUNT: " + favoritesListAdapter.getCount());
 
         ListView listView = (ListView) findViewById(R.id.list_favorites);
         listView.setAdapter(favoritesListAdapter);

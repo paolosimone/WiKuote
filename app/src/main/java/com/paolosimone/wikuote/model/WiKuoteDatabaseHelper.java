@@ -47,8 +47,9 @@ public class WiKuoteDatabaseHelper {
 
     public List<Quote> getAllQuotes(){
         return new Select()
-                .all()
                 .from(Quote.class)
+                .join(Page.class).on("Quotes.page = Pages.id")
+                .orderBy("Pages.name")
                 .execute();
     }
 
@@ -86,6 +87,14 @@ public class WiKuoteDatabaseHelper {
         return getPageFromName(page.name) != null;
     }
 
+    public List<Page> getAllPages(){
+        return new Select()
+                .all()
+                .from(Page.class)
+                .orderBy("name")
+                .execute();
+    }
+
     public void deletePage(Page page){
         Category pageCategory = page.category;
         page.delete();
@@ -114,6 +123,7 @@ public class WiKuoteDatabaseHelper {
         return new Select()
                 .all()
                 .from(Category.class)
+                .orderBy("title")
                 .execute();
     }
 

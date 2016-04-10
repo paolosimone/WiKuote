@@ -199,7 +199,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             listView.setVisibility(View.VISIBLE);
         }
 
-        Collections.sort(categories);
         Map<Category, List<Page>> pagesByCategory = new HashMap<>();
         for(Category c : categories){
             pagesByCategory.put(c,c.getPages());
