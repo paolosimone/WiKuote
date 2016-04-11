@@ -60,6 +60,7 @@ public class WiKuoteDatabaseHelper {
         }
 
         quote.save();
+        notifySubscribers();
     }
 
     public void deleteFavorite(Quote toDelete){
@@ -72,6 +73,7 @@ public class WiKuoteDatabaseHelper {
         if (page.getCategory()==null && page.getQuotes().isEmpty()){
             page.delete();
         }
+        notifySubscribers();
     }
 
     public Page getPageFromName(String name){
@@ -80,8 +82,6 @@ public class WiKuoteDatabaseHelper {
                 .where("name=?", name)
                 .executeSingle();
     }
-
-    //TODO get uncategorized pages
 
     public boolean existsPage(Page page){
         return getPageFromName(page.name) != null;

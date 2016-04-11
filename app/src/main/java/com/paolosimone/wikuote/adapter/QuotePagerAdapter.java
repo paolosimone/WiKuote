@@ -67,6 +67,11 @@ public class QuotePagerAdapter extends PagerAdapter {
         return page;
     }
 
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        container.removeView((View) object);
+    }
+
     protected void setupPage(View view, Quote quote){
         TextView quoteTextView = (TextView) view.findViewById(R.id.quote_text);
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text);

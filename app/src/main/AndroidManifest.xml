@@ -38,6 +38,12 @@
             android:parentActivityName=".activity.MainActivity">
         </activity>
 
+        <activity android:name=".activity.FavoritesQuoteActivity"
+            android:label="@string/tab_favorites"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.FavoritesActivity">
+        </activity>
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.activity.FavoritesActivity;
+import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Quote;
 
 import java.util.ArrayList;
@@ -17,8 +19,11 @@ import java.util.ArrayList;
  */
 public class FavoritesListAdapter extends ArrayAdapter<Quote> {
 
+    private final String defaultCategory;
+
     public FavoritesListAdapter(Context context){
         super(context,0, new ArrayList<Quote>());
+        defaultCategory = context.getString(R.string.uncategorized);
     }
 
     @Override
@@ -35,8 +40,10 @@ public class FavoritesListAdapter extends ArrayAdapter<Quote> {
         TextView tvPage = (TextView) convertView.findViewById(R.id.quote_page);
         tvPage.setText(quote.getPage().getName());
 
+        TextView tvCategory = (TextView) convertView.findViewById(R.id.quote_category);
+        Category category = quote.getPage().getCategory();
+        tvCategory.setText(category!=null ? category.getTitle() : defaultCategory);
+
         return convertView;
     }
-
-
 }

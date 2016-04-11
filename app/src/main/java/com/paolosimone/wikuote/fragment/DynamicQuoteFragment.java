@@ -32,7 +32,7 @@ import java.util.Random;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DynamicQuoteFragment extends QuoteFragment {
+public class DynamicQuoteFragment extends QuoteFragment implements Titled{
 
     private final static String CATEGORY = "category";
     private final static String PAGE = "page";

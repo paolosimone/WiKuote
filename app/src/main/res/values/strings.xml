@@ -20,6 +20,9 @@
     <string name="action_search">Search</string>
     <string name="action_delete_page">Delete page</string>
     <string name="action_save_page">Save page</string>
+    <string name="action_delete">Delete</string>
+    <string name="desc_selected_singular">quote selected</string>
+    <string name="desc_selected_plural">quotes selected</string>
 
     <!-- Tips -->
     <string name="tip_swipe">Swipe to explore!</string>
@@ -54,6 +57,6 @@
     <string name="msg_page_deleted">Page successfully deleted!</string>
 
     <!-- Model -->
-    <string name="category_default">Uncategorized</string>
+    <string name="uncategorized">Uncategorized</string>
 
 </resources>

@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Created by Paolo Simone on 24/03/2016.
  */
-public abstract class QuoteFragment extends Fragment implements Titled{
+public abstract class QuoteFragment extends Fragment{
 
     protected final static String QUOTES = "quotes";
     protected final static String INDEX = "index";
@@ -42,9 +42,7 @@ public abstract class QuoteFragment extends Fragment implements Titled{
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        if(savedInstanceState!=null){
-            restoredIndex = savedInstanceState.getInt(INDEX);
-        }
+        restoredIndex = retrieveIndex(savedInstanceState);
     }
 
     @Override
@@ -98,9 +96,6 @@ public abstract class QuoteFragment extends Fragment implements Titled{
         saveQuotes(state);
     }
 
-    @Override
-    public abstract String getTitle(Context context);
-
     protected void setPagerAdapter(QuotePagerAdapter adapter){
         quotePagerAdapter = adapter;
         quotePager.setAdapter(quotePagerAdapter);
@@ -120,8 +115,19 @@ public abstract class QuoteFragment extends Fragment implements Titled{
         return new ArrayList<>();
     }
 
+    protected Integer retrieveIndex(Bundle savedInstanceState){
+        if(savedInstanceState!=null){
+            return savedInstanceState.getInt(INDEX);
+        }
+        return null;
+    }
+
     public void changeQuotes(ArrayList<Quote> quotes){
-        quotePagerAdapter.setQuotes(quotes);
+        int index = quotePager.getCurrentItem();
+        QuotePagerAdapter adapter = new QuotePagerAdapter(getActivity());
+        adapter.setQuotes(quotes);
+        setPagerAdapter(adapter);
+        quotePager.setCurrentItem(index);
     }
 
     protected void saveQuotes(Bundle state){

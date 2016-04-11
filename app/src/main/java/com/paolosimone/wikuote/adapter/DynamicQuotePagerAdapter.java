@@ -62,11 +62,4 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         container.addView(page);
         return page;
     }
-
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        container.removeView((View) object);
-    }
-
-
 }
