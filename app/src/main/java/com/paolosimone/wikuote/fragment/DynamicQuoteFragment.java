@@ -93,6 +93,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu,inflater);
         inflater.inflate(R.menu.menu_dynamic_quote, menu);
         if(isUnsavedPage){
             MenuItem saveDeleteItem = menu.findItem(R.id.action_save_delete_page);

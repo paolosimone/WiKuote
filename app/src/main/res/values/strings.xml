@@ -18,6 +18,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="action_search">Search</string>
+    <string name="action_share">Share</string>
     <string name="action_delete_page">Delete page</string>
     <string name="action_save_page">Save page</string>
     <string name="action_delete">Delete</string>
@@ -32,6 +33,7 @@
 
     <!-- Dialog messages -->
     <string name="title_select_category">Select category</string>
+    <string name="title_share_quote">Share using</string>
     <string name="msg_search_request">Insert page title</string>
     <string name="msg_add">Add</string>
     <string name="msg_new_category">New category</string>
