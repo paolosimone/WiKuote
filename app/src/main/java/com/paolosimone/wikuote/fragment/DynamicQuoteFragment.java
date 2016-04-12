@@ -98,6 +98,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled{
         if(isUnsavedPage){
             MenuItem saveDeleteItem = menu.findItem(R.id.action_save_delete_page);
             saveDeleteItem.setTitle(getString(R.string.action_save_page));
+            saveDeleteItem.setIcon(R.drawable.ic_bookmark_border_white_24dp);
         }
     }
 
