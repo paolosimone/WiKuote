@@ -1,7 +1,5 @@
 package com.paolosimone.wikuote.api;
 
-import android.util.Log;
-
 import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -9,13 +7,14 @@ import com.google.gson.JsonObject;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 import retrofit2.Call;
@@ -61,6 +60,24 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
+    public Page getRandomPage() throws IOException {
+        URL randomUrl = new URL(RANDOM_URL);
+        HttpURLConnection conn = (HttpURLConnection) randomUrl.openConnection();
+        conn.setInstanceFollowRedirects(false);
+        URL redirectUrl = new URL(conn.getHeaderField("Location"));
+
+        String pageUrl = redirectUrl.toString();
+        String pageName = WikiQuoteUtils.extractPageNameFromUrl(pageUrl);
+        List<Page> matches = getSuggestedAuthors(pageName);
+
+        if (matches.isEmpty()) {
+            throw new IOException();
+        }
+
+        return matches.get(0);
+    }
+
+    @Override
     public Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException {
         long pageId = getPageIndex(page.getName());
         if (pageId == WikiQuoteUtils.INVALID_INDEX) throw new MissingAuthorException();
@@ -71,22 +88,19 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public Page getRandomPage() throws IOException {
-        URL randomUrl = new URL(RANDOM_URL);
-        HttpURLConnection conn = (HttpURLConnection) randomUrl.openConnection();
-        conn.setInstanceFollowRedirects(false);
-        URL redirectUrl = new URL(conn.getHeaderField("Location"));
+    public Quote getQuoteOfTheDay() throws IOException {
+        Document mainPage = Jsoup.connect(BASE_URL).get();
 
-        String pageUrl = redirectUrl.toString();
-        int start = pageUrl.lastIndexOf("/wiki/") + "/wiki".length() + 1;
-        String pageName = pageUrl.substring(start);
+        String[] result = WikiQuoteUtils.extractQuoteOfTheDay(mainPage);
+        String quoteText = result[WikiQuoteUtils.QUOTE];
+        String pageName = result[WikiQuoteUtils.PAGE_NAME];
+
         List<Page> matches = getSuggestedAuthors(pageName);
-
         if (matches.isEmpty()) {
             throw new IOException();
         }
 
-        return matches.get(0);
+        return new Quote(quoteText,matches.get(0));
     }
 
     private long getPageIndex(String author) throws IOException{

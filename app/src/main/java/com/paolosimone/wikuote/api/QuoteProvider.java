@@ -20,4 +20,6 @@ public interface QuoteProvider {
 
     Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException;
 
+    Quote getQuoteOfTheDay() throws IOException;
+
 }

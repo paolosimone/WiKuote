@@ -6,6 +6,7 @@
     <string name="tab_search_page">Search page</string>
     <string name="tab_favorites">Favorites</string>
     <string name="tab_add_page">Add page</string>
+    <string name="tab_quote_of_the_day">Quote of the day</string>
     <string name="drawer_categories">Categories</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -44,9 +45,9 @@
     <string name="btn_ok">Ok</string>
 
     <!-- Configuration messages -->
-    <string name="msg_loading">Loading...</string>
-    <string name="msg_loading_quote">Loading quotes...</string>
-    <string name="msg_loading_page">Exploring...</string>
+    <string name="loading">Loading...</string>
+    <string name="loading_quote">Loading quotes...</string>
+    <string name="loading_page">Exploring...</string>
     <string name="msg_initializing">Initializing...</string>
 
     <!-- Fetch quote messages -->

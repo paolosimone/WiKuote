@@ -16,6 +16,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.paolosimone.wikuote.fragment.ExploreQuoteFragment;
+import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
 import com.paolosimone.wikuote.model.Page;
@@ -31,6 +32,11 @@ public abstract class WiKuoteNavUtils {
     public static void launchFavoritesActivity(MainActivity activity){
         Intent i = new Intent(activity, FavoritesActivity.class);
         activity.startActivity(i);
+    }
+
+    public static void openQuoteOfTheDayFragment(MainActivity activity){
+        QuoteOfTheDayFragment qotdFragment = new QuoteOfTheDayFragment();
+        activity.replaceContent(qotdFragment);
     }
 
     public static void openQuoteFragmentCategory(MainActivity activity, Category category) {

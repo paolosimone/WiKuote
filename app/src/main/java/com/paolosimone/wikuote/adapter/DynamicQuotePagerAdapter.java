@@ -14,12 +14,10 @@ import com.paolosimone.wikuote.model.Quote;
  */
 public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
 
-    private Quote loadingQuote;
     private View placeholderPage;
 
     public DynamicQuotePagerAdapter(Context context){
         super(context);
-        this.loadingQuote = new Quote(context.getString(R.string.msg_loading_quote),new Page("","",""));
     }
 
     public void addQuote(Quote quote){
@@ -55,8 +53,6 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         }
 
         View page = LayoutInflater.from(getContext()).inflate(R.layout.page_quote,container,false);
-
-        setupPage(page, loadingQuote);
         placeholderPage = page;
 
         container.addView(page);

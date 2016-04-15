@@ -1,8 +1,11 @@
 package com.paolosimone.wikuote.api;
 
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.model.Quote;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,6 +26,10 @@ import java.util.regex.Pattern;
 public abstract class WikiQuoteUtils {
 
     public static final int INVALID_INDEX = -1;
+    public static final int QUOTE = 0;
+    public static final int PAGE_NAME = 1;
+
+    public static final String BEFORE_NAME = "/wiki/";
 
     public static String capitalizeInitials(String author){
         String[] words = author.toLowerCase().split(" ");
@@ -35,6 +42,11 @@ public abstract class WikiQuoteUtils {
                     ((word.length()>0) ? word.substring(1) : "") + " ";
         }
         return result.substring(0,result.length()-1);
+    }
+
+    public static String extractPageNameFromUrl(String pageUrl){
+        int start = pageUrl.lastIndexOf(BEFORE_NAME) + BEFORE_NAME.length();
+        return pageUrl.substring(start);
     }
 
     public static ArrayList<Page> extractSuggestions(JsonArray response){
@@ -134,5 +146,22 @@ public abstract class WikiQuoteUtils {
             // do nothing
         }
         return quotes;
+    }
+
+    public static String[] extractQuoteOfTheDay(Document mainPage){
+        String quotdDivId = "#mf-qotd ";
+        String quotdArea = "table > tbody > tr > td > table > tbody > tr > td ";
+        String quotdRows = "table > tbody > tr ";
+        Elements rows = mainPage.select(quotdDivId + quotdArea + quotdRows);
+
+        for (Element e : rows){
+            Log.d("UTILS",e.text());
+        }
+
+        String[] result = new String[2];
+        result[QUOTE] = rows.get(0).text();
+        result[PAGE_NAME] = rows.get(1).select("a").first().text();
+
+        return result;
     }
 }

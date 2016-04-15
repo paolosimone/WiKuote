@@ -5,6 +5,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
@@ -54,10 +55,6 @@ public class QuotePagerAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        if (getCount()==0){
-            // TODO add placeholder here in case of error
-        }
-
         View page = LayoutInflater.from(context).inflate(R.layout.page_quote, container, false);
 
         Quote quote = quotes.get(position);
@@ -73,6 +70,11 @@ public class QuotePagerAdapter extends PagerAdapter {
     }
 
     protected void setupPage(View view, Quote quote){
+        ProgressBar loading = (ProgressBar) view.findViewById(R.id.loading_spinner);
+        if (loading.getVisibility()==View.VISIBLE){
+            loading.setVisibility(View.INVISIBLE);
+        }
+
         TextView quoteTextView = (TextView) view.findViewById(R.id.quote_text);
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text);
 
