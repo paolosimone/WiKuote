@@ -10,6 +10,8 @@
         android:theme="@style/AppTheme"
         android:name="com.activeandroid.app.Application">
 
+        <!-- Database -->
+
         <meta-data
             android:name="AA_DB_NAME"
             android:value="WiKuote.db" />
@@ -22,10 +24,13 @@
                 com.paolosimone.wikuote.model.Page,
                 com.paolosimone.wikuote.model.Quote" />
 
+        <!-- Activities -->
 
         <activity android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleInstance">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -35,16 +40,28 @@
         <activity android:name=".activity.FavoritesActivity"
             android:label="@string/tab_favorites"
             android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleInstance"
             android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <activity android:name=".activity.FavoritesQuoteActivity"
             android:label="@string/tab_favorites"
             android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleInstance"
             android:parentActivityName=".activity.FavoritesActivity">
         </activity>
 
+        <!-- Services -->
+
+        <receiver android:name=".notification.NewDayAlarmReceiver"
+            android:process=":remote" />
+
+        <service android:name=".notification.QuoteOfTheDayService"
+            android:exported="false" />
+
     </application>
+
+    <!-- Permissions -->
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

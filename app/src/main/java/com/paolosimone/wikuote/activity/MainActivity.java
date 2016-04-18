@@ -1,5 +1,9 @@
 package com.paolosimone.wikuote.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,11 +28,13 @@ import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
+import com.paolosimone.wikuote.notification.NewDayAlarmReceiver;
 
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener, WiKuoteDatabaseHelper.DatabaseObserver {
 
@@ -65,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         super.onStart();
         if(isFirstStart) {
             WiKuoteNavUtils.openQuoteOfTheDayFragment(this);
+            scheduleQuoteOfTheDayNotification(); //TODO move it to setttings activity with cancelAlarm
         }
     }
 
@@ -217,8 +223,8 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
 
     private void setupSearchView(Menu menu){
         final MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -241,5 +247,29 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 return false;
             }
         });
+    }
+
+    private void scheduleQuoteOfTheDayNotification(){
+        Intent intent = new Intent(getApplicationContext(), NewDayAlarmReceiver.class);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NewDayAlarmReceiver.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        Random random = new Random();
+        Calendar tomorrow = Calendar.getInstance();
+        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
+        tomorrow.set(Calendar.HOUR_OF_DAY,10);
+        tomorrow.set(Calendar.MINUTE, random.nextInt(20));
+
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.setInexactRepeating(AlarmManager.RTC, tomorrow.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+    }
+
+    private void cancelQuoteOfTheDayNotification(){
+        Intent intent = new Intent(getApplicationContext(), NewDayAlarmReceiver.class);
+        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NewDayAlarmReceiver.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        alarm.cancel(pendingIntent);
     }
 }
