@@ -154,10 +154,6 @@ public abstract class WikiQuoteUtils {
         String quotdRows = "table > tbody > tr ";
         Elements rows = mainPage.select(quotdDivId + quotdArea + quotdRows);
 
-        for (Element e : rows){
-            Log.d("UTILS",e.text());
-        }
-
         String[] result = new String[2];
         result[QUOTE] = rows.get(0).text();
         result[PAGE_NAME] = rows.get(1).select("a").first().text();

@@ -14,19 +14,25 @@ import com.paolosimone.wikuote.model.Quote;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Paolo Simone on 15/04/2016.
  */
 public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
 
+    private static Quote todaysQuote;
+
     private FetchQOTDTask fetchQOTDTask;
 
     @Override
     public void onStart(){
         super.onStart();
-        if (getCurrentQuote()==null) {
+        if (!isValidTodaysQuote()) {
             new FetchQOTDTask().execute();
+        }
+        else {
+            updateTodaysQuote();
         }
     }
 
@@ -41,6 +47,23 @@ public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
     @Override
     public String getTitle(Context context){
         return context.getString(R.string.tab_quote_of_the_day);
+    }
+
+    private boolean isValidTodaysQuote(){
+        if (todaysQuote==null){
+            return false;
+        }
+
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+        Calendar savedQuoteDay = Calendar.getInstance();
+        savedQuoteDay.setTime(todaysQuote.getTimestamp());
+        return savedQuoteDay.get(Calendar.DAY_OF_YEAR) == today;
+    }
+
+    private void updateTodaysQuote(){
+        ArrayList<Quote> quotes = new ArrayList<>();
+        quotes.add(todaysQuote);
+        changeQuotes(quotes);
     }
 
     private class FetchQOTDTask extends AsyncTask<Void, Void, Quote> {
@@ -75,10 +98,8 @@ public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
                 return;
             }
 
-            ArrayList<Quote> quotes = new ArrayList<>();
-            quotes.add(result);
-            changeQuotes(quotes);
-            onQuoteChange(0);
+            todaysQuote = result;
+            updateTodaysQuote();
         }
     }
 }

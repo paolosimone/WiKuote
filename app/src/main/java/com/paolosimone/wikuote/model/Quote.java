@@ -8,11 +8,17 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * Created by Paolo Simone on 21/03/2016.
  */
 @Table(name="Quotes")
 public class Quote extends Model implements Parcelable{
+
+    @Column(name="timestamp")
+    Date timestamp;
 
     @Column(name="text", unique=true, onUniqueConflict=Column.ConflictAction.IGNORE)
     String text;
@@ -26,14 +32,20 @@ public class Quote extends Model implements Parcelable{
 
     public Quote(String quote, Page page) {
         super();
+        this.timestamp = Calendar.getInstance().getTime();
         this.text = quote;
         this.page = page;
     }
 
     protected Quote(Parcel in) {
         super();
+        timestamp = new Date(in.readLong());
         text = in.readString();
         page = in.readParcelable(Page.class.getClassLoader());
+    }
+
+    public Date getTimestamp() {
+        return timestamp;
     }
 
     public Page getPage() {
@@ -51,6 +63,7 @@ public class Quote extends Model implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(timestamp.getTime());
         dest.writeString(text);
         dest.writeParcelable(page, flags);
     }

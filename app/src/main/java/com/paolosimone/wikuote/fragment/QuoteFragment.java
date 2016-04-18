@@ -142,6 +142,7 @@ public abstract class QuoteFragment extends Fragment{
         adapter.setQuotes(quotes);
         setPagerAdapter(adapter);
         quotePager.setCurrentItem(index);
+        onQuoteChange(index);
     }
 
     protected void saveQuotes(Bundle state){
