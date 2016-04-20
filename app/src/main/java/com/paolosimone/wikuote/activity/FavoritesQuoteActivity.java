@@ -19,7 +19,7 @@ public class FavoritesQuoteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorites);
+        setContentView(R.layout.activity_single_fragment);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -31,7 +31,7 @@ public class FavoritesQuoteActivity extends AppCompatActivity {
         quoteFragment = FavoritesQuoteFragment.newInstance(index);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.favorite_list_fragment, quoteFragment)
+                .replace(R.id.content_fragment, quoteFragment)
                 .commit();
     }
 }

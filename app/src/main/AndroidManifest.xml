@@ -40,21 +40,31 @@
         <activity android:name=".activity.FavoritesActivity"
             android:label="@string/tab_favorites"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleInstance"
             android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <activity android:name=".activity.FavoritesQuoteActivity"
             android:label="@string/tab_favorites"
             android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleInstance"
+            android:parentActivityName=".activity.FavoritesActivity">
+        </activity>
+
+        <activity android:name=".activity.SettingsActivity"
+            android:label="@string/tab_settings"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".activity.FavoritesActivity">
         </activity>
 
         <!-- Services -->
 
         <receiver android:name=".notification.NewDayAlarmReceiver"
-            android:process=":remote" />
+            android:process=":remote"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <action android:name=".notification.NewDayAlarmReceiver.ACTION"/>
+            </intent-filter>
+        </receiver>
 
         <service android:name=".notification.QuoteOfTheDayService"
             android:exported="false" />
@@ -65,5 +75,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
 </manifest>

@@ -7,6 +7,7 @@
     <string name="tab_favorites">Favorites</string>
     <string name="tab_add_page">Add page</string>
     <string name="tab_quote_of_the_day">Quote of the day</string>
+    <string name="tab_settings">Settings</string>
     <string name="drawer_categories">Categories</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
@@ -25,6 +26,11 @@
     <string name="action_delete">Delete</string>
     <string name="desc_selected_singular">quote selected</string>
     <string name="desc_selected_plural">quotes selected</string>
+
+    <!-- Preferences -->
+    <string name="pref_notification_category">Notification</string>
+    <string name="pref_notification_switch">"Quote of the day" notification</string>
+    <string name="key_notification_active">notification_active</string>
 
     <!-- Tips -->
     <string name="tip_swipe">Swipe to explore!</string>

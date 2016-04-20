@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         super.onStart();
         if(isFirstStart) {
             WiKuoteNavUtils.openQuoteOfTheDayFragment(this);
-            scheduleQuoteOfTheDayNotification(); //TODO move it to setttings activity with cancelAlarm
         }
     }
 
@@ -187,7 +186,15 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         findViewById(R.id.nav_favorites_activity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                drawer.closeDrawers();
                 WiKuoteNavUtils.launchFavoritesActivity(MainActivity.this);
+            }
+        });
+        findViewById(R.id.nav_settings_activity).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawer.closeDrawers();
+                WiKuoteNavUtils.launchSettingsActivity(MainActivity.this);
             }
         });
 
@@ -247,29 +254,5 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 return false;
             }
         });
-    }
-
-    private void scheduleQuoteOfTheDayNotification(){
-        Intent intent = new Intent(getApplicationContext(), NewDayAlarmReceiver.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NewDayAlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Random random = new Random();
-        Calendar tomorrow = Calendar.getInstance();
-        tomorrow.add(Calendar.DAY_OF_YEAR, 1);
-        tomorrow.set(Calendar.HOUR_OF_DAY,10);
-        tomorrow.set(Calendar.MINUTE, random.nextInt(20));
-
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.setInexactRepeating(AlarmManager.RTC, tomorrow.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
-    }
-
-    private void cancelQuoteOfTheDayNotification(){
-        Intent intent = new Intent(getApplicationContext(), NewDayAlarmReceiver.class);
-        final PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NewDayAlarmReceiver.REQUEST_CODE,
-                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(pendingIntent);
     }
 }

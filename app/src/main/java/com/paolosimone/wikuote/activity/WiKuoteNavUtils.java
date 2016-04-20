@@ -1,28 +1,22 @@
 package com.paolosimone.wikuote.activity;
 
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.text.InputType;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.paolosimone.wikuote.fragment.ExploreQuoteFragment;
 import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
+import com.paolosimone.wikuote.fragment.SettingsFragment;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
-
-import java.io.IOException;
 
 /**
  * Created by Paolo Simone on 25/03/2016.
@@ -31,6 +25,11 @@ public abstract class WiKuoteNavUtils {
 
     public static void launchFavoritesActivity(MainActivity activity){
         Intent i = new Intent(activity, FavoritesActivity.class);
+        activity.startActivity(i);
+    }
+
+    public static void launchSettingsActivity(MainActivity activity){
+        Intent i = new Intent(activity, SettingsActivity.class);
         activity.startActivity(i);
     }
 
