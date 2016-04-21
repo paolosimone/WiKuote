@@ -11,10 +11,10 @@ import android.widget.EditText;
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
 import com.paolosimone.wikuote.fragment.ExploreQuoteFragment;
+import com.paolosimone.wikuote.fragment.ManageCategoriesFragment;
 import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
-import com.paolosimone.wikuote.fragment.SettingsFragment;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 
@@ -56,6 +56,11 @@ public abstract class WiKuoteNavUtils {
     public static void openSearchFragmentWithQuery(MainActivity activity, int task, String query) {
         SearchFragment searchFragment = SearchFragment.newInstance(task, query);
         activity.replaceContent(searchFragment);
+    }
+
+    public static void openManageCategoriesFragment(MainActivity activity){
+        ManageCategoriesFragment manageCategoriesFragment = new ManageCategoriesFragment();
+        activity.replaceContent(manageCategoriesFragment);
     }
 
     public static void openAddPageDialog(final MainActivity activity) {

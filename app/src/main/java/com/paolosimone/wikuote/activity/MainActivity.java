@@ -197,6 +197,12 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 WiKuoteNavUtils.launchSettingsActivity(MainActivity.this);
             }
         });
+        findViewById(R.id.nav_manage_categories).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WiKuoteNavUtils.openManageCategoriesFragment(MainActivity.this);
+            }
+        });
 
         drawerToggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawer.addDrawerListener(drawerToggle);

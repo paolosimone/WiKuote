@@ -107,11 +107,17 @@ public class WiKuoteDatabaseHelper {
     }
 
     public void movePageToCategory(Page page, Category category){
+        Category oldCategory = page.getCategory();
         if (!existsCategory(category)) {
             category.save();
         }
         page.category = category;
         page.save();
+
+        if (oldCategory.getPages().isEmpty()){
+            oldCategory.delete();
+        }
+
         notifySubscribers();
     }
 
