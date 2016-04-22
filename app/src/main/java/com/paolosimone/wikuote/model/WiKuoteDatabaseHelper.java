@@ -114,7 +114,7 @@ public class WiKuoteDatabaseHelper {
         page.category = category;
         page.save();
 
-        if (oldCategory.getPages().isEmpty()){
+        if (oldCategory!=null && oldCategory.getPages().isEmpty()){
             oldCategory.delete();
         }
 
