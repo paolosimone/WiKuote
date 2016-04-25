@@ -1,5 +1,6 @@
 package com.paolosimone.wikuote.activity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
@@ -15,6 +16,7 @@ import com.paolosimone.wikuote.fragment.ManageCategoriesFragment;
 import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
+import com.paolosimone.wikuote.fragment.SimpleTextInputDialogFragment;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 
@@ -66,36 +68,21 @@ public abstract class WiKuoteNavUtils {
     public static void openAddPageDialog(final MainActivity activity) {
         String dialogTitle = activity.getString(R.string.msg_search_request);
         String positive = activity.getString(R.string.btn_search);
-        String negative = activity.getString(R.string.btn_cancel);
-        final EditText input = new EditText(activity);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(dialogTitle);
-        builder.setView(input);
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+        FragmentManager fm = activity.getSupportFragmentManager();
+        SimpleTextInputDialogFragment dialog = SimpleTextInputDialogFragment.newInstance(dialogTitle,positive);
+        dialog.setOnInputSubmitListener(new SimpleTextInputDialogFragment.OnInputSubmitListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String query = input.getText().toString();
-                dialog.dismiss();
+            public void onInputSubmit(String query) {
                 openSearchFragmentWithQuery(activity, SearchFragment.ADD_PAGE_TASK, query);
             }
         });
-        builder.setNegativeButton(negative, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog dialog = builder.create();
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        dialog.show();
+        dialog.show(fm, "fragment_add_page");
     }
 
     public static void openSelectCategoryDialog(MainActivity activity, Page page) {
         FragmentManager fm = activity.getSupportFragmentManager();
-        SelectCategoryDialogFragment fragment = SelectCategoryDialogFragment.newInstance(page);
-        fragment.show(fm, SelectCategoryDialogFragment.TAG);
+        SelectCategoryDialogFragment dialog = SelectCategoryDialogFragment.newInstance(page);
+        dialog.show(fm, SelectCategoryDialogFragment.TAG);
     }
 }

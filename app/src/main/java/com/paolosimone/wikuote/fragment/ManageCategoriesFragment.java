@@ -3,11 +3,13 @@ package com.paolosimone.wikuote.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.ManageCategoriesAdapter;
@@ -52,14 +54,68 @@ public class ManageCategoriesFragment extends Fragment implements Titled, Manage
     }
 
     @Override
-    public void onDraggedPage(Page page, Category toCategory) {
-        db.movePageToCategory(page,toCategory);
-        updateViewContent();
+    public void onDragPage(Page page, Category toCategory) {
+        if (toCategory==null){
+            openAddToNewCategoryDialog(page);
+        }
+        else {
+            db.movePageToCategory(page, toCategory);
+            updateViewContent();
+        }
     }
 
     @Override
-    public void onCategoryRenamed(String newName) {
-        // TODO
+    public void onCategoryRename(Category category) {
+        openRenameCategoryDialog(category);
+    }
+
+    @Override
+    public void onCategoryDelete(Category category) {
+        db.deleteCategory(category);
+        updateViewContent();
+    }
+
+    private void openRenameCategoryDialog(final Category category){
+        String dialogTitle = getString(R.string.msg_rename_request);
+        String positive = getString(R.string.msg_rename);
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        SimpleTextInputDialogFragment dialog = SimpleTextInputDialogFragment.newInstance(dialogTitle,positive);
+        dialog.setOnInputSubmitListener(new SimpleTextInputDialogFragment.OnInputSubmitListener() {
+            @Override
+            public void onInputSubmit(String newTitle) {
+                WiKuoteDatabaseHelper db = WiKuoteDatabaseHelper.getInstance();
+                if (!db.isValidCategoryTitle(newTitle) || db.getCategoryFromTitle(newTitle)!=null){
+                    Toast.makeText(getActivity(),R.string.err_invalid_input,Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                db.renameCategory(category, newTitle);
+                updateViewContent();
+            }
+        });
+        dialog.show(fm, "fragment_rename_category");
+    }
+
+    private void openAddToNewCategoryDialog(final Page page) {
+        String dialogTitle = getString(R.string.msg_new_category);
+        String positive = getString(R.string.msg_add);
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        SimpleTextInputDialogFragment dialog = SimpleTextInputDialogFragment.newInstance(dialogTitle,positive);
+        dialog.setOnInputSubmitListener(new SimpleTextInputDialogFragment.OnInputSubmitListener() {
+            @Override
+            public void onInputSubmit(String newTitle) {
+                WiKuoteDatabaseHelper db = WiKuoteDatabaseHelper.getInstance();
+                if (!db.isValidCategoryTitle(newTitle) || db.getCategoryFromTitle(newTitle)!=null){
+                    Toast.makeText(getActivity(),R.string.err_invalid_input,Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Category category = new Category(newTitle);
+                db.movePageToCategory(page, category);
+                updateViewContent();
+            }
+        });
+        dialog.show(fm, "fragment_new_category");
     }
 
     private void updateViewContent(){

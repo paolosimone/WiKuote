@@ -25,6 +25,7 @@
     <string name="action_delete_page">Delete page</string>
     <string name="action_save_page">Save page</string>
     <string name="action_delete">Delete</string>
+    <string name="action_edit">Edit</string>
     <string name="desc_selected_singular">quote selected</string>
     <string name="desc_selected_plural">quotes selected</string>
 
@@ -43,8 +44,10 @@
     <string name="title_select_category">Select category</string>
     <string name="title_share_quote">Share using</string>
     <string name="msg_search_request">Insert page title</string>
+    <string name="msg_rename_request">Insert new category title</string>
     <string name="msg_add">Add</string>
     <string name="msg_new_category">New category</string>
+    <string name="msg_rename">Rename</string>
     <string name="err_invalid_input">Invalid input</string>
     <string name="err_existing_page">The page already exists!</string>
     <string name="btn_cancel">Cancel</string>

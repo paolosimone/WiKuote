@@ -2,7 +2,6 @@ package com.paolosimone.wikuote.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -144,11 +143,12 @@ public class SelectCategoryDialogFragment extends DialogFragment {
         else {
             // new category has been prompted
             String newCategoryTitle = newCategoryText.getText().toString();
-            if (isValidTitle(newCategoryTitle)){
-                newCategoryTitle = newCategoryTitle.toUpperCase().charAt(0)
-                        + ((newCategoryTitle.length()>1) ? newCategoryTitle.substring(1) : "");
-                Category alreadyExistent = db.getCategoryFromTitle(newCategoryTitle);
-                category = alreadyExistent!=null ? alreadyExistent : new Category(newCategoryTitle);
+            Category alreadyExistent = db.getCategoryFromTitle(newCategoryTitle);
+            if (alreadyExistent!=null){
+                category = alreadyExistent;
+            }
+            else if (db.isValidCategoryTitle(newCategoryTitle)){
+                category = new Category(newCategoryTitle);
             }
         }
 
@@ -165,9 +165,4 @@ public class SelectCategoryDialogFragment extends DialogFragment {
     private void handleCancelClick(){
         getDialog().dismiss();
     }
-
-    private boolean isValidTitle(String title){
-        return !title.equals("");
-    }
-
 }

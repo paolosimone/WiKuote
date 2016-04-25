@@ -26,13 +26,7 @@ public class WiKuoteDatabaseHelper {
 
     private WiKuoteDatabaseHelper() {}
 
-    public void attach(DatabaseObserver observer){
-        subscribers.add(observer);
-    }
-
-    public void detach(DatabaseObserver observer){
-        subscribers.remove(observer);
-    }
+    /** Quote **/
 
     public Quote getQuoteFromText(String text){
         return new Select()
@@ -76,10 +70,12 @@ public class WiKuoteDatabaseHelper {
         notifySubscribers();
     }
 
+    /** Page **/
+
     public Page getPageFromName(String name){
         return new Select()
                 .from(Page.class)
-                .where("name=?", name)
+                .where("lower(name)=lower(?)", name)
                 .executeSingle();
     }
 
@@ -109,6 +105,7 @@ public class WiKuoteDatabaseHelper {
     public void movePageToCategory(Page page, Category category){
         Category oldCategory = page.getCategory();
         if (!existsCategory(category)) {
+            category.title = validateTitle(category.title);
             category.save();
         }
         page.category = category;
@@ -120,6 +117,8 @@ public class WiKuoteDatabaseHelper {
 
         notifySubscribers();
     }
+
+    /** Category **/
 
     public boolean existsCategory(Category category){
         return getCategoryFromTitle(category.title) != null;
@@ -136,13 +135,38 @@ public class WiKuoteDatabaseHelper {
     public Category getCategoryFromTitle(String title){
         return new Select()
                 .from(Category.class)
-                .where("title=?", title)
+                .where("lower(title)=lower(?)", title)
                 .executeSingle();
     }
 
     public void deleteCategory(Category category){
         category.delete();
         notifySubscribers();
+    }
+
+    public boolean isValidCategoryTitle(String title){
+        // TODO more complex checking
+        return !title.equals("");
+    }
+
+    private String validateTitle(String title){
+        return title.toUpperCase().charAt(0) + ((title.length()>1) ? title.substring(1) : "");
+    }
+
+    public void renameCategory(Category category, String newTitle){
+        category.title = validateTitle(newTitle);
+        category.save();
+        notifySubscribers();
+    }
+
+    /** Subscribers **/
+
+    public void attach(DatabaseObserver observer){
+        subscribers.add(observer);
+    }
+
+    public void detach(DatabaseObserver observer){
+        subscribers.remove(observer);
     }
 
     private void notifySubscribers(){
