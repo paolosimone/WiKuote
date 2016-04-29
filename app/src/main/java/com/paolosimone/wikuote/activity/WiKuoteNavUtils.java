@@ -17,6 +17,7 @@ import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
 import com.paolosimone.wikuote.fragment.SimpleTextInputDialogFragment;
+import com.paolosimone.wikuote.fragment.WebViewFragment;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 
@@ -40,14 +41,14 @@ public abstract class WiKuoteNavUtils {
         activity.replaceContent(qotdFragment);
     }
 
-    public static void openQuoteFragmentCategory(MainActivity activity, Category category) {
-        DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstance(category);
-        activity.replaceContent(quoteFragment);
-    }
-
     public static void openExploreFragment(MainActivity activity){
         ExploreQuoteFragment exploreFragment = new ExploreQuoteFragment();
         activity.replaceContent(exploreFragment);
+    }
+
+    public static void openQuoteFragmentCategory(MainActivity activity, Category category) {
+        DynamicQuoteFragment quoteFragment = DynamicQuoteFragment.newInstance(category);
+        activity.replaceContent(quoteFragment);
     }
 
     public static void openQuoteFragmentSinglePage(MainActivity activity, Page page) {
@@ -55,29 +56,20 @@ public abstract class WiKuoteNavUtils {
         activity.replaceContent(quoteFragment);
     }
 
-    public static void openSearchFragmentWithQuery(MainActivity activity, int task, String query) {
-        SearchFragment searchFragment = SearchFragment.newInstance(task, query);
+    public static void openWebViewFragmentSinglePage(MainActivity activity, Page page) {
+        WebViewFragment quoteFragment = WebViewFragment.newInstance(page.getUrl(), page.getName());
+        activity.replaceContent(quoteFragment);
+    }
+
+    public static void openSearchFragmentWithQuery(MainActivity activity, String query) {
+        SearchFragment searchFragment = SearchFragment.newInstance(query);
+        searchFragment.setListener(activity);
         activity.replaceContent(searchFragment);
     }
 
     public static void openManageCategoriesFragment(MainActivity activity){
         ManageCategoriesFragment manageCategoriesFragment = new ManageCategoriesFragment();
         activity.replaceContent(manageCategoriesFragment);
-    }
-
-    public static void openAddPageDialog(final MainActivity activity) {
-        String dialogTitle = activity.getString(R.string.msg_search_request);
-        String positive = activity.getString(R.string.btn_search);
-
-        FragmentManager fm = activity.getSupportFragmentManager();
-        SimpleTextInputDialogFragment dialog = SimpleTextInputDialogFragment.newInstance(dialogTitle,positive);
-        dialog.setOnInputSubmitListener(new SimpleTextInputDialogFragment.OnInputSubmitListener() {
-            @Override
-            public void onInputSubmit(String query) {
-                openSearchFragmentWithQuery(activity, SearchFragment.ADD_PAGE_TASK, query);
-            }
-        });
-        dialog.show(fm, "fragment_add_page");
     }
 
     public static void openSelectCategoryDialog(MainActivity activity, Page page) {

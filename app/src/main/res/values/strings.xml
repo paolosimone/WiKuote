@@ -26,6 +26,7 @@
     <string name="action_save_page">Save page</string>
     <string name="action_delete">Delete</string>
     <string name="action_edit">Edit</string>
+    <string name="action_webview">View web page</string>
     <string name="desc_selected_singular">quote selected</string>
     <string name="desc_selected_plural">quotes selected</string>
 
@@ -65,6 +66,7 @@
     <string name="err_generic">Oops... Something went wrong!</string>
     <string name="err_missing_author">The requested page doesn\'t exists</string>
     <string name="err_network">Unable to reach the service!\nCheck your connection and retry</string>
+    <string name="err_parser">Unable to extract quotes from this page</string>
 
     <!-- DB messages -->
     <string name="msg_page_deleted">Page successfully deleted!</string>

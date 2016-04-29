@@ -1,9 +1,11 @@
 package com.paolosimone.wikuote.api;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.paolosimone.wikuote.exceptions.ParserException;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
@@ -49,7 +51,7 @@ public abstract class WikiQuoteUtils {
         return pageUrl.substring(start);
     }
 
-    public static ArrayList<Page> extractSuggestions(JsonArray response){
+    public static ArrayList<Page> extractSuggestions(JsonArray response) throws ParserException {
         ArrayList<Page> result = new ArrayList<>();
         try {
             JSONArray names = new JSONArray(response.toString()).getJSONArray(1);
@@ -59,15 +61,17 @@ public abstract class WikiQuoteUtils {
                 String name = names.getString(i);
                 String description = descriptions.getString(i);
                 String url = urls.getString(i);
+                // Use mobile version of the website
+                url = url.replace(Uri.parse(url).getHost(), WikiQuoteProvider.HOST);
                 result.add(new Page(name, description, url));
             }
         } catch (JSONException e) {
-            // do nothing
+            throw new ParserException();
         }
         return result;
     }
 
-    public static long extractPageIndex(JsonObject response){
+    public static long extractPageIndex(JsonObject response) throws ParserException {
         long index = INVALID_INDEX;
         try {
             JSONObject pages = new JSONObject(response.toString())
@@ -84,12 +88,12 @@ public abstract class WikiQuoteUtils {
                 }
             }
         } catch (JSONException e) {
-            // do nothing
+            throw new ParserException();
         }
         return index;
     }
 
-    public static List<Integer> extractSectionIndexList(JsonObject response){
+    public static List<Integer> extractSectionIndexList(JsonObject response) throws ParserException {
         List<Integer> indexes = new ArrayList<>();
         try {
             JSONArray sections = new JSONObject(response.toString())
@@ -111,12 +115,12 @@ public abstract class WikiQuoteUtils {
                 indexes.add(1);
             }
         } catch (JSONException e) {
-            // do nothing
+            throw new ParserException();
         }
         return indexes;
     }
 
-    public static List<String> extractQuoteList(JsonObject response){
+    public static List<String> extractQuoteList(JsonObject response) throws ParserException {
         List<String> quotes = new ArrayList<>();
         try {
             String html = new JSONObject(response.toString())
@@ -143,21 +147,26 @@ public abstract class WikiQuoteUtils {
                 }
             }
         } catch (JSONException e) {
-            // do nothing
+            throw new ParserException();
         }
         return quotes;
     }
 
-    public static String[] extractQuoteOfTheDay(Document mainPage){
-        String quotdDivId = "#mf-qotd ";
-        String quotdArea = "table > tbody > tr > td > table > tbody > tr > td ";
-        String quotdRows = "table > tbody > tr ";
-        Elements rows = mainPage.select(quotdDivId + quotdArea + quotdRows);
+    public static String[] extractQuoteOfTheDay(Document mainPage) throws ParserException {
+        try {
+            String quotdDivId = "#mf-qotd ";
+            String quotdArea = "table > tbody > tr > td > table > tbody > tr > td ";
+            String quotdRows = "table > tbody > tr ";
+            Elements rows = mainPage.select(quotdDivId + quotdArea + quotdRows);
 
-        String[] result = new String[2];
-        result[QUOTE] = rows.get(0).text();
-        result[PAGE_NAME] = rows.get(1).select("a").first().text();
+            String[] result = new String[2];
+            result[QUOTE] = rows.get(0).text();
+            result[PAGE_NAME] = rows.get(1).select("a").first().text();
 
-        return result;
+            return result;
+        } catch (Exception e) {
+            throw new ParserException();
+        }
+
     }
 }

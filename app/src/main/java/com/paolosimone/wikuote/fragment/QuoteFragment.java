@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.activity.MainActivity;
+import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.QuotePagerAdapter;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
@@ -90,6 +92,9 @@ public abstract class QuoteFragment extends Fragment{
             case R.id.menu_item_share:
                 sendShareIntent();
                 return true;
+            case R.id.menu_item_web:
+                openWebView();
+                return  true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -204,5 +209,14 @@ public abstract class QuoteFragment extends Fragment{
         shareIntent.putExtra(Intent.EXTRA_SUBJECT,getString(R.string.app_name));
         shareIntent.putExtra(Intent.EXTRA_TEXT,current.getText() + " - " + current.getPage().getName());
         startActivity(Intent.createChooser(shareIntent,getString(R.string.title_share_quote)));
+    }
+
+    private void openWebView(){
+        Quote current = getCurrentQuote();
+        if (current==null) {
+            return;
+        }
+        MainActivity activity = (MainActivity) getActivity();
+        WiKuoteNavUtils.openWebViewFragmentSinglePage(activity, current.getPage());
     }
 }

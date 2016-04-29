@@ -4,8 +4,12 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.paolosimone.wikuote.R;
+import com.paolosimone.wikuote.activity.MainActivity;
+import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
@@ -23,6 +27,7 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
     public void addQuote(Quote quote){
         synchronized (quotes){
             if (placeholderPage !=null){
+                hideWebViewButton();
                 setupPage(placeholderPage,quote);
                 placeholderPage = null;
             }
@@ -35,10 +40,25 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         return placeholderPage != null;
     }
 
-    public void notifySilentError(Quote error){
+    public void silentNotifyError(String error){
         if (userIsWaiting()){
-            setupPage(placeholderPage,error);
+            Quote errorQuote = new Quote(error,new Page("","",""));
+            setupPage(placeholderPage,errorQuote);
         }
+    }
+
+    public void silentNotifyParserError(String error, View.OnClickListener listener) {
+        if (userIsWaiting()) {
+            silentNotifyError(error);
+            Button btnWebView = (Button) placeholderPage.findViewById(R.id.btn_webview);
+            btnWebView.setOnClickListener(listener);
+            btnWebView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideWebViewButton() {
+        Button btnWebView = (Button) placeholderPage.findViewById(R.id.btn_webview);
+        btnWebView.setVisibility(View.INVISIBLE);
     }
 
     @Override

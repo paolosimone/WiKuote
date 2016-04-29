@@ -70,15 +70,17 @@ public class QuotePagerAdapter extends PagerAdapter {
     }
 
     protected void setupPage(View view, Quote quote){
-        ProgressBar loading = (ProgressBar) view.findViewById(R.id.loading_spinner);
-        if (loading.getVisibility()==View.VISIBLE){
-            loading.setVisibility(View.INVISIBLE);
-        }
+        hideLoading(view);
 
         TextView quoteTextView = (TextView) view.findViewById(R.id.quote_text);
         TextView authorTextView = (TextView) view.findViewById(R.id.author_text);
 
         quoteTextView.setText(quote.getText());
         authorTextView.setText(quote.getPage().getName());
+    }
+
+    protected void hideLoading(View view) {
+        ProgressBar loading = (ProgressBar) view.findViewById(R.id.loading_spinner);
+        loading.setVisibility(View.INVISIBLE);
     }
 }

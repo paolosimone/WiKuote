@@ -4,6 +4,7 @@ import com.paolosimone.wikuote.exceptions.MissingAuthorException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.paolosimone.wikuote.exceptions.ParserException;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
@@ -26,7 +27,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 public class WikiQuoteProvider implements QuoteProvider{
 
-    public static final String BASE_URL = "https://en.m.wikiquote.org/";
+    public static final String HOST = "en.m.wikiquote.org";
+    public static final String BASE_URL = "https://" + HOST + "/";
     public static final String RANDOM_URL = BASE_URL + "wiki/Special:Random";
 
     private static WikiQuoteProvider ourInstance = new WikiQuoteProvider();
@@ -52,7 +54,7 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public ArrayList<Page> getSuggestedAuthors(String query) throws IOException {
+    public ArrayList<Page> getSuggestedPages(String query) throws IOException {
         Call<JsonElement> call = wikiQuoteService.getSuggestionsFromSearch(query);
         JsonArray response = (JsonArray) call.execute().body();
 
@@ -68,10 +70,11 @@ public class WikiQuoteProvider implements QuoteProvider{
 
         String pageUrl = redirectUrl.toString();
         String pageName = WikiQuoteUtils.extractPageNameFromUrl(pageUrl);
-        List<Page> matches = getSuggestedAuthors(pageName);
 
+        List<Page> matches = getSuggestedPages(pageName);
         if (matches.isEmpty()) {
-            throw new IOException();
+            // The page name was extracted incorrectly
+            throw new ParserException();
         }
 
         return matches.get(0);
@@ -95,9 +98,10 @@ public class WikiQuoteProvider implements QuoteProvider{
         String quoteText = result[WikiQuoteUtils.QUOTE];
         String pageName = result[WikiQuoteUtils.PAGE_NAME];
 
-        List<Page> matches = getSuggestedAuthors(pageName);
+        List<Page> matches = getSuggestedPages(pageName);
         if (matches.isEmpty()) {
-            throw new IOException();
+            // The page name was extracted incorrectly
+            throw new ParserException();
         }
 
         return new Quote(quoteText,matches.get(0));
@@ -117,10 +121,9 @@ public class WikiQuoteProvider implements QuoteProvider{
         JsonObject response = (JsonObject) call.execute().body();
 
         List<Integer> indexes = WikiQuoteUtils.extractSectionIndexList(response);
-
-
         if (indexes.isEmpty()){
-            throw new IOException();
+            // The requested page doesn't have a section list
+            throw new ParserException();
         }
 
         Random rand = new Random();
@@ -132,9 +135,9 @@ public class WikiQuoteProvider implements QuoteProvider{
         JsonObject response = (JsonObject) call.execute().body();
 
         List<String> quotes = WikiQuoteUtils.extractQuoteList(response);
-
         if (quotes.isEmpty()){
-            throw new IOException();
+            // The given section doesn't contain quotes in the standard format
+            throw new ParserException();
         }
 
         Random rand = new Random();

@@ -74,6 +74,12 @@ public class ExploreQuoteFragment extends DynamicQuoteFragment {
         return null;
     }
 
+    @Override
+    protected void handleParseException(Page requestedPage) {
+        super.handleParseException(requestedPage);
+        currentPages.remove(requestedPage);
+    }
+
     private class FetchRandomPageTask extends AsyncTask<Void, Void, Page> {
 
         @Override

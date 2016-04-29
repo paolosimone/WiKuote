@@ -15,9 +15,10 @@ import android.widget.Toast;
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.activity.MainActivity;
 import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
+import com.paolosimone.wikuote.api.FetchQuoteResult;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
-import com.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.exceptions.ParserException;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Quote;
@@ -28,11 +29,12 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class DynamicQuoteFragment extends QuoteFragment implements Titled{
+public class DynamicQuoteFragment extends QuoteFragment implements Titled {
 
     private final static String CATEGORY = "category";
     private final static String PAGE = "page";
@@ -74,6 +76,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled{
         currentTasks = new HashSet<>();
         quoteProvider = WikiQuoteProvider.getInstance();
         retrieveInput(savedInstanceState);
+        // Category contains only saved pages!
         isUnsavedPage = page!=null && !WiKuoteDatabaseHelper.getInstance().existsPage(page);
         setHasOptionsMenu(true);
     }
@@ -262,38 +265,54 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled{
         }
     }
 
-    private class FetchQuoteTask extends AsyncTask<Page, Void, Quote> {
+    protected void handleParseException(final Page requestedPage) {
+        View.OnClickListener showWebViewListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WiKuoteNavUtils.openWebViewFragmentSinglePage((MainActivity) getActivity(), requestedPage);
+            }
+        };
+        quotePagerAdapter.silentNotifyParserError(getString(R.string.err_parser), showWebViewListener);
+    }
+
+    protected void handleIOException(final Page requestedPage) {
+        fetchQuoteForPage(selectNextPage());
+        //TODO better message mechanism or funny quotes db
+        quotePagerAdapter.silentNotifyError(getString(R.string.err_generic));
+    }
+
+    private class FetchQuoteTask extends AsyncTask<Page, Void, FetchQuoteResult> {
 
         @Override
-        protected Quote doInBackground(Page... params) {
+        protected FetchQuoteResult doInBackground(Page... params) {
             Page currentPage = params[0];
-            Quote newQuote = null;
             try {
-                newQuote = quoteProvider.getRandomQuoteFor(currentPage);
-            } catch (MissingAuthorException e) {
-                stopFetching();
-            } catch (IOException e) {
-                // do nothing
+                Quote newQuote = quoteProvider.getRandomQuoteFor(currentPage);
+                return FetchQuoteResult.success(newQuote);
+            } catch (Exception e) {
+                return FetchQuoteResult.error(currentPage, e);
             }
-
-            return newQuote;
         }
 
         @Override
-        protected void onPostExecute(Quote result){
+        protected void onPostExecute(FetchQuoteResult result){
             currentTasks.remove(this);
 
-            if (result!=null){
-                quotePagerAdapter.addQuote(result);
+            if (result.isSuccessful()){
+                quotePagerAdapter.addQuote(result.getQuote());
                 if (quotePagerAdapter.userIsWaiting()){
                     onQuoteChange(quotePager.getCurrentItem());
                 }
             }
             else {
-                fetchQuoteForPage(selectNextPage());
-                //TODO better message mechanism or funny quotes db
-                Quote error = new Quote(getActivity().getString(R.string.err_generic),new Page("","",""));
-                quotePagerAdapter.notifySilentError(error);
+                Exception e = result.getException();
+                Page requestedPage = result.getPage();
+                if (e instanceof ParserException) {
+                    handleParseException(requestedPage);
+                }
+                else if (e instanceof IOException) {
+                    handleIOException(requestedPage);
+                }
             }
         }
     }

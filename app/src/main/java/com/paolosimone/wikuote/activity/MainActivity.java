@@ -121,21 +121,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
 
     @Override
     public void onPageClicked(Page page) {
-        Integer task = ((SearchFragment) contentFragment).getTask();
-        switch (task){
-            case SearchFragment.SIMPLE_SEARCH_TASK:
-                WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
-                break;
-            case SearchFragment.ADD_PAGE_TASK:
-                if (WiKuoteDatabaseHelper.getInstance().existsPage(page)) {
-                    Toast.makeText(this, R.string.err_existing_page, Toast.LENGTH_SHORT).show();
-                    WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
-                    return;
-                }
-                WiKuoteNavUtils.openSelectCategoryDialog(this, page);
-                break;
-            default:
-        }
+        WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
     }
 
     @Override
@@ -175,12 +161,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
             @Override
             public void onClick(View v) {
                 WiKuoteNavUtils.openExploreFragment(MainActivity.this);
-            }
-        });
-        findViewById(R.id.nav_add_source_fragment).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WiKuoteNavUtils.openAddPageDialog(MainActivity.this);
             }
         });
         findViewById(R.id.nav_favorites_activity).setOnClickListener(new View.OnClickListener() {
@@ -244,7 +224,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
                 if (contentFragment instanceof SearchFragment) {
                     ((SearchFragment) contentFragment).setQuery(query);
                 } else {
-                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, SearchFragment.SIMPLE_SEARCH_TASK, query);
+                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, query);
                 }
                 searchView.clearFocus();
                 searchItem.collapseActionView();

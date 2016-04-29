@@ -14,7 +14,7 @@ public interface QuoteProvider {
 
     boolean isAvailableAuthor(String author) throws IOException;
 
-    ArrayList<Page> getSuggestedAuthors(String query) throws IOException;
+    ArrayList<Page> getSuggestedPages(String query) throws IOException;
 
     Page getRandomPage() throws  IOException;
 
