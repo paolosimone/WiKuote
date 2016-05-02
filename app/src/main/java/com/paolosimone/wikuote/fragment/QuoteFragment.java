@@ -120,6 +120,10 @@ public abstract class QuoteFragment extends Fragment{
         quotePager.setAdapter(quotePagerAdapter);
     }
 
+    public void goToQuote(int index) {
+        quotePager.setCurrentItem(index);
+    }
+
     public Quote getCurrentQuote(){
         List<Quote> quotes = quotePagerAdapter.getQuotes();
         if (quotes.isEmpty()) return null;

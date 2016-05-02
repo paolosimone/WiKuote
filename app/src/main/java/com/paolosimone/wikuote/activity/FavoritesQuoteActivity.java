@@ -25,8 +25,6 @@ public class FavoritesQuoteActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-
         int index = getIntent().getIntExtra(INDEX,0);
         quoteFragment = FavoritesQuoteFragment.newInstance(index);
         getSupportFragmentManager()

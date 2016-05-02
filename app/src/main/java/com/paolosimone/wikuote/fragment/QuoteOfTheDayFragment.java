@@ -72,7 +72,7 @@ public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
 
         @Override
         protected void onPreExecute(){
-            pd = new ProgressDialog(getContext());
+            pd = new ProgressDialog(getActivity());
             pd.setCancelable(false);
             pd.requestWindowFeature(Window.FEATURE_NO_TITLE);
             pd.setMessage(getString(R.string.loading));

@@ -4,38 +4,85 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.FrameLayout;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.FavoritesListFragment;
+import com.paolosimone.wikuote.fragment.FavoritesQuoteFragment;
+import com.paolosimone.wikuote.fragment.QuoteFragment;
 
 /**
  * Created by Paolo Simone on 09/04/2016.
  */
-public class FavoritesActivity extends AppCompatActivity {
+public class FavoritesActivity extends AppCompatActivity
+        implements FavoritesListFragment.OnFavoriteClickListener, FavoritesQuoteFragment.OnFavoriteQuoteChangedListener {
 
-    FavoritesListFragment listFragment;
+    private static final String ACTIVATED_ITEM = "activated_item";
+
+    private FavoritesListFragment listFragment;
+    private FavoritesQuoteFragment quoteFragment;
+
+    private boolean isTwoPane;
+    private int activatedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_single_fragment);
+        setContentView(R.layout.activity_favorites);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // TODO tablet layout
         listFragment = new FavoritesListFragment();
+        listFragment.setOnFavoriteClickListener(this);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.content_fragment, listFragment)
+                .replace(R.id.quote_list_fragment, listFragment)
                 .commit();
+
+        FrameLayout detailContainer = (FrameLayout) findViewById(R.id.quote_detail_fragment);
+        isTwoPane = detailContainer != null;
+
+        if (isTwoPane) {
+            quoteFragment = FavoritesQuoteFragment.newInstance(0);
+            quoteFragment.setOnFavouriteQuoteChangedListener(this);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.quote_detail_fragment, quoteFragment)
+                    .commit();
+
+            activatedItem = (savedInstanceState != null) ? savedInstanceState.getInt(ACTIVATED_ITEM) : 0;
+        }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isTwoPane) listFragment.activateItem(activatedItem);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        if (isTwoPane) state.putInt(ACTIVATED_ITEM, activatedItem);
+        super.onSaveInstanceState(state);
+    }
+
+    @Override
     public void onFavoriteClick(int position){
-        Intent intent = new Intent(this, FavoritesQuoteActivity.class);
-        intent.putExtra(FavoritesQuoteActivity.INDEX, position);
-        startActivity(intent);
+        if (isTwoPane) {
+            quoteFragment.goToQuote(position);
+        }
+        else {
+            Intent intent = new Intent(this, FavoritesQuoteActivity.class);
+            intent.putExtra(FavoritesQuoteActivity.INDEX, position);
+            startActivity(intent);
+        }
     }
 
+    @Override
+    public void onFavoriteQuoteChanged(int position) {
+        listFragment.activateItem(position);
+        activatedItem = position;
+    }
 }

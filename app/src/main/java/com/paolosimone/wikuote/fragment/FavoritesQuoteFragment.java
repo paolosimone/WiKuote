@@ -14,6 +14,7 @@ import java.util.List;
 public class FavoritesQuoteFragment extends QuoteFragment implements WiKuoteDatabaseHelper.DatabaseObserver {
 
     private WiKuoteDatabaseHelper db;
+    private OnFavoriteQuoteChangedListener listener;
 
     public static FavoritesQuoteFragment newInstance(Integer index){
         Bundle args = new Bundle();
@@ -50,9 +51,22 @@ public class FavoritesQuoteFragment extends QuoteFragment implements WiKuoteData
         return new ArrayList<>(favorites);
     }
 
-
     @Override
     public void onDataChanged() {
         changeQuotes(retrieveQuotes(null));
+    }
+
+    @Override
+    protected void onQuoteChange(int position) {
+        super.onQuoteChange(position);
+        if (listener !=null ) listener.onFavoriteQuoteChanged(position);
+    }
+
+    public void setOnFavouriteQuoteChangedListener(OnFavoriteQuoteChangedListener listener) {
+        this.listener = listener;
+    }
+
+    public interface OnFavoriteQuoteChangedListener {
+        void onFavoriteQuoteChanged(int position);
     }
 }

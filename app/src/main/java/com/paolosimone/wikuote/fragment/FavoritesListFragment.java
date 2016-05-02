@@ -29,6 +29,7 @@ import java.util.Set;
 public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHelper.DatabaseObserver{
 
     private WiKuoteDatabaseHelper db;
+    private OnFavoriteClickListener listener;
 
     private FavoritesListAdapter favoritesListAdapter;
     private ListView listView;
@@ -55,7 +56,7 @@ public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ((FavoritesActivity) getActivity()).onFavoriteClick(position);
+                if (listener != null) listener.onFavoriteClick(position);
             }
         });
 
@@ -71,6 +72,19 @@ public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHe
     @Override
     public void onDataChanged() {
         updateQuotes();
+    }
+
+    public void setOnFavoriteClickListener(OnFavoriteClickListener listener){
+        this.listener = listener;
+    }
+
+    public void activateItem(int position) {
+        if (listView == null) return;
+
+        if (listView.getChoiceMode() != ListView.CHOICE_MODE_SINGLE)
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+
+        listView.setItemChecked(position, true);
     }
 
     private void updateQuotes(){
@@ -133,5 +147,9 @@ public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHe
                 selected = null;
             }
         });
+    }
+
+    public interface OnFavoriteClickListener {
+        void onFavoriteClick(int position);
     }
 }
