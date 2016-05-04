@@ -3,7 +3,7 @@ package com.paolosimone.wikuote.exceptions;
 import java.io.IOException;
 
 /**
- * Created by Paolo Simone on 29/04/2016.
+ * An exception that occurs when the parser fails to read an input.
  */
 public class ParserException extends IOException {
 }

@@ -1,9 +1,5 @@
 package com.paolosimone.wikuote.activity;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
@@ -28,15 +23,15 @@ import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
-import com.paolosimone.wikuote.notification.NewDayAlarmReceiver;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements SearchFragment.SearchPageListener, WiKuoteDatabaseHelper.DatabaseObserver {
+/**
+ * The main activity of the application, handle the navigation through the drawer and present the various fragment to the user.
+ */
+public class MainActivity extends AppCompatActivity implements SearchFragment.OnPageClickedListener, WiKuoteDatabaseHelper.DatabaseObserver {
 
     private static final String CONTENT = "content";
 
@@ -129,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         updateCategoryList();
     }
 
-    public Fragment getContentFragment() {
-        return contentFragment;
-    }
-
+    /**
+     * Replace the current fragment with the given one.
+     * @param contentFragment the fragment to be shown
+     */
     protected void replaceContent(Fragment contentFragment){
         this.contentFragment = contentFragment;
         getSupportFragmentManager()
@@ -188,6 +183,9 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         drawer.addDrawerListener(drawerToggle);
     }
 
+    /**
+     * Update the category list and the saved page in the drawer.
+     */
     private void updateCategoryList(){
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.list_drawer_category);
 

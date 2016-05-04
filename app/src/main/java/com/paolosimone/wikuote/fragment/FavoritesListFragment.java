@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.activity.FavoritesActivity;
 import com.paolosimone.wikuote.adapter.FavoritesListAdapter;
 import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
@@ -24,7 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by Paolo Simone on 11/04/2016.
+ * Presents the favorites quotes as a scrollable list.
+ * It allow the user to select a quote also to select multiple quotes to delete them.
  */
 public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHelper.DatabaseObserver{
 
@@ -74,10 +74,18 @@ public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHe
         updateQuotes();
     }
 
+    /**
+     * Set the listener that will handle the click on a quote.
+     * @param listener the listener
+     */
     public void setOnFavoriteClickListener(OnFavoriteClickListener listener){
         this.listener = listener;
     }
 
+    /**
+     * Highlight the quote in the given position
+     * @param position the index of the quote to be highlighted
+     */
     public void activateItem(int position) {
         if (listView == null) return;
 
@@ -149,7 +157,14 @@ public class FavoritesListFragment extends Fragment implements WiKuoteDatabaseHe
         });
     }
 
+    /**
+     * The listener that will respond when the user selects a quote.
+     */
     public interface OnFavoriteClickListener {
+        /**
+         * Handle the event when the user selects a quote in the list.
+         * @param position the index of the selected quote
+         */
         void onFavoriteClick(int position);
     }
 }

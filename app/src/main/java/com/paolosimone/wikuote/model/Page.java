@@ -10,12 +10,12 @@ import com.activeandroid.annotation.Table;
 import java.util.List;
 
 /**
- * Created by psimo on 29/03/2016.
+ * A page is a source of quotes, identified by a name and a url.
  */
 @Table(name="Pages")
 public class Page extends Model implements Parcelable{
 
-    @Column(name = "name", unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
+    @Column(name = "name", notNull = true, unique = true, onUniqueConflict = Column.ConflictAction.FAIL)
     String name;
 
     @Column(name = "category", index = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
@@ -31,6 +31,13 @@ public class Page extends Model implements Parcelable{
         super();
     }
 
+    /**
+     * Create a new page associated to the given category.
+     * @param name the name of the page
+     * @param category the category associated to the page
+     * @param description the description of the page
+     * @param url the url of the page
+     */
     public Page(String name, Category category, String description ,String url) {
         super();
         this.name = name;
@@ -39,6 +46,12 @@ public class Page extends Model implements Parcelable{
         this.url = url;
     }
 
+    /**
+     * Create a new page that is not associated to any category.
+     * @param name the name of the page
+     * @param description the description of the page
+     * @param url the url of the page
+     */
     public Page(String name, String description ,String url) {
         this(name, null, description, url);
     }
@@ -67,6 +80,10 @@ public class Page extends Model implements Parcelable{
         return url;
     }
 
+    /**
+     * Get all saved quotes belonging to the page.
+     * @return the list of quotes belonging to the page
+     */
     public List<Quote> getQuotes() {
         return getMany(Quote.class, "page");
     }

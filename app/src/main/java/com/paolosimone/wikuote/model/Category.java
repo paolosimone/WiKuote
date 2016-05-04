@@ -1,6 +1,5 @@
 package com.paolosimone.wikuote.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,12 +7,11 @@ import com.activeandroid.Model;
 import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
-import com.paolosimone.wikuote.R;
 
 import java.util.List;
 
 /**
- * Created by Paolo Simone on 25/03/2016.
+ * A category is a collection of saved pages, identified by a title.
  */
 @Table(name = "Categories")
 public class Category extends Model implements Parcelable, Comparable<Category> {
@@ -25,6 +23,10 @@ public class Category extends Model implements Parcelable, Comparable<Category> 
         super();
     }
 
+    /**
+     * Create a new empty category with the given title.
+     * @param title the title of the category
+     */
     public Category(String title) {
         super();
         this.title = title;
@@ -39,6 +41,10 @@ public class Category extends Model implements Parcelable, Comparable<Category> 
         return title;
     }
 
+    /**
+     * Retrieve all the pages contained in this category.
+     * @return the pages contained in this category
+     */
     public List<Page> getPages(){
         return new Select()
                 .from(Page.class)

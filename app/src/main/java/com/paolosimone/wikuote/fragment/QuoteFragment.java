@@ -17,15 +17,15 @@ import android.view.ViewGroup;
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.activity.MainActivity;
 import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
-import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.adapter.QuotePagerAdapter;
+import com.paolosimone.wikuote.model.Quote;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Paolo Simone on 24/03/2016.
+ * Represent a generic presenter for quotes, in which the quotes are viewed one by one.
  */
 public abstract class QuoteFragment extends Fragment{
 
@@ -120,16 +120,29 @@ public abstract class QuoteFragment extends Fragment{
         quotePager.setAdapter(quotePagerAdapter);
     }
 
+    /**
+     * Switch the current view to the quote at the given index.
+     * @param index the index of the quote
+     */
     public void goToQuote(int index) {
         quotePager.setCurrentItem(index);
     }
 
+    /**
+     * Return the quote that is currently presented to the user.
+     * @return the current quote if valid, null otherwise
+     */
     public Quote getCurrentQuote(){
         List<Quote> quotes = quotePagerAdapter.getQuotes();
         if (quotes.isEmpty()) return null;
         else return quotes.get(quotePager.getCurrentItem());
     }
 
+    /**
+     * Internal method used to retrieve the list of quotes to be presented.
+     * @param savedInstanceState the bundle that contains a state to be restored, possibly null
+     * @return a list of quotes, possibly empty
+     */
     protected ArrayList<Quote> retrieveQuotes(Bundle savedInstanceState){
         if(savedInstanceState!=null){
             return savedInstanceState.getParcelableArrayList(QUOTES);
@@ -138,6 +151,11 @@ public abstract class QuoteFragment extends Fragment{
         return new ArrayList<>();
     }
 
+    /**
+     * Internal method used to retrieve the index of the quote to be shown.
+     * @param savedInstanceState the bundle that contains a state to be restored, possibly null
+     * @return the index of the quote to be shown, possibly null
+     */
     protected Integer retrieveIndex(Bundle savedInstanceState){
         if(savedInstanceState!=null){
             return savedInstanceState.getInt(INDEX);
@@ -145,6 +163,10 @@ public abstract class QuoteFragment extends Fragment{
         return null;
     }
 
+    /**
+     * Replace the current list of quotes with the given one.
+     * @param quotes the list of quotes to be presented
+     */
     public void changeQuotes(ArrayList<Quote> quotes){
         int index = quotePager.getCurrentItem();
         QuotePagerAdapter adapter = new QuotePagerAdapter(getActivity());
@@ -154,6 +176,10 @@ public abstract class QuoteFragment extends Fragment{
         onQuoteChange(index);
     }
 
+    /**
+     * Internal method used to save the current list of quotes.
+     * @param state the bundle in which store the current of quotes
+     */
     protected void saveQuotes(Bundle state){
         ArrayList<Quote> quotes = quotePagerAdapter.getQuotes();
         int index = quotePager.getCurrentItem();
@@ -162,6 +188,10 @@ public abstract class QuoteFragment extends Fragment{
         state.putInt(INDEX, index);
     }
 
+    /**
+     * Internal method to perform actions when the user select a new quote.
+     * @param position the index of the new selected quote
+     */
     protected void onQuoteChange(int position){
         updateFavoriteButton();
     }

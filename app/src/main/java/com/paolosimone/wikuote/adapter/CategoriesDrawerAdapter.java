@@ -17,19 +17,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Paolo Simone on 04/04/2016.
+ * Adapter that holds a list of categories, and a list of pages for each category.
+ * It provides them to the Drawer in the MainActivity.
  */
 public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
 
     private static final int MAX_PAGES = 1000;
 
-    private MainActivity activity;
+    private MainActivity activity; //TODO refactor this in context
     private List<Category> categories;
     private Map<Category, List<Page>> pagesByCategory;
 
-    public CategoriesDrawerAdapter(MainActivity activity, List<Category> categories,
+    /**
+     * Creates a new adapter.
+     * @param context the context in which the adapter is run
+     * @param categories the categories to be shown
+     * @param pagesByCategory the pages in each category
+     */
+    public CategoriesDrawerAdapter(MainActivity context, List<Category> categories,
                                    Map<Category, List<Page>> pagesByCategory) {
-        this.activity = activity;
+        this.activity = context;
         this.categories = categories;
         this.pagesByCategory = pagesByCategory;
     }

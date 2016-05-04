@@ -14,7 +14,7 @@ import android.widget.EditText;
 import com.paolosimone.wikuote.R;
 
 /**
- * Created by Paolo Simone on 25/04/2016.
+ * Generic input dialog fragment that ask the user to insert a simple text.
  */
 public class SimpleTextInputDialogFragment extends DialogFragment {
 
@@ -25,6 +25,12 @@ public class SimpleTextInputDialogFragment extends DialogFragment {
 
     private EditText editText;
 
+    /**
+     * Build a new dialog fragment having the given title, and the given button text.
+     * @param title the request to the user, appearing as title of the dialog
+     * @param positive the positive button text
+     * @return the new dialog fragment instance
+     */
     public static SimpleTextInputDialogFragment newInstance(String title, String positive){
         SimpleTextInputDialogFragment frag = new SimpleTextInputDialogFragment();
         Bundle args = new Bundle();
@@ -34,6 +40,10 @@ public class SimpleTextInputDialogFragment extends DialogFragment {
         return frag;
     }
 
+    /**
+     * Set a listener that respond to the event when the user submit the text.
+     * @param listener the listener
+     */
     public void setOnInputSubmitListener(OnInputSubmitListener listener){
         this.listener = listener;
     }
@@ -89,7 +99,14 @@ public class SimpleTextInputDialogFragment extends DialogFragment {
         });
     }
 
+    /**
+     * Listener that handles the event when the user submits the text.
+     */
     public interface OnInputSubmitListener {
+        /**
+         * Handles the event when the user submits the text.
+         * @param input the text inserted by the user
+         */
         void onInputSubmit(String input);
     }
 }

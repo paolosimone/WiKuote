@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Paolo Simone on 08/04/2016.
+ * Extends DynamicQuoteFragment by retrieving quotes from random pages, that are not been saved by the user.
  */
 public class ExploreQuoteFragment extends DynamicQuoteFragment {
 
@@ -80,6 +80,9 @@ public class ExploreQuoteFragment extends DynamicQuoteFragment {
         currentPages.remove(requestedPage);
     }
 
+    /**
+     * Asynchronous task that handles the retrieval of a random page, from which taking the quotes.
+     */
     private class FetchRandomPageTask extends AsyncTask<Void, Void, Page> {
 
         @Override

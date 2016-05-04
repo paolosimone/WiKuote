@@ -3,13 +3,11 @@ package com.paolosimone.wikuote.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
-import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
 
 import java.io.IOException;
@@ -17,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
- * Created by Paolo Simone on 15/04/2016.
+ * Retrieve and shows the "quote of the day".
  */
 public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
 
@@ -66,6 +64,9 @@ public class QuoteOfTheDayFragment extends QuoteFragment implements Titled{
         changeQuotes(quotes);
     }
 
+    /**
+     * Asynchronous task that handles the retrieval of the quote of the day.
+     */
     private class FetchQOTDTask extends AsyncTask<Void, Void, Quote> {
 
         private ProgressDialog pd;

@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Created by Paolo Simone on 20/03/2016.
+ * Helper class that contains a collection of useful methods to extract information from the data returned by WikiQuote.org.
  */
 public abstract class WikiQuoteUtils {
 
@@ -33,8 +33,13 @@ public abstract class WikiQuoteUtils {
 
     public static final String BEFORE_NAME = "/wiki/";
 
-    public static String capitalizeInitials(String author){
-        String[] words = author.toLowerCase().split(" ");
+    /**
+     * Capitalize the initials of the given string.
+     * @param string the string whose initials must been capitalized
+     * @return the capitalized version of the string
+     */
+    public static String capitalizeInitials(String string){
+        String[] words = string.toLowerCase().split(" ");
 
         if (words.length==0) return "";
 
@@ -46,11 +51,22 @@ public abstract class WikiQuoteUtils {
         return result.substring(0,result.length()-1);
     }
 
+    /**
+     * Extract the name of the page from the url of the web page.
+     * @param pageUrl the url of the web page
+     * @return the name of the page
+     */
     public static String extractPageNameFromUrl(String pageUrl){
         int start = pageUrl.lastIndexOf(BEFORE_NAME) + BEFORE_NAME.length();
         return pageUrl.substring(start);
     }
 
+    /**
+     * Extract a list of suggestions from a opensearch JSON response.
+     * @param response the JSON response from open search
+     * @return the list of suggested pages
+     * @throws ParserException
+     */
     public static ArrayList<Page> extractSuggestions(JsonArray response) throws ParserException {
         ArrayList<Page> result = new ArrayList<>();
         try {
@@ -71,6 +87,12 @@ public abstract class WikiQuoteUtils {
         return result;
     }
 
+    /**
+     * Extract the index of the web page from the JSON response identifying a page.
+     * @param response the JSON response from WikiQuote containing the page info
+     * @return the index of the web page
+     * @throws ParserException
+     */
     public static long extractPageIndex(JsonObject response) throws ParserException {
         long index = INVALID_INDEX;
         try {
@@ -93,6 +115,12 @@ public abstract class WikiQuoteUtils {
         return index;
     }
 
+    /**
+     * Extract the list of all subsections index of the first section from the JSON response.
+     * @param response the JSON response from WikiQuote containing the web page sections
+     * @return the list of all subsections index of the first section
+     * @throws ParserException
+     */
     public static List<Integer> extractSectionIndexList(JsonObject response) throws ParserException {
         List<Integer> indexes = new ArrayList<>();
         try {
@@ -120,6 +148,12 @@ public abstract class WikiQuoteUtils {
         return indexes;
     }
 
+    /**
+     * Extract the list of quotes from the HTML of a subsection, contained in the JSON response.
+     * @param response the JSON response containing the HTML of a subsection
+     * @return the list of quotes contained in the subsection
+     * @throws ParserException
+     */
     public static List<String> extractQuoteList(JsonObject response) throws ParserException {
         List<String> quotes = new ArrayList<>();
         try {
@@ -152,6 +186,12 @@ public abstract class WikiQuoteUtils {
         return quotes;
     }
 
+    /**
+     * Extract the quote of the day from the HTML of the main page of WikiQuote.org
+     * @param mainPage the HTML of WikiQuote.org
+     * @return the quote of the day
+     * @throws ParserException
+     */
     public static String[] extractQuoteOfTheDay(Document mainPage) throws ParserException {
         try {
             String quotdDivId = "#mf-qotd ";

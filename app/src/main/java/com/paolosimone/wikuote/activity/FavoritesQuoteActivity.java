@@ -8,7 +8,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.FavoritesQuoteFragment;
 
 /**
- * Created by Paolo Simone on 11/04/2016.
+ * Contains a fragment that presents the favorites quotes, one at a time.
  */
 public class FavoritesQuoteActivity extends AppCompatActivity {
 

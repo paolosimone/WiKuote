@@ -13,14 +13,22 @@ import com.paolosimone.wikuote.model.Page;
 import java.util.ArrayList;
 
 /**
- * Created by Paolo Simone on 24/03/2016.
+ * Adapter that holds the results (suggestions) of a query and provides them to the ListView in the SearchFragment.
  */
-public class SearchPageAdapter extends ArrayAdapter<Page> {
+public class SearchPageListAdapter extends ArrayAdapter<Page> {
 
-    public SearchPageAdapter(Context context){
+    /**
+     * Creates a new adapter with an empty list of results.
+     * @param context the context in which the adapter is run
+     */
+    public SearchPageListAdapter(Context context){
         super(context,0, new ArrayList<Page>());
     }
 
+    /**
+     * Replace the current list of suggestions with the given one.
+     * @param suggestions the list of suggestions to be shown
+     */
     public void replaceSuggestions(ArrayList<Page> suggestions){
         clear();
         addAll(suggestions);

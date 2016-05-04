@@ -12,7 +12,9 @@ import com.paolosimone.wikuote.fragment.FavoritesQuoteFragment;
 import com.paolosimone.wikuote.fragment.QuoteFragment;
 
 /**
- * Created by Paolo Simone on 09/04/2016.
+ * Presents the favorites quotes to the user.
+ * If the device has a small screen it contains only a fragment containing the list of favorite quotes.
+ * If the device has a larger screen contains also a fragment with a detailed view of the selected quote.
  */
 public class FavoritesActivity extends AppCompatActivity
         implements FavoritesListFragment.OnFavoriteClickListener, FavoritesQuoteFragment.OnFavoriteQuoteChangedListener {
