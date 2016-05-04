@@ -8,8 +8,7 @@ import android.widget.FrameLayout;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.FavoritesListFragment;
-import com.paolosimone.wikuote.fragment.FavoritesQuoteFragment;
-import com.paolosimone.wikuote.fragment.QuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.FavoritesQuoteFragment;
 
 /**
  * Presents the favorites quotes to the user.

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.ManageCategoriesAdapter;
+import com.paolosimone.wikuote.fragment.dialog.SimpleTextInputDialogFragment;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;

@@ -3,12 +3,12 @@ package com.paolosimone.wikuote.activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 
-import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
-import com.paolosimone.wikuote.fragment.ExploreQuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.DynamicQuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.ExploreQuoteFragment;
 import com.paolosimone.wikuote.fragment.ManageCategoriesFragment;
-import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
+import com.paolosimone.wikuote.fragment.quote.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
-import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
+import com.paolosimone.wikuote.fragment.dialog.SelectCategoryDialogFragment;
 import com.paolosimone.wikuote.fragment.WebViewFragment;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;

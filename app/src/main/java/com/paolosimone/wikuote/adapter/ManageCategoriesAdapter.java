@@ -1,8 +1,6 @@
 package com.paolosimone.wikuote.adapter;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -13,10 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.fragment.SimpleTextInputDialogFragment;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
-import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.util.HashMap;
 import java.util.List;

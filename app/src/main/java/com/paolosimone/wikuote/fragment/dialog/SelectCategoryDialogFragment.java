@@ -1,4 +1,4 @@
-package com.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;

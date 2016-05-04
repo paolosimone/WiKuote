@@ -1,4 +1,4 @@
-package com.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment.quote;
 
 
 import android.content.Context;

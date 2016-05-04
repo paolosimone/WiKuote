@@ -1,4 +1,4 @@
-package com.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment.quote;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,6 +20,7 @@ import com.paolosimone.wikuote.api.FetchQuoteResult;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.exceptions.ParserException;
+import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
