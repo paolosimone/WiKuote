@@ -24,4 +24,16 @@
         <item name="android:windowNoTitle">false</item>
     </style>
 
+    <style name="DrawerEntry" parent="android:Widget.TextView">
+        <item name="android:layout_marginTop">@dimen/drawer_entry_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/drawer_entry_vertical_margin</item>
+        <item name="android:layout_marginLeft">@dimen/drawer_entry_left_margin</item>
+        <item name="android:drawablePadding">@dimen/drawer_entry_left_margin</item>
+        <item name="android:textSize">@dimen/drawer_entry_text_size</item>
+    </style>
+
+    <style name="DrawerEntry.Page">
+        <item name="android:textSize">@dimen/drawer_entry_text_size_page</item>
+    </style>
+
 </resources>

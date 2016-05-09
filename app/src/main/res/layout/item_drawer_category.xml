@@ -8,6 +8,7 @@
         android:id="@+id/item_category_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
         android:layout_marginLeft="?android:attr/expandableListPreferredItemPaddingLeft"/>
 
 </LinearLayout>

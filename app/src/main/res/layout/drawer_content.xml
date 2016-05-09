@@ -1,64 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_content_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:id="@+id/nav_qotd_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
+        android:drawableLeft="@drawable/ic_today_black_18dp"
         android:text="@string/tab_quote_of_the_day"/>
 
     <TextView
         android:id="@+id/nav_explore_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
+        android:drawableLeft="@drawable/ic_explore_black_18dp"
         android:text="@string/tab_explore"/>
 
     <TextView
         android:id="@+id/nav_favorites_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
+        android:drawableLeft="@drawable/ic_favorite_black_18dp"
         android:text="@string/tab_favorites"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-----"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
         android:text="@string/drawer_categories"/>
 
     <TextView
         android:id="@+id/nav_empty_categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
         android:text="@string/msg_empty_categories"
-        android:visibility="invisible"/>
+        android:visibility="gone"/>
 
     <ExpandableListView
         android:id="@+id/list_drawer_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorPrimary"/>
+
     <TextView
         android:id="@+id/nav_manage_categories"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
+        android:drawableLeft="@drawable/ic_storage_black_18dp"
         android:text="@string/tab_manage_categories"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-----"/>
 
     <TextView
         android:id="@+id/nav_settings_activity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        style="@style/DrawerEntry"
+        android:drawableLeft="@drawable/ic_settings_black_18dp"
         android:text="@string/tab_settings"/>
 
 </LinearLayout>

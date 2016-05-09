@@ -195,14 +195,16 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.Se
         if (categories.isEmpty()){
             TextView msgEmpty = (TextView) findViewById(R.id.nav_empty_categories);
             msgEmpty.setVisibility(View.VISIBLE);
-            listView.setVisibility(View.INVISIBLE);
+            listView.setVisibility(View.GONE);
+            findViewById(R.id.drawer_content_layout).invalidate();
             return;
         }
 
-        if (listView.getVisibility()==View.INVISIBLE){
+        if (listView.getVisibility()==View.GONE){
             TextView msgEmpty = (TextView) findViewById(R.id.nav_empty_categories);
-            msgEmpty.setVisibility(View.INVISIBLE);
+            msgEmpty.setVisibility(View.GONE);
             listView.setVisibility(View.VISIBLE);
+            findViewById(R.id.drawer_content_layout).invalidate();
         }
 
         Map<Category, List<Page>> pagesByCategory = new HashMap<>();
