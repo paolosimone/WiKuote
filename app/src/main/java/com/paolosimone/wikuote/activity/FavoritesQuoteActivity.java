@@ -5,10 +5,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.fragment.FavoritesQuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.FavoritesQuoteFragment;
 
 /**
- * Created by Paolo Simone on 11/04/2016.
+ * Contains a fragment that presents the favorites quotes, one at a time.
  */
 public class FavoritesQuoteActivity extends AppCompatActivity {
 

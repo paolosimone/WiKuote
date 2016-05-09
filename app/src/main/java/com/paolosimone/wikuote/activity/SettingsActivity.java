@@ -8,7 +8,7 @@ import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.SettingsFragment;
 
 /**
- * Created by Paolo Simone on 20/04/2016.
+ * Allow the user to modify the settings of the application.
  */
 public class SettingsActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment.quote;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -15,24 +15,24 @@ import android.widget.Toast;
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.activity.MainActivity;
 import com.paolosimone.wikuote.activity.WiKuoteNavUtils;
+import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 import com.paolosimone.wikuote.api.FetchQuoteResult;
 import com.paolosimone.wikuote.api.QuoteProvider;
 import com.paolosimone.wikuote.api.WikiQuoteProvider;
 import com.paolosimone.wikuote.exceptions.ParserException;
-import com.paolosimone.wikuote.model.Page;
+import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Quote;
-import com.paolosimone.wikuote.adapter.DynamicQuotePagerAdapter;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
 
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.StringTokenizer;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Expands QuoteFragment functionality by allowing to present a dynamic list of quotes, retrieved from an external source.
  */
 public class DynamicQuoteFragment extends QuoteFragment implements Titled {
 
@@ -54,6 +54,11 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
 
     public DynamicQuoteFragment() {}
 
+    /**
+     * Build a fragment that shows random quotes taken from the pages from the category.
+     * @param category the category from which the fragment select the pages
+     * @return the instance of the fragment
+     */
     public static DynamicQuoteFragment newInstance(Category category){
         Bundle args = new Bundle();
         args.putParcelable(CATEGORY, category);
@@ -62,6 +67,11 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         return dqf;
     }
 
+    /**
+     * Build a fragment that shows random quotes taken from the given page.
+     * @param page the page from which take the quotes
+     * @return the instance of the fragment
+     */
     public static DynamicQuoteFragment newInstance(Page page){
         Bundle args = new Bundle();
         args.putParcelable(PAGE, page);
@@ -140,10 +150,6 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         }
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
     public void setCategory(Category category) {
         this.category = category;
         this.page = null;
@@ -165,6 +171,9 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         return context.getString(R.string.app_name);
     }
 
+    /**
+     * Flush the current quotes and retrieve new ones from scratch.
+     */
     public void refresh(){
         quotePagerAdapter = new DynamicQuotePagerAdapter(getActivity());
         setPagerAdapter(quotePagerAdapter);
@@ -186,7 +195,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
     protected void onQuoteChange(int index){
         super.onQuoteChange(index);
         int remaining = quotePagerAdapter.getQuotesNumber()+currentTasks.size()-index;
-        int needed = 1+PREFETCH_QUOTES;
+        int needed = 1 + PREFETCH_QUOTES;
         if (remaining<needed){
             for (int i=0; i<needed-remaining; i++){
                 fetchQuoteForPage(selectNextPage());
@@ -200,6 +209,10 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         }
     }
 
+    /**
+     * Internal method that select a page from which retrieve the next quote.
+     * @return the page from which retrieve the next quote
+     */
     protected Page selectNextPage(){
         Page newQuotePage;
         if (category!=null) {
@@ -217,6 +230,10 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         return newQuotePage;
     }
 
+    /**
+     * Internal method to start the fetching of a quote from the given page.
+     * @param page the page from which retrieving a quote
+     */
     protected void fetchQuoteForPage(Page page){
         if(page == null){
             return;
@@ -265,6 +282,10 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         }
     }
 
+    /**
+     * Internal method to handle a parse error during the fetching of a quote.
+     * @param requestedPage the page from which the quote was requested
+     */
     protected void handleParseException(final Page requestedPage) {
         View.OnClickListener showWebViewListener = new View.OnClickListener() {
             @Override
@@ -275,12 +296,19 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         quotePagerAdapter.silentNotifyParserError(getString(R.string.err_parser), showWebViewListener);
     }
 
+    /**
+     * Internal method to handle an I/O error during the fetching of a quote.
+     * @param requestedPage the page from which the quote was requested
+     */
     protected void handleIOException(final Page requestedPage) {
         fetchQuoteForPage(selectNextPage());
         //TODO better message mechanism or funny quotes db
         quotePagerAdapter.silentNotifyError(getString(R.string.err_generic));
     }
 
+    /**
+     * Asynchronous task that handle the retrieval of a single quote from given page.
+     */
     private class FetchQuoteTask extends AsyncTask<Page, Void, FetchQuoteResult> {
 
         @Override

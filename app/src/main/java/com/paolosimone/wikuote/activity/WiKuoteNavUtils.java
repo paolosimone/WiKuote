@@ -1,28 +1,21 @@
 package com.paolosimone.wikuote.activity;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AlertDialog;
-import android.text.InputType;
-import android.view.WindowManager;
-import android.widget.EditText;
 
-import com.paolosimone.wikuote.R;
-import com.paolosimone.wikuote.fragment.DynamicQuoteFragment;
-import com.paolosimone.wikuote.fragment.ExploreQuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.DynamicQuoteFragment;
+import com.paolosimone.wikuote.fragment.quote.ExploreQuoteFragment;
 import com.paolosimone.wikuote.fragment.ManageCategoriesFragment;
-import com.paolosimone.wikuote.fragment.QuoteOfTheDayFragment;
+import com.paolosimone.wikuote.fragment.quote.QuoteOfTheDayFragment;
 import com.paolosimone.wikuote.fragment.SearchFragment;
-import com.paolosimone.wikuote.fragment.SelectCategoryDialogFragment;
-import com.paolosimone.wikuote.fragment.SimpleTextInputDialogFragment;
+import com.paolosimone.wikuote.fragment.dialog.SelectCategoryDialogFragment;
 import com.paolosimone.wikuote.fragment.WebViewFragment;
-import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.Category;
+import com.paolosimone.wikuote.model.Page;
 
 /**
- * Created by Paolo Simone on 25/03/2016.
+ * Handle the navigation inside the application.
+ * It contains accessory methods to navigate inside the main activity of the application.
  */
 public abstract class WiKuoteNavUtils {
 
@@ -63,7 +56,7 @@ public abstract class WiKuoteNavUtils {
 
     public static void openSearchFragmentWithQuery(MainActivity activity, String query) {
         SearchFragment searchFragment = SearchFragment.newInstance(query);
-        searchFragment.setListener(activity);
+        searchFragment.setOnPageClickedListener(activity);
         activity.replaceContent(searchFragment);
     }
 

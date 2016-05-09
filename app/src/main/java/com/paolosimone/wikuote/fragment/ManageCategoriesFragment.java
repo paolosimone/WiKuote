@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.ManageCategoriesAdapter;
+import com.paolosimone.wikuote.fragment.dialog.SimpleTextInputDialogFragment;
 import com.paolosimone.wikuote.model.Category;
 import com.paolosimone.wikuote.model.Page;
 import com.paolosimone.wikuote.model.WiKuoteDatabaseHelper;
@@ -22,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Paolo Simone on 21/04/2016.
+ * Allow the user to manage the saved categories and pages.
+ * The user can delete or rename each category, and can also move a page to another category or to a new one.
  */
 public class ManageCategoriesFragment extends Fragment implements Titled, ManageCategoriesAdapter.ManageCategoryListener {
 

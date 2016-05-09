@@ -1,11 +1,8 @@
 package com.paolosimone.wikuote.fragment;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +14,8 @@ import android.widget.ProgressBar;
 import com.paolosimone.wikuote.R;
 
 /**
- * Created by Paolo Simone on 29/04/2016.
+ * Open a web page and present it to the user.
+ * It also disables the navigation to other web pages by preventing link redirection.
  */
 public class WebViewFragment extends Fragment implements Titled {
 
@@ -29,6 +27,12 @@ public class WebViewFragment extends Fragment implements Titled {
     private WebView webView;
     private ProgressBar progressBar;
 
+    /**
+     * Build a new fragment that will show the web page at the given url, and having the given title.
+     * @param url the url of the web page
+     * @param title the title to be shown in the toolbar
+     * @return the new instance of the fragment
+     */
     public static WebViewFragment newInstance(String url, String title) {
         WebViewFragment frag = new WebViewFragment();
         Bundle args = new Bundle();
@@ -83,6 +87,7 @@ public class WebViewFragment extends Fragment implements Titled {
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String newUrl) {
+//                Uncomment these lines to open redirects in the browser
 //                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 //                startActivity(intent);
                 return true;

@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by Paolo Simone on 21/03/2016.
+ * A quote is a text taken from a page.
  */
 @Table(name="Quotes")
 public class Quote extends Model implements Parcelable{
@@ -20,16 +20,21 @@ public class Quote extends Model implements Parcelable{
     @Column(name="timestamp")
     Date timestamp;
 
-    @Column(name="text", unique=true, onUniqueConflict=Column.ConflictAction.IGNORE)
+    @Column(name="text", notNull = true, unique=true, onUniqueConflict=Column.ConflictAction.IGNORE)
     String text;
 
-    @Column(name="page", onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
+    @Column(name="page", notNull = true, onUpdate = Column.ForeignKeyAction.CASCADE, onDelete = Column.ForeignKeyAction.CASCADE)
     Page page;
 
     public Quote(){
         super();
     }
 
+    /**
+     * Create a quote.
+     * @param quote the text of the quote
+     * @param page the page from which the quote is taken
+     */
     public Quote(String quote, Page page) {
         super();
         this.timestamp = Calendar.getInstance().getTime();

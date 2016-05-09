@@ -1,4 +1,4 @@
-package com.paolosimone.wikuote.fragment;
+package com.paolosimone.wikuote.fragment.dialog;
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -24,7 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by Paolo Simone on 05/04/2016.
+ * Dialog fragment that allow the user to choose the category to which assign a page.
+ * The user can select an existing category, or insert a new one.
  */
 public class SelectCategoryDialogFragment extends DialogFragment {
 
@@ -36,8 +37,11 @@ public class SelectCategoryDialogFragment extends DialogFragment {
     private RadioGroup radioGroup;
     private EditText newCategoryText;
 
-    public SelectCategoryDialogFragment(){}
-
+    /**
+     * Build a new dialog fragment, with the goal of assigning a category to the given page.
+     * @param page the page that has to be assigned
+     * @return the dialog fragment instance
+     */
     public static SelectCategoryDialogFragment newInstance(Page page){
         SelectCategoryDialogFragment frag = new SelectCategoryDialogFragment();
         Bundle args = new Bundle();

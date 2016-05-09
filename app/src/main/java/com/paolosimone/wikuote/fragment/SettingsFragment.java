@@ -18,7 +18,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 /**
- * Created by Paolo Simone on 20/04/2016.
+ * Presents the settings to the user and allows him to edit them.
  */
 public class SettingsFragment extends PreferenceFragment {
 
@@ -49,6 +49,10 @@ public class SettingsFragment extends PreferenceFragment {
         });
     }
 
+    /**
+     * Schedule an alarm for the following morning, that will trigger a notification containing the quote of the day.
+     * @param context the context containing the application context to which the alarm is attached
+     */
     public static void scheduleQuoteOfTheDayNotification(Context context){
         Intent intent = new Intent(context.getApplicationContext(), NewDayAlarmReceiver.class);
         intent.setAction(NewDayAlarmReceiver.ACTION);
@@ -57,7 +61,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         Random random = new Random();
         Calendar tomorrow = Calendar.getInstance();
-//        tomorrow.add(Calendar.SECOND,10);
+//        tomorrow.add(Calendar.SECOND,10);     // used for testing
         tomorrow.add(Calendar.DAY_OF_YEAR, 1);
         tomorrow.set(Calendar.HOUR_OF_DAY,10);
         tomorrow.set(Calendar.MINUTE, random.nextInt(20));
@@ -67,6 +71,10 @@ public class SettingsFragment extends PreferenceFragment {
                 AlarmManager.INTERVAL_DAY, pendingIntent);
     }
 
+    /**
+     * Cancel a previously scheduled notification.
+     * @param context the context containing the application context to which the alarm was attached
+     */
     public static void cancelQuoteOfTheDayNotification(Context context){
         Intent intent = new Intent(context.getApplicationContext(), NewDayAlarmReceiver.class);
         final PendingIntent pendingIntent = PendingIntent.getBroadcast(context, NewDayAlarmReceiver.REQUEST_CODE,

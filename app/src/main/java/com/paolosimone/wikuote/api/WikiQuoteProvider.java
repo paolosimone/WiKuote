@@ -1,6 +1,6 @@
 package com.paolosimone.wikuote.api;
 
-import com.paolosimone.wikuote.exceptions.MissingAuthorException;
+import com.paolosimone.wikuote.exceptions.MissingPageException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -23,7 +23,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by Paolo Simone on 20/03/2016.
+ * Instance of QuoteProvider that uses WikiQuote.org as source for quotes.
  */
 public class WikiQuoteProvider implements QuoteProvider{
 
@@ -35,6 +35,10 @@ public class WikiQuoteProvider implements QuoteProvider{
     private Retrofit retrofit;
     private WikiQuoteService wikiQuoteService;
 
+    /**
+     * Return the instance of the provider.
+     * @return the instance of the provider
+     */
     public static WikiQuoteProvider getInstance() {
         return ourInstance;
     }
@@ -49,8 +53,8 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public boolean isAvailableAuthor(String author) throws IOException {
-        return getPageIndex(author) != WikiQuoteUtils.INVALID_INDEX;
+    public boolean isAvailablePage(String page) throws IOException {
+        return getPageIndex(page) != WikiQuoteUtils.INVALID_INDEX;
     }
 
     @Override
@@ -81,9 +85,9 @@ public class WikiQuoteProvider implements QuoteProvider{
     }
 
     @Override
-    public Quote getRandomQuoteFor(Page page) throws IOException, MissingAuthorException {
+    public Quote getRandomQuoteFor(Page page) throws IOException, MissingPageException {
         long pageId = getPageIndex(page.getName());
-        if (pageId == WikiQuoteUtils.INVALID_INDEX) throw new MissingAuthorException();
+        if (pageId == WikiQuoteUtils.INVALID_INDEX) throw new MissingPageException();
 
         int sectionId = getRandomSection(pageId);
         String quoteText = getRandomQuoteFromSection(pageId, sectionId);

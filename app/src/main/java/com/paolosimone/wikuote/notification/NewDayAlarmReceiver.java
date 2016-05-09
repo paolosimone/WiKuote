@@ -1,21 +1,15 @@
 package com.paolosimone.wikuote.notification;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.fragment.SettingsFragment;
 
-import java.util.Calendar;
-import java.util.Random;
-
 /**
- * Created by Paolo Simone on 18/04/2016.
+ * Receiver that is invoked when the alarm is triggered, and then call the notification service.
  */
 public class NewDayAlarmReceiver extends BroadcastReceiver {
 

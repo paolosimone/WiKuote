@@ -16,16 +16,13 @@ import com.paolosimone.wikuote.model.Quote;
 import java.io.IOException;
 
 /**
- * Created by Paolo Simone on 18/04/2016.
+ * Background service which task is to retrieve the quote of the day and generate a notification.
  */
 public class QuoteOfTheDayService extends IntentService {
 
     private static final int NOTIFICATION_ID = 117;
     private Context context;
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     */
     public QuoteOfTheDayService() {
         super("QuoteOfTheDayService");
     }

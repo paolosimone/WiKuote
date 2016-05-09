@@ -15,12 +15,16 @@ import com.paolosimone.wikuote.model.Quote;
 import java.util.ArrayList;
 
 /**
- * Created by Paolo Simone on 09/04/2016.
+ * Adapter that holds a list of favorite quotes and provide them to the ListView in FavoritesListFragment.
  */
 public class FavoritesListAdapter extends ArrayAdapter<Quote> {
 
     private final String defaultCategory;
 
+    /**
+     * Creates a new empty adapter.
+     * @param context the context in which the adapter is run
+     */
     public FavoritesListAdapter(Context context){
         super(context,0, new ArrayList<Quote>());
         defaultCategory = context.getString(R.string.uncategorized);
