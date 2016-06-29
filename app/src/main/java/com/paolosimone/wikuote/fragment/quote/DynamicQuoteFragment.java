@@ -42,12 +42,16 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
     private final static int MAX_QUOTES = 20;
     private final static int PREFETCH_QUOTES = 5;
 
+    private final static int DUPLICATE_INTERVAL = 3;
+    private final static int MAX_ATTEMPTS= 25;
+
     private Category category;
     private Page page;
     protected boolean isUnsavedPage;
 
     private QuoteProvider quoteProvider;
     private HashSet<AsyncTask> currentTasks;
+    private int attemptsNumber;
 
     private ViewPager quotePager;
     private DynamicQuotePagerAdapter quotePagerAdapter;
@@ -338,9 +342,22 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
             currentTasks.remove(this);
 
             if (result.isSuccessful()){
-                quotePagerAdapter.addQuote(result.getQuote());
-                if (quotePagerAdapter.userIsWaiting()){
-                    onQuoteChange(quotePager.getCurrentItem());
+                boolean isRepeated = quotePagerAdapter.hasDuplicates(result.getQuote(), DUPLICATE_INTERVAL);
+                if (isRepeated) {
+                    attemptsNumber++;
+
+                    if (attemptsNumber > MAX_ATTEMPTS)
+                        handleParseException(result.getPage());
+                    else
+                        fetchQuoteForPage(selectNextPage());
+                }
+                else {
+                    attemptsNumber = 0;
+
+                    quotePagerAdapter.addQuote(result.getQuote());
+                    if (quotePagerAdapter.userIsWaiting()) {
+                        onQuoteChange(quotePager.getCurrentItem());
+                    }
                 }
             }
             else {

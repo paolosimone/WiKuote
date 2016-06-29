@@ -28,6 +28,14 @@ public class DynamicQuotePagerAdapter extends QuotePagerAdapter {
         super(context);
     }
 
+    public boolean hasDuplicates(Quote quote, int n) {
+        int maxIndex = quotes.size()-1;
+        for (int i = maxIndex; i>=0 && i>maxIndex-n; i--)
+            if (quotes.get(i).equals(quote))
+                return true;
+        return false;
+    }
+
     /**
      * Append the given quote to the list.
      * @param quote the quote to be added to the list

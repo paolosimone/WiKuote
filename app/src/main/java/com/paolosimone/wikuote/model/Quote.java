@@ -10,6 +10,7 @@ import com.activeandroid.annotation.Table;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A quote is a text taken from a page.
@@ -59,6 +60,13 @@ public class Quote extends Model implements Parcelable{
 
     public String getText() {
         return text;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (!(other instanceof Quote)) return false;
+        Quote otherQuote = (Quote) other;
+        return page.getName().equals(otherQuote.page.getName()) && text.equals(otherQuote.text);
     }
 
     @Override
