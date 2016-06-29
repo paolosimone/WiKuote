@@ -1,6 +1,7 @@
 package com.paolosimone.wikuote.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
@@ -97,12 +98,19 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
             }
         });
 
-        holder.container.setOnDragListener(new View.OnDragListener() {
+        final View container = holder.container;
+        container.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View target, DragEvent event) {
                 final View draggedView = (View) event.getLocalState();
 
                 switch (event.getAction()){
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        container.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        container.setBackgroundResource(R.drawable.border_container);
+                        break;
                     case DragEvent.ACTION_DROP:
                         Page page = (Page) draggedView.getTag();
                         if (page.getCategory().equals(category)) {
@@ -113,6 +121,7 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
                         }
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
+                        container.setBackgroundResource(R.drawable.border_container);
                         if (!event.getResult()){
                             draggedView.setVisibility(View.VISIBLE);
                         }
@@ -200,12 +209,10 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
     public class NewCategoryViewHolder extends RecyclerView.ViewHolder {
 
         public View container;
-        public TextView tvAddCategory;
 
         public NewCategoryViewHolder(View itemView){
             super(itemView);
             container = itemView;
-            tvAddCategory = (TextView) itemView.findViewById(R.id.add_new_category);
             setupOnDragListener();
         }
 
@@ -213,14 +220,14 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
          * Hide the view item.
          */
         public void hide() {
-            tvAddCategory.setVisibility(View.INVISIBLE);
+            container.setVisibility(View.INVISIBLE);
         }
 
         /**
          * Show the view item.
          */
         public void show(){
-            tvAddCategory.setVisibility(View.VISIBLE);
+            container.setVisibility(View.VISIBLE);
         }
 
         private void setupOnDragListener() {
@@ -230,6 +237,12 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
                     final View draggedView = (View) event.getLocalState();
 
                     switch (event.getAction()){
+                        case DragEvent.ACTION_DRAG_ENTERED:
+                            container.setBackgroundColor(context.getResources().getColor(R.color.colorPrimaryLight));
+                            break;
+                        case DragEvent.ACTION_DRAG_EXITED:
+                            container.setBackgroundResource(R.drawable.border_container);
+                            break;
                         case DragEvent.ACTION_DROP:
                             Page page = (Page) draggedView.getTag();
                             if (listener!= null) {
@@ -238,6 +251,7 @@ public class ManageCategoriesAdapter extends RecyclerView.Adapter<RecyclerView.V
                             break;
                         case DragEvent.ACTION_DRAG_ENDED:
                             draggedView.setVisibility(View.VISIBLE);
+                            container.setBackgroundResource(R.drawable.border_container);
                             hide();
                             break;
                     }

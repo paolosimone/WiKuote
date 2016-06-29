@@ -24,6 +24,7 @@
         <item name="android:windowNoTitle">false</item>
     </style>
 
+    <!-- Drawer -->
     <style name="DrawerEntry" parent="android:Widget.TextView">
         <item name="android:layout_marginTop">@dimen/drawer_entry_vertical_margin</item>
         <item name="android:layout_marginBottom">@dimen/drawer_entry_vertical_margin</item>
@@ -34,6 +35,12 @@
 
     <style name="DrawerEntry.Page">
         <item name="android:textSize">@dimen/drawer_entry_text_size_page</item>
+    </style>
+
+    <!-- Manage categories -->
+    <style name="CategoriesContainer">
+        <item name="android:layout_margin">@dimen/categories_container_margin</item>
+        <item name="android:padding">@dimen/categories_container_padding</item>
     </style>
 
 </resources>

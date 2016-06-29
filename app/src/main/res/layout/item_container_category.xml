@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/activity_horizontal_margin">
+    style="@style/CategoriesContainer"
+    android:background="@drawable/border_container">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -15,21 +16,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="8"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"/>
 
         <TextView
             android:id="@+id/btn_category_edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/action_edit"/>
+            android:drawableRight="@drawable/ic_create_black_18dp"/>
 
         <TextView
             android:id="@+id/btn_category_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/action_delete"/>
+            android:drawableRight="@drawable/ic_delete_black_18dp"/>
 
     </LinearLayout>
 

@@ -24,6 +24,11 @@ public abstract class WiKuoteNavUtils {
         activity.startActivity(i);
     }
 
+    public static void launchManageCategoriesActivity(MainActivity activity){
+        Intent i = new Intent(activity, ManageCategoriesActivity.class);
+        activity.startActivity(i);
+    }
+
     public static void launchSettingsActivity(MainActivity activity){
         Intent i = new Intent(activity, SettingsActivity.class);
         activity.startActivity(i);
@@ -58,11 +63,6 @@ public abstract class WiKuoteNavUtils {
         SearchFragment searchFragment = SearchFragment.newInstance(query);
         searchFragment.setOnPageClickedListener(activity);
         activity.replaceContent(searchFragment);
-    }
-
-    public static void openManageCategoriesFragment(MainActivity activity){
-        ManageCategoriesFragment manageCategoriesFragment = new ManageCategoriesFragment();
-        activity.replaceContent(manageCategoriesFragment);
     }
 
     public static void openSelectCategoryDialog(MainActivity activity, Page page) {

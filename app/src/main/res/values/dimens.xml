@@ -10,4 +10,8 @@
     <dimen name="drawer_entry_left_padding_page">14dp</dimen>
     <dimen name="drawer_entry_text_size">16sp</dimen>
     <dimen name="drawer_entry_text_size_page">14sp</dimen>
+
+    <!-- Manage categories -->
+    <dimen name="categories_container_padding">10dp</dimen>
+    <dimen name="categories_container_margin">8dp</dimen>
 </resources>

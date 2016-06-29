@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         findViewById(R.id.nav_manage_categories).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openManageCategoriesFragment(MainActivity.this);
+                WiKuoteNavUtils.launchManageCategoriesActivity(MainActivity.this);
             }
         });
 

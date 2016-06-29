@@ -49,10 +49,16 @@
             android:parentActivityName=".activity.FavoritesActivity">
         </activity>
 
+        <activity android:name=".activity.ManageCategoriesActivity"
+            android:label="@string/tab_manage_categories"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".activity.MainActivity">
+        </activity>
+
         <activity android:name=".activity.SettingsActivity"
             android:label="@string/tab_settings"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".activity.FavoritesActivity">
+            android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <!-- Services -->
