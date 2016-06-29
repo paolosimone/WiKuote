@@ -145,6 +145,9 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
             case R.id.action_refresh:
                 refresh();
                 return true;
+            case R.id.menu_item_web:
+                openWebView();
+                return  true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -254,7 +257,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
 
         if (isUnsavedPage) {
             // Save page
-            WiKuoteNavUtils.openSelectCategoryDialog((MainActivity) getActivity(),currentPage);
+            WiKuoteNavUtils.getInstance().openSelectCategoryDialog(currentPage);
         }
         else {
             // Delete page
@@ -263,12 +266,20 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
             Toast.makeText(getActivity(),R.string.msg_page_deleted,Toast.LENGTH_SHORT).show();
 
             if (category==null || !db.existsCategory(category)){
-                WiKuoteNavUtils.openExploreFragment((MainActivity) getActivity());
+                WiKuoteNavUtils.getInstance().openExploreFragment();
             }
             else {
                 refresh();
             }
         }
+    }
+
+    private void openWebView(){
+        Quote current = getCurrentQuote();
+        if (current==null) {
+            return;
+        }
+        WiKuoteNavUtils.getInstance().openWebViewFragmentSinglePage(current.getPage());
     }
 
     private void retrieveInput(Bundle savedInstanceState){
@@ -290,7 +301,7 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         View.OnClickListener showWebViewListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openWebViewFragmentSinglePage((MainActivity) getActivity(), requestedPage);
+                WiKuoteNavUtils.getInstance().openWebViewFragmentSinglePage(requestedPage);
             }
         };
         quotePagerAdapter.silentNotifyParserError(getString(R.string.err_parser), showWebViewListener);

@@ -163,7 +163,7 @@ public class SelectCategoryDialogFragment extends DialogFragment {
 
         WiKuoteDatabaseHelper.getInstance().movePageToCategory(page, category);
         getDialog().dismiss();
-        WiKuoteNavUtils.openQuoteFragmentSinglePage((MainActivity) getActivity(), page);
+        WiKuoteNavUtils.getInstance().openQuoteFragmentSinglePage(page);
     }
 
     private void handleCancelClick(){

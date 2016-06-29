@@ -3,19 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_save_delete_page"
+        android:id="@+id/menu_item_web"
         android:orderInCategory="70"
+        android:title="@string/action_webview"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_save_delete_page"
+        android:orderInCategory="72"
         android:title="@string/action_delete_page"
         android:icon="@drawable/ic_bookmark_white_24dp"
         app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/action_refresh"
-        android:orderInCategory="80"
+        android:orderInCategory="74"
         android:title="@string/action_refresh"
         android:icon="@drawable/ic_autorenew_white_24dp"
         app:showAsAction="ifRoom" />
-
-
 
 </menu>

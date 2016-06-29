@@ -83,7 +83,7 @@ public abstract class QuoteFragment extends Fragment{
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.menu_quote,menu);
+        inflater.inflate(R.menu.menu_quote, menu);
     }
 
     @Override
@@ -92,9 +92,6 @@ public abstract class QuoteFragment extends Fragment{
             case R.id.menu_item_share:
                 sendShareIntent();
                 return true;
-            case R.id.menu_item_web:
-                openWebView();
-                return  true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -245,12 +242,4 @@ public abstract class QuoteFragment extends Fragment{
         startActivity(Intent.createChooser(shareIntent,getString(R.string.title_share_quote)));
     }
 
-    private void openWebView(){
-        Quote current = getCurrentQuote();
-        if (current==null) {
-            return;
-        }
-        MainActivity activity = (MainActivity) getActivity();
-        WiKuoteNavUtils.openWebViewFragmentSinglePage(activity, current.getPage());
-    }
 }

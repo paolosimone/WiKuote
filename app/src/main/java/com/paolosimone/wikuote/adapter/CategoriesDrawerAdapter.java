@@ -70,7 +70,7 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
         titleText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteFragmentCategory(activity, category);
+                WiKuoteNavUtils.getInstance().openQuoteFragmentCategory(category);
             }
         });
 
@@ -112,7 +112,7 @@ public class CategoriesDrawerAdapter extends BaseExpandableListAdapter {
         titleText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteFragmentSinglePage(activity, page);
+                WiKuoteNavUtils.getInstance().openQuoteFragmentSinglePage(page);
             }
         });
 

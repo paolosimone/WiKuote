@@ -1,5 +1,6 @@
 package com.paolosimone.wikuote.activity;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 
 import com.paolosimone.wikuote.R;
 import com.paolosimone.wikuote.adapter.CategoriesDrawerAdapter;
+import com.paolosimone.wikuote.api.WikiQuoteUtils;
 import com.paolosimone.wikuote.fragment.SearchFragment;
 import com.paolosimone.wikuote.fragment.Titled;
 import com.paolosimone.wikuote.model.Category;
@@ -51,8 +54,13 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
         setupDrawer(toolbar);
 
+        WiKuoteNavUtils.getInstance().replaceActivity(this);
+
         isFirstStart = savedInstanceState == null;
-        if(!isFirstStart){
+        if(isFirstStart){
+            WiKuoteNavUtils.getInstance().openQuoteOfTheDayFragment();
+        }
+        else {
             contentFragment = getSupportFragmentManager().getFragment(savedInstanceState,CONTENT);
             replaceContent(contentFragment);
         }
@@ -63,9 +71,6 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
     @Override
     public void onStart(){
         super.onStart();
-        if(isFirstStart) {
-            WiKuoteNavUtils.openQuoteOfTheDayFragment(this);
-        }
     }
 
     @Override
@@ -116,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
 
     @Override
     public void onPageClicked(Page page) {
-        WiKuoteNavUtils.openQuoteFragmentSinglePage(this, page);
+        WiKuoteNavUtils.getInstance().openQuoteFragmentSinglePage(page);
     }
 
     @Override
@@ -149,33 +154,33 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
         findViewById(R.id.nav_qotd_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openQuoteOfTheDayFragment(MainActivity.this);
+                WiKuoteNavUtils.getInstance().openQuoteOfTheDayFragment();
             }
         });
         findViewById(R.id.nav_explore_fragment).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.openExploreFragment(MainActivity.this);
+                WiKuoteNavUtils.getInstance().openExploreFragment();
             }
         });
         findViewById(R.id.nav_favorites_activity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer.closeDrawers();
-                WiKuoteNavUtils.launchFavoritesActivity(MainActivity.this);
+                WiKuoteNavUtils.getInstance().launchFavoritesActivity();
             }
         });
         findViewById(R.id.nav_settings_activity).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer.closeDrawers();
-                WiKuoteNavUtils.launchSettingsActivity(MainActivity.this);
+                WiKuoteNavUtils.getInstance().launchSettingsActivity();
             }
         });
         findViewById(R.id.nav_manage_categories).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiKuoteNavUtils.launchManageCategoriesActivity(MainActivity.this);
+                WiKuoteNavUtils.getInstance().launchManageCategoriesActivity();
             }
         });
 
@@ -224,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements SearchFragment.On
                 if (contentFragment instanceof SearchFragment) {
                     ((SearchFragment) contentFragment).setQuery(query);
                 } else {
-                    WiKuoteNavUtils.openSearchFragmentWithQuery(MainActivity.this, query);
+                    WiKuoteNavUtils.getInstance().openSearchFragmentWithQuery(query);
                 }
                 searchView.clearFocus();
                 searchItem.collapseActionView();
