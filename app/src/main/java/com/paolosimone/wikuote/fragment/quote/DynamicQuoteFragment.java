@@ -43,7 +43,9 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
     private final static int PREFETCH_QUOTES = 5;
 
     private final static int DUPLICATE_INTERVAL = 3;
-    private final static int MAX_ATTEMPTS= 25;
+    private final static int MAX_ATTEMPTS = 25;
+
+    private static boolean isFirstTime = true;
 
     private Category category;
     private Page page;
@@ -124,6 +126,10 @@ public class DynamicQuoteFragment extends QuoteFragment implements Titled {
         super.onStart();
         if (quotePagerAdapter.getQuotes().isEmpty()) {
             refresh();
+        }
+        if (isFirstTime) {
+            Toast.makeText(getActivity().getApplicationContext(), R.string.hint_explore, Toast.LENGTH_SHORT).show();
+            isFirstTime = false;
         }
     }
 

@@ -40,6 +40,7 @@
 
     <!-- Messages -->
     <string name="msg_empty_categories">Nothing here... Yet!</string>
+    <string name="hint_explore">Swipe to explore!</string>
 
     <!-- Dialog messages -->
     <string name="title_select_category">Select category</string>
